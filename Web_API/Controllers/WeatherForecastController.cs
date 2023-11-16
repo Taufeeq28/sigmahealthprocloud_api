@@ -13,9 +13,9 @@ namespace Web_API.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger1)
         {
-            _logger = logger;
+            _logger = logger1;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
