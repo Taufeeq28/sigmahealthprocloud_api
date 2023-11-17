@@ -1,4 +1,6 @@
 using Data.Context;
+using Data.Implementation;
+using Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<Data.Context.AppDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("MyDbContext"));
 });
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
