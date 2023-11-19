@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 steps:
       - uses: actions/checkout@v4
+      
 - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.0.x'
           include-prerelease: true
+          
 - name: Build with dotnet
         run: dotnet build --configuration Release
 - name: dotnet publish
@@ -40,6 +42,8 @@ steps:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'dev-sigmapro-api'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+           slot-name: 'production'
           package: .
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+
+          
