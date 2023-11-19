@@ -26,9 +26,12 @@ jobs:
           dotnet publish --configuration Release -o publish/Web_API Web_API/Web_API.csproj
 
       - name: Set up .NET Framework for Business and Data
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '4.x'
+        run: |
+          sudo apt-get install -y wget
+          wget https://download.visualstudio.microsoft.com/download/pr/0765b697-d3e3-4ccf-bf7b-f70d5794a042/1a2f4d3443af2863ecf43fb393ef8551/ndp472-DevPack-ENU.exe
+          mkdir ndp472
+          7z x ndp472-DevPack-ENU.exe -ondp472
+          ndp472/NDP472-KB4054530-x86-x64-DevPack.exe /quiet /norestart
 
       - name: Build and Publish Business
         run: |
