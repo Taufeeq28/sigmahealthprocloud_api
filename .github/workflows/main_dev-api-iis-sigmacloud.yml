@@ -1,4 +1,7 @@
-name: Build and Deploy to Azure App Service
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - dev-api-iis-sigmacloud
 
 on:
   push:
@@ -7,69 +10,48 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up .NET Core for Web_API
-        uses: actions/setup-dotnet@v2
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.x'
           include-prerelease: true
 
-      - name: Build and Publish Web_API
-        run: |
-          dotnet build --configuration Release Web_API/Web_API.csproj
-          dotnet publish --configuration Release -o publish/Web_API Web_API/Web_API.csproj
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
 
-      - name: Set up .NET Framework for Business and Data
-        run: |
-          sudo apt-get install -y wget
-          wget https://download.visualstudio.microsoft.com/download/pr/0765b697-d3e3-4ccf-bf7b-f70d5794a042/1a2f4d3443af2863ecf43fb393ef8551/ndp472-DevPack-ENU.exe
-          mkdir ndp472
-          7z x ndp472-DevPack-ENU.exe -ondp472
-          ndp472/NDP472-KB4054530-x86-x64-DevPack.exe /quiet /norestart
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-      - name: Build and Publish Business
-        run: |
-          msbuild /p:Configuration=Release /p:Platform=x64 Business/Business.csproj
-          mkdir publish/Business
-          cp -R Business/bin/Release/net472/* publish/Business/
-
-      - name: Build and Publish Data
-        run: |
-          msbuild /p:Configuration=Release /p:Platform=x64 Data/Data.csproj
-          mkdir publish/Data
-          cp -R Data/bin/Release/net472/* publish/Data/
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
         with:
-          name: dotnet-artifacts
-          path: |
-            publish/Web_API
-            publish/Business
-            publish/Data
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-deploy
+    needs: build
     environment:
-      name: 'production'
-
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
         with:
-          name: dotnet-artifacts
-
-      - name: Deploy to Azure App Service
-        uses: Azure/webapps-deploy@v2
+          name: .net-app
+      
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'dev-api-iis-sigmacloud'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
-          package: dotnet-artifacts
+          slot-name: 'Production'
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_04455BADB6D74DBE85C30F561B9E9D6D }}
