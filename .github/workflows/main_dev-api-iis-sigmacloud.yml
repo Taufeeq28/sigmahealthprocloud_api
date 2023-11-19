@@ -41,5 +41,5 @@ steps:
         with:
           app-name: 'dev-sigmapro-api'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_5d5c0250c4b443d2a607591d835a89f2 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
           package: .
