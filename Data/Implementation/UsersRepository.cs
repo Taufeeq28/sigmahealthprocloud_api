@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class UsersRepository : GenericRepository<users>, IUsersRepository
+    public class UsersRepository : GenericRepository<Users>, IUsersRepository
     {
         public UsersRepository(AppDbContext context) : base(context)
         {

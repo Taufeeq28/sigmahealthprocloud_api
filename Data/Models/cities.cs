@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    [Table("cities")]
-    public class cities : baseclass
+    [Table("Cities")]
+    public class Cities : Baseclass
     {
         [Key]
         public int city_id { get; set; }
@@ -18,13 +18,13 @@ namespace Data.Models
         public string? city_name { get; set; }
         public int? zipcode { get; set; }
 
-        [ForeignKey("fk_county_id")]
+        [ForeignKey("fk_county")]
         public int county_id { get; set; }
        
-        [ForeignKey("fk_state_id")]
+        [ForeignKey("fk_state")]
         public int state_id { get; set; }
-        public virtual states states { get; set; }
-        public virtual counties Counties { get; set; }
+        public virtual States? fk_state { get; set; }
+        public virtual Counties? fk_county { get; set; }
 
     }
 }

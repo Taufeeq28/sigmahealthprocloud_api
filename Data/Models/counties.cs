@@ -9,18 +9,19 @@ using System.Threading.Tasks;
 namespace Data.Models
 {
     [Table("counties")]
-    public class counties : baseclass
+    public class Counties : Baseclass
     {
         [Key]
         public int county_id { get; set; }
         [DataType("character varying")]
         public string? county_name { get; set; }
+
         public int county_code { get; set; }
 
-        [ForeignKey("fk_state_id")]
+        [ForeignKey("State")]
         public int state_id { get; set; }
 
-        public virtual states states { get; set; }
+        public virtual States? State { get; set; }
 
 
     }

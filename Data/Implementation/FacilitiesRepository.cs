@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class FacilitiesRepository : GenericRepository<facilities>, IFacilitiesRepository
+    public class FacilitiesRepository : GenericRepository<Facilities>, IFacilitiesRepository
     {
         public FacilitiesRepository(AppDbContext context) : base(context)
         {

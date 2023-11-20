@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class Juridictions_organization_association:baseclass
+    public class Juridictions_organization_association:Baseclass
     {
         [Key]
-        public int jurd_org_id { get; set; }
-        [ForeignKey("fk_org_id")]
+        public int juridictions_organization_id { get; set; }
+        [ForeignKey("organizations")]
         public int organization_id { get; set; }
 
-        [ForeignKey("fk_jurd_id")]
+        [ForeignKey("jurisdictions")]
         public int jurisdiction_id { get; set; }
 
-        public virtual organizations organizations { get; set; }
-        public virtual jurisdictions jurisdictions { get; set; }
+        public virtual Organizations? organizations { get; set; }
+        public virtual Jurisdictions? jurisdictions { get; set; }
 
     }
 }

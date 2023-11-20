@@ -17,6 +17,11 @@ namespace Data.Repository
         IStatesRepository States { get; }
         IUsersRepository Users { get; }
         IUserTypesRepository UserTypes { get; }
+        IContactsRepository Contacts { get; }
+        IContactsTypeRepository ContactsType { get; }
+        IAddressesRepository Addresss { get; }
+        ILOVTypeMasterRepository lOVTypeMaster { get; }
+
 
         int Save();
 

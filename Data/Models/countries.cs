@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    [Table("countries")]
-    public class countries : baseclass
+    [Table("Countries")]
+    public class Countries : Baseclass
     {
         [Key]
         public int country_id { get; set; }
         [DataType("character varying")]
         public string? country_name { get; set; }
-        public int zipcode { get; set; }
+        
     }
 }

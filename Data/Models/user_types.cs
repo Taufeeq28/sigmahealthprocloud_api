@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class user_types : baseclass
+    public class User_Types : Baseclass
     {
         [Key]
         public int user_type_id { get; set; }
 
         [DataType("character varying")]
-        public string user_types_name { get; set; }
+        public string? user_types_name { get; set; }
 
     }
 }

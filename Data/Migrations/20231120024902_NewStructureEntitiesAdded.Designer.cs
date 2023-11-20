@@ -3,6 +3,7 @@ using System;
 using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231120024902_NewStructureEntitiesAdded")]
+    partial class NewStructureEntitiesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +34,7 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("address_id"));
 
                     b.Property<string>("Suite")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<int>("country_id")
                         .HasColumnType("integer");
@@ -40,7 +43,7 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -53,16 +56,16 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("line1")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("line2")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<int>("state_id")
                         .HasColumnType("integer");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -87,13 +90,13 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("city_id"));
 
                     b.Property<string>("city_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<int>("county_id")
                         .HasColumnType("integer");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -109,7 +112,7 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -138,10 +141,10 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("contact_value")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -154,7 +157,7 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -175,16 +178,16 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("contact_type_id"));
 
                     b.Property<string>("cell")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("email")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("id")
                         .HasColumnType("uuid")
@@ -194,10 +197,10 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("phone")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -219,10 +222,10 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("county_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -238,7 +241,7 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -259,10 +262,10 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("country_id"));
 
                     b.Property<string>("country_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -275,7 +278,7 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -294,16 +297,16 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("facility_id"));
 
                     b.Property<string>("administered_at_location")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("facility_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("id")
                         .HasColumnType("uuid")
@@ -316,13 +319,13 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("responsible_organization")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("sending_organization")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -343,7 +346,7 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("juridictions_organization_id"));
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -362,7 +365,7 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -385,7 +388,7 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("jurisdiction_id"));
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -398,10 +401,10 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("jurisdiction_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -423,13 +426,13 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("reference_id"));
 
                     b.Property<string>("LOV_type")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("key")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("value")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.HasKey("reference_id");
 
@@ -445,7 +448,7 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("organization_id"));
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -458,10 +461,10 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("organization_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -483,7 +486,7 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -499,10 +502,10 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("state_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
@@ -523,7 +526,7 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("user_type_id"));
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
@@ -536,13 +539,13 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("user_types_name")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.HasKey("user_type_id");
 
@@ -558,13 +561,13 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("users_id"));
 
                     b.Property<string>("created_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("created_date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("designation")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("id")
                         .HasColumnType("uuid")
@@ -574,16 +577,16 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("updated_by")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("updated_date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("user_firstname")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<string>("user_lasttname")
-                        .HasColumnType("character varying");
+                        .HasColumnType("text");
 
                     b.Property<int>("user_type_id")
                         .HasColumnType("integer");

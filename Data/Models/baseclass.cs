@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class baseclass
+    public class Baseclass
     {
         [Column(Order = 1)]
         public Guid id { get; set; }
         public DateTime? created_date { get; set; }
         public DateTime? updated_date { get; set; }
         [DataType("character varying")]
-        public string? createdby { get; set; }
+        public string? created_by { get; set; }
         [DataType("character varying")]
-        public string? updatedby { get; set; }
+        public string? updated_by { get; set; }
         public bool? isdelete { get; set; }
     }
 }

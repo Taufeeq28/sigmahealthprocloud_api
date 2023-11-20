@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    [Table("organizations")]
-    public class organizations : baseclass
+    [Table("Organizations")]
+    public class Organizations : Baseclass
     {
         [Key]
         public int organization_id { get; set; }

@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    public class roles : baseclass
+    public class Contacts_Type:Baseclass
     {
         [Key]
-        public int role_id { get; set; }
+        public int contact_type_id { get; set; }
 
         [DataType("character varying")]
-        public string role_name { get; set; }
-
+        public string? email { get; set; }
+        [DataType("character varying")]
+        public string? phone { get; set; }
+        [DataType("character varying")]
+        public string? cell { get; set; }
     }
 }

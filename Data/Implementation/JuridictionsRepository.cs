@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class JuridictionsRepository : GenericRepository<jurisdictions>, IJuridictionsRepository
+    public class JuridictionsRepository : GenericRepository<Jurisdictions>, IJuridictionsRepository
     {
         public JuridictionsRepository(AppDbContext context) : base(context)
         {

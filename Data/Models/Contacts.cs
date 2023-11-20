@@ -8,14 +8,18 @@ using System.Threading.Tasks;
 
 namespace Data.Models
 {
-    [Table("jurisdictions")]
-    public class Jurisdictions : Baseclass
+    public class Contacts : Baseclass
     {
         [Key]
+        public int contact_id { get; set; }
+        [ForeignKey("Contacts_Type")]
+        public int contact_type_id { get; set; }
+       
         [DataType("character varying")]
-        public int jurisdiction_id { get; set; }
-        [DataType("character varying")]
-        public string? jurisdiction_name { get; set; }
-        public int zipcode { get; set; }
+        public string? contact_value { get; set; }
+       
+        public virtual Contacts_Type? Contacts_Type { get; set; }
+
+
     }
 }

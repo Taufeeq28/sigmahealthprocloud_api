@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class UserTypesRepository : GenericRepository<User_Types>, IUserTypesRepository
+    public class LovTypeMasterRepository : GenericRepository<LOV_type_master>, ILOVTypeMasterRepository
     {
-        public UserTypesRepository(AppDbContext context) : base(context)
+        public LovTypeMasterRepository(AppDbContext context) : base(context)
         {
 
         }
     }
-
+  
 }

@@ -23,6 +23,10 @@ namespace Data.Implementation
             Organizations = new OrganizationsRepository(_context);
             Users = new UsersRepository(_context);
             UserTypes = new UserTypesRepository(_context);
+            Contacts= new ContactsRepository(_context);
+            ContactsType = new ContactsTypeRepository(_context);
+            lOVTypeMaster=new LovTypeMasterRepository(_context);
+            Addresss=new AddressesRepository(_context);
         }
         public ICitiesRepository Cities { get; private set; }
         public ICountiesRepository Counties { get; private set; }
@@ -33,6 +37,13 @@ namespace Data.Implementation
         public IOrganizationsRepository Organizations { get; private set; }
         public IUsersRepository Users { get; private set; }
         public IUserTypesRepository UserTypes { get; private set; }
+        public IContactsRepository Contacts { get; private set; }
+        public IContactsTypeRepository ContactsType { get; private set; }
+        public ILOVTypeMasterRepository lOVTypeMaster { get; private set; }
+        public IAddressesRepository Addresss { get; private set; }
+
+
+
 
         public int Save()
         {

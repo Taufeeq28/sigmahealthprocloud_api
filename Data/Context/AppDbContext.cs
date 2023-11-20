@@ -13,16 +13,21 @@ namespace Data.Context
     {
 
         public AppDbContext(DbContextOptions options) : base(options) { }
-        public DbSet<cities> Cities { get; set; }
-        public DbSet<organizations> organizations { get; set; }
-        public DbSet<jurisdictions> Jurisdictions { get; set; }
-        public DbSet<facilities> facilities { get; set; }
-        public DbSet<counties> Counties { get; set; }
-        public DbSet<states> states { get; set; }
-        public DbSet<countries> Countries { get; set; }
-        public DbSet<Juridictions_organization_association> jurd_org_ass { get; set; }
-        public DbSet<users> users { get; set; }
+        public DbSet<Cities> Cities { get; set; }
+        public DbSet<Organizations> Organizations { get; set; }
+        public DbSet<Jurisdictions> Jurisdictions { get; set; }
+        public DbSet<Facilities> Facilities { get; set; }
+        public DbSet<Counties> Counties { get; set; }
+        public DbSet<States> States { get; set; }
+        public DbSet<Countries> Countries { get; set; }
+        public DbSet<Juridictions_organization_association> Juridictions_organization_association { get; set; }
+        public DbSet<Users> Users { get; set; }
 
-        public DbSet<user_types> user_types { get; set; }
+        public DbSet<User_Types> User_Types { get; set; }
+        public DbSet<Addresses> Addresses { get; set; }
+        public DbSet<Contacts> Contacts { get; set; }
+        public DbSet<Contacts_Type> Contacts_Types { get; set; }
+        public DbSet<LOV_type_master> LOV_type_master { get; set; }
+
     }
 }
