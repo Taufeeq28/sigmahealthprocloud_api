@@ -17,4 +17,9 @@
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BAL\BAL.csproj" />
+    <ProjectReference Include="..\Web_API\Web_API.csproj" />
+  </ItemGroup>
+
 </Project>

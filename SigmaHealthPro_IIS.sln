@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web_API", "Web_API\Web_API.csproj", "{584C65BB-232F-4577-9403-97B4F22BA097}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F41ADAF1-E880-413A-A059-0A25D7064D3A} = {F41ADAF1-E880-413A-A059-0A25D7064D3A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{C481A922-AFA8-4450-86A2-37B080C87223}"
 EndProject
@@ -31,8 +34,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAL", "BAL\BAL.csproj", "{F
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAL.Tests", "BAL.Tests\BAL.Tests.csproj", "{B8699EF2-3962-4D61-8769-B5F11866D83A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{584C65BB-232F-4577-9403-97B4F22BA097} = {584C65BB-232F-4577-9403-97B4F22BA097}
+		{F41ADAF1-E880-413A-A059-0A25D7064D3A} = {F41ADAF1-E880-413A-A059-0A25D7064D3A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Tests", "WebApi.Tests\WebApi.Tests.csproj", "{7CCF13F2-27AF-41C1-8FC7-8669C5055F97}"
+	ProjectSection(ProjectDependencies) = postProject
+		{584C65BB-232F-4577-9403-97B4F22BA097} = {584C65BB-232F-4577-9403-97B4F22BA097}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
