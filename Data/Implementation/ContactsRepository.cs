@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class ContactsRepository : GenericRepository<Contacts>, IContactsRepository
+    public class ContactsRepository : GenericRepository<Contact>, IContactsRepository
     {
-        public ContactsRepository(AppDbContext context) : base(context)
+        public ContactsRepository(SigmaproIisContext context) : base(context)
         {
 
         }

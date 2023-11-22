@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repository
 {
-    public interface IFacilitiesRepository : IGenericRepository<Facilities>
+    public interface IFacilitiesRepository : IGenericRepository<Facility>
     {
     }
 }

@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class UsersRepository : GenericRepository<Users>, IUsersRepository
+    public class UsersRepository : GenericRepository<User>, IUsersRepository
     {
-        public UsersRepository(AppDbContext context) : base(context)
+        public UsersRepository(SigmaproIisContext context) : base(context)
         {
 
         }

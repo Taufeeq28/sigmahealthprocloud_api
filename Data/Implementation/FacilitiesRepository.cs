@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class FacilitiesRepository : GenericRepository<Facilities>, IFacilitiesRepository
+    public class FacilitiesRepository : GenericRepository<Facility>, IFacilitiesRepository
     {
-        public FacilitiesRepository(AppDbContext context) : base(context)
+        public FacilitiesRepository(SigmaproIisContext context) : base(context)
         {
 
         }

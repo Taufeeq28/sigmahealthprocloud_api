@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class LovTypeMasterRepository : GenericRepository<LOV_type_master>, ILOVTypeMasterRepository
+    public class LovTypeMasterRepository : GenericRepository<LovMaster>, ILOVTypeMasterRepository
     {
-        public LovTypeMasterRepository(AppDbContext context) : base(context)
+        public LovTypeMasterRepository(SigmaproIisContext context) : base(context)
         {
 
         }

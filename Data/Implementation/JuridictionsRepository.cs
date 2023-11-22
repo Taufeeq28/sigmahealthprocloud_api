@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class JuridictionsRepository : GenericRepository<Jurisdictions>, IJuridictionsRepository
+    public class JuridictionsRepository : GenericRepository<Juridiction>, IJuridictionsRepository
     {
-        public JuridictionsRepository(AppDbContext context) : base(context)
+        public JuridictionsRepository(SigmaproIisContext context) : base(context)
         {
 
         }

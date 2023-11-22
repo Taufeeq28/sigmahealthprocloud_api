@@ -16,9 +16,10 @@ namespace Data.Repository
         IJuridictionsRepository Juridictions { get; }
         IStatesRepository States { get; }
         IUsersRepository Users { get; }
-        IUserTypesRepository UserTypes { get; }
+        
+        IBusinessConfigurationRepository BusinessConfiguration { get; }
         IContactsRepository Contacts { get; }
-        IContactsTypeRepository ContactsType { get; }
+        
         IAddressesRepository Addresss { get; }
         ILOVTypeMasterRepository lOVTypeMaster { get; }
 

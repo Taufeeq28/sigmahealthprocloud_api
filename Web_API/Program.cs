@@ -1,4 +1,4 @@
-using Data.Context;
+using Data.Models;
 using Data.Implementation;
 using Data.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<Data.Context.AppDbContext>(options => {
+builder.Services.AddDbContext<SigmaproIisContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("MyDbContext"));
 });
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -35,4 +35,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-app.MapGet("/", (Data.Context.AppDbContext context) => { return context; });
+app.MapGet("/", (SigmaproIisContext context) => { return context; });

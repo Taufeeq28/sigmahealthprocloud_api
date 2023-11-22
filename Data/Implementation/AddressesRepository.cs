@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class AddressesRepository : GenericRepository<Addresses>, IAddressesRepository
+    public class AddressesRepository : GenericRepository<Address>, IAddressesRepository
     {
-        public AddressesRepository(AppDbContext context) : base(context)
+        public AddressesRepository(SigmaproIisContext context) : base(context)
         {
 
         }

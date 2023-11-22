@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data.Models;
 using Data.Repository;
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace Data.Implementation
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext _context;
-        public UnitOfWork(AppDbContext context)
+        private readonly SigmaproIisContext _context;
+        public UnitOfWork(SigmaproIisContext context)
         {
             _context = context;
             Cities = new CitiesRepository(_context);
@@ -22,11 +22,12 @@ namespace Data.Implementation
             Juridictions = new JuridictionsRepository(_context);
             Organizations = new OrganizationsRepository(_context);
             Users = new UsersRepository(_context);
-            UserTypes = new UserTypesRepository(_context);
+            
             Contacts= new ContactsRepository(_context);
-            ContactsType = new ContactsTypeRepository(_context);
+            
             lOVTypeMaster=new LovTypeMasterRepository(_context);
             Addresss=new AddressesRepository(_context);
+            BusinessConfiguration = new BusinessConfigurationRepository(_context);
         }
         public ICitiesRepository Cities { get; private set; }
         public ICountiesRepository Counties { get; private set; }
@@ -36,11 +37,13 @@ namespace Data.Implementation
         public IJuridictionsRepository Juridictions { get; private set; }
         public IOrganizationsRepository Organizations { get; private set; }
         public IUsersRepository Users { get; private set; }
-        public IUserTypesRepository UserTypes { get; private set; }
+        
         public IContactsRepository Contacts { get; private set; }
-        public IContactsTypeRepository ContactsType { get; private set; }
+        
         public ILOVTypeMasterRepository lOVTypeMaster { get; private set; }
         public IAddressesRepository Addresss { get; private set; }
+
+        public IBusinessConfigurationRepository BusinessConfiguration {  get; private set; }
 
 
 
