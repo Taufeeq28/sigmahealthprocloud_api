@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repository
 {
-    public interface IUserTypesRepository : IGenericRepository<user_types>
+    public interface IUserTypesRepository : IGenericRepository<UserType>
     {
     }
 }

@@ -1,4 +1,4 @@
-﻿using Data.Context;
+﻿using Data;
 using Data.Models;
 using Data.Repository;
 using System;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Implementation
 {
-    public class CountriesRepository : GenericRepository<countries>, ICountriesRepository
+    public class CountriesRepository : GenericRepository<Country>, ICountriesRepository
     {
-        public CountriesRepository(AppDbContext context) : base(context)
+        public CountriesRepository(SigmaproIisContext context) : base(context)
         {
 
         }

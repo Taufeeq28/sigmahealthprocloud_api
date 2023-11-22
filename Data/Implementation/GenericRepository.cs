@@ -1,4 +1,5 @@
-﻿using Data.Context;
+﻿using Data;
+using Data.Models;
 using Data.Repository;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace Data.Implementation
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly AppDbContext _context;
-        public GenericRepository(AppDbContext context)
+        private readonly SigmaproIisContext _context;
+        public GenericRepository(SigmaproIisContext context)
         {
             _context = context;
         }
