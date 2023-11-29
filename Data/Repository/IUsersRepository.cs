@@ -9,5 +9,6 @@ namespace Data.Repository
 {
     public interface IUsersRepository : IGenericRepository<User>
     {
+        public User Authenticate(User users);
     }
 }
