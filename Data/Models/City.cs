@@ -27,6 +27,8 @@ public partial class City
 
     public int? CityId { get; set; }
 
+    public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+
     public virtual County? County { get; set; }
 
     public virtual State? State { get; set; }

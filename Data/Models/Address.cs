@@ -29,6 +29,10 @@ public partial class Address
 
     public Guid? StateId { get; set; }
 
+    public Guid? CityId { get; set; }
+
+    public virtual City? City { get; set; }
+
     public virtual Country? Country { get; set; }
 
     public virtual County? County { get; set; }

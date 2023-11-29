@@ -7,8 +7,6 @@ public partial class User
 {
     public Guid Id { get; set; }
 
-    public int? UsersId { get; set; }
-
     public string? UserFirstname { get; set; }
 
     public string? UserLasttname { get; set; }
@@ -26,6 +24,10 @@ public partial class User
     public bool? Isdelete { get; set; }
 
     public Guid? LovMasterId { get; set; }
+
+    public string? Password { get; set; }
+
+    public string? UserId { get; set; }
 
     public virtual LovMaster? LovMaster { get; set; }
 }

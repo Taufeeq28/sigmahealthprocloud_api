@@ -42,6 +42,11 @@ namespace Data.Implementation
             
             return _context.Set<T>().Find(id);
         }
+        public T? GetByuserId(string? user_id)
+        {
+
+            return _context.Set<T>().Find(user_id);
+        }
 
         public void Remove(T entity)
         {
