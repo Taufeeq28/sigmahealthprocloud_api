@@ -33,7 +33,7 @@ namespace Web_API.Controllers
             if (_unitOfWork.Users.Authenticate(usermodel)!=null)
             {
                 var tokenString = GenerateJSONWebToken(usermodel);
-                response = Ok(new { token = tokenString });
+                response = Ok(new { token = tokenString, usermodel.UserId, status ="Authorized" });
                 return response;
             }
             return response;
