@@ -23,6 +23,7 @@ namespace Data.Implementation
             context.Juridictions.Add(entity);
         }
 
+
         public void AddRange(IEnumerable<Juridiction> entities)
         {
             context.Juridictions.AddRange(entities);
@@ -41,6 +42,16 @@ namespace Data.Implementation
         public Juridiction? GetById(int id)
         {
             return (Juridiction?)context.Juridictions.Find(id);
+        }
+
+        public IEnumerable<Juridiction> GetJuridictionsbyBusinessid(string businessid)
+        {
+            var jurdictionmodel = context.Juridictions.Where(j => j.BusinessId.ToString().Equals(businessid));
+            if (jurdictionmodel != null)
+            {
+                return jurdictionmodel;
+            }
+            return null;
         }
 
         public void Remove(Juridiction entity)

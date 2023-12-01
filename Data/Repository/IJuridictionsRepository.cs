@@ -9,5 +9,6 @@ namespace Data.Repository
 {
     public interface IJuridictionsRepository : IGenericRepository<Juridiction>
     {
+        public IEnumerable<Juridiction> GetJuridictionsbyBusinessid(string businessid);
     }
 }
