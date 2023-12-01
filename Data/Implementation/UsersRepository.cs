@@ -34,7 +34,7 @@ namespace Data.Implementation
 
         public User Authenticate(User users)
         {
-            var usermodel = context.Users.FirstOrDefault(u=>u.UserId==users.UserId);
+            var usermodel = context.Users.Where(u=>u.UserId==users.UserId).FirstOrDefault();
             if (usermodel != null && usermodel.UserId.Equals(users.UserId) && usermodel.Password.Equals(users.Password))
             {
                 return usermodel;
