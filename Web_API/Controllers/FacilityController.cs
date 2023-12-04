@@ -1,8 +1,5 @@
-﻿using BAL.Interface;
+﻿using BAL.Interfaces;
 using BAL.Request;
-using Data.Models;
-using Data.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_API.Controllers
@@ -20,12 +17,7 @@ namespace Web_API.Controllers
 
         [HttpPost]
         [Route("search")]
-        public async Task<IActionResult> Search( FacilitySearchRequest obj)
-        {
-            IActionResult response = Unauthorized();
-            return response;
-
-        }
-
+        public async Task<IActionResult> FacilitySearch([FromBody] FacilitySearchRequest obj)
+         =>Ok(await _facilityfervice.FacilitySearch(obj).ConfigureAwait(true));
     }
 }
