@@ -9,5 +9,6 @@ namespace Data.Repository
 {
     public interface IOrganizationsRepository : IGenericRepository<Organization>
     {
+        public IEnumerable<Organization> GetOrganizationByJuridictionId(string jurdid);
     }
 }

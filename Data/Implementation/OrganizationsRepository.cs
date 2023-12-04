@@ -43,6 +43,15 @@ namespace Data.Implementation
         {
             return (Organization?)context.Organizations.Find(id);
         }
+        public IEnumerable<Organization> GetOrganizationByJuridictionId(string jurdid)
+        {
+            var orgmodel = context.Organizations.Where(o => o.JuridictionId.ToString().Equals(jurdid));
+            if (orgmodel != null)
+            {
+                return orgmodel;
+            }
+            return null;
+        }
 
         public void Remove(Organization entity)
         {
