@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Serilog;
 using BAL.Interfaces;
 using BAL.Services;
 
@@ -13,11 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+//// Configure Serilog
+//Log.Logger = new LoggerConfiguration()
+//    .WriteTo.Console()
+//    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -46,7 +45,7 @@ builder.Services.AddDbContext<SigmaproIisContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("MyDbContext"));
 });
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IFacilityService, FacilityService>();
+//builder.Services.AddScoped<IFacilityService, FacilityService>();
 var app = builder.Build();
 
 app.Run();
@@ -63,14 +62,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseSerilogRequestLogging(); // Add this line before app.Run()
-try
-{
+//app.UseSerilogRequestLogging(); // Add this line before app.Run()
+
     app.Run();
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+
 app.MapGet("/", (SigmaproIisContext context) => { return context; });
 

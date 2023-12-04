@@ -14,12 +14,12 @@ namespace BAL.Services
     public class FacilityService : DataAccessProvider<Facility>, IFacilityService
     {
         private readonly SigmaproIisContext _dbContext;
-        private readonly ILogger<FacilityService> _logger;
+       // private readonly ILogger<FacilityService> _logger;
         private readonly string _corelationId=string.Empty;
-        public FacilityService(SigmaproIisContext dbContext, ILogger<FacilityService> logger) :base(dbContext)
+        public FacilityService(SigmaproIisContext dbContext) :base(dbContext)
         {
         _dbContext = dbContext;
-        _logger = logger;
+        //_logger = logger;
         }
         #region Public Methods
         public async Task<PaginationModel<FacilitySearchResponse>> FacilitySearch(FacilitySearchRequest request)
@@ -34,7 +34,7 @@ namespace BAL.Services
             }
             catch (Exception exp)
             {
-                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(FacilitySearch)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+               // _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(FacilitySearch)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
                 throw new Exception(exp?.Message);
             }
         }
