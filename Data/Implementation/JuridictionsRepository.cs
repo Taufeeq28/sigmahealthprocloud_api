@@ -46,7 +46,7 @@ namespace Data.Implementation
 
         public IEnumerable<Juridiction> GetJuridictionsbyBusinessid(string businessid)
         {
-            var jurdictionmodel = context.Juridictions.Where(j => j.BusinessId.ToString().Equals(businessid));
+            var jurdictionmodel = context.Juridictions.Where(j => j.StateId.ToString().Equals(businessid));
             if (jurdictionmodel != null)
             {
                 return jurdictionmodel;

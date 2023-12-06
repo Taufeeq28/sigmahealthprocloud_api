@@ -29,7 +29,6 @@ namespace Web_API.Controllers
             new {
                 JuridictionId = j.JuridictionId,
                 Juridictionname = j.JuridictionName,
-                zipcode=j.Zipcode
 
             });
             return Ok(juridiclist);
@@ -45,7 +44,6 @@ namespace Web_API.Controllers
             {
                 JuridictionId = j.JuridictionId,
                 Juridictionname = j.JuridictionName,
-                zipcode = j.Zipcode
 
             });
             return Ok(result);
