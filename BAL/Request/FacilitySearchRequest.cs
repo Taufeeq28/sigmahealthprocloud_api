@@ -3,7 +3,7 @@ namespace BAL.Request
 {
     public class FacilitySearchRequest
     {
-        public List<string>? identifiers { get; set; } = new List<string>();
+        public string? identifier { get; set; }
         public int pageNumber { get; set; } = 1;
         public int pageSize { get; set; } = 10;
         public string sortBy { get; set; } = "facilityname";
