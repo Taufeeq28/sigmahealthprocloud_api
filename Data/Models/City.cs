@@ -9,7 +9,7 @@ public partial class City
 
     public string? CityName { get; set; }
 
-    public int? Zipcode { get; set; }
+    public string? CityCode { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 

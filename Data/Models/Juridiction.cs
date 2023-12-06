@@ -11,8 +11,6 @@ public partial class Juridiction
 
     public string? JuridictionName { get; set; }
 
-    public int? Zipcode { get; set; }
-
     public DateTime? CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
@@ -23,13 +21,13 @@ public partial class Juridiction
 
     public bool? Isdelete { get; set; }
 
-    public Guid? BusinessId { get; set; }
+    public Guid? StateId { get; set; }
 
-    public Guid? AddressId { get; set; }
+    public Guid? AlternateId { get; set; }
 
-    public virtual Address? Address { get; set; }
-
-    public virtual BusinessConfiguration? Business { get; set; }
+    public virtual BusinessConfiguration? Alternate { get; set; }
 
     public virtual ICollection<Organization> Organizations { get; set; } = new List<Organization>();
+
+    public virtual State? State { get; set; }
 }

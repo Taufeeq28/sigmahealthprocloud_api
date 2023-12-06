@@ -17,13 +17,13 @@ public partial class County
 
     public DateTime? UpdatedDate { get; set; }
 
-    public DateTime? CreatedBy { get; set; }
-
-    public DateTime? UpdatedBy { get; set; }
-
     public bool? Isdelete { get; set; }
 
     public Guid? StateId { get; set; }
+
+    public string? CreatedBy { get; set; }
+
+    public string? UpdatedBy { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 

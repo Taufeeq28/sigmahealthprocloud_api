@@ -32,4 +32,6 @@ public partial class State
     public virtual ICollection<County> Counties { get; set; } = new List<County>();
 
     public virtual Country? Country { get; set; }
+
+    public virtual ICollection<Juridiction> Juridictions { get; set; } = new List<Juridiction>();
 }

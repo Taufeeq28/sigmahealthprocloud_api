@@ -31,6 +31,8 @@ public partial class Address
 
     public Guid? CityId { get; set; }
 
+    public string? ZipCode { get; set; }
+
     public virtual City? City { get; set; }
 
     public virtual Country? Country { get; set; }
@@ -38,8 +40,6 @@ public partial class Address
     public virtual County? County { get; set; }
 
     public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
-
-    public virtual ICollection<Juridiction> Juridictions { get; set; } = new List<Juridiction>();
 
     public virtual ICollection<Organization> Organizations { get; set; } = new List<Organization>();
 

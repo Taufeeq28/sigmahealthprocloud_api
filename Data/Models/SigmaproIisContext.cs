@@ -88,6 +88,9 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+            entity.Property(e => e.ZipCode)
+                .HasColumnType("character varying")
+                .HasColumnName("zip_code");
 
             entity.HasOne(d => d.City).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.CityId)
@@ -160,6 +163,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
+            entity.Property(e => e.CityCode)
+                .HasColumnType("character varying")
+                .HasColumnName("city_code");
             entity.Property(e => e.CityId).HasColumnName("city_id");
             entity.Property(e => e.CityName)
                 .HasColumnType("character varying")
@@ -175,7 +181,6 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
-            entity.Property(e => e.Zipcode).HasColumnName("zipcode");
 
             entity.HasOne(d => d.County).WithMany(p => p.Cities)
                 .HasForeignKey(d => d.CountyId)
@@ -261,11 +266,15 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.CountyName)
                 .HasColumnType("character varying")
                 .HasColumnName("county_name");
-            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
             entity.Property(e => e.StateId).HasColumnName("state_id");
-            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
 
             entity.HasOne(d => d.State).WithMany(p => p.Counties)
@@ -328,13 +337,14 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("juridictions");
 
-            entity.HasIndex(e => e.BusinessId, "fki_fk_businessids");
+            entity.HasIndex(e => e.AlternateId, "fki_fk_alternate_id");
+
+            entity.HasIndex(e => e.StateId, "fki_fk_stateid_jurd");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
-            entity.Property(e => e.AddressId).HasColumnName("address_id");
-            entity.Property(e => e.BusinessId).HasColumnName("business_id");
+            entity.Property(e => e.AlternateId).HasColumnName("alternate_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -346,19 +356,19 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.JuridictionName)
                 .HasColumnType("character varying")
                 .HasColumnName("juridiction_name");
+            entity.Property(e => e.StateId).HasColumnName("state_id");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
-            entity.Property(e => e.Zipcode).HasColumnName("zipcode");
 
-            entity.HasOne(d => d.Address).WithMany(p => p.Juridictions)
-                .HasForeignKey(d => d.AddressId)
-                .HasConstraintName("fk_address_id");
+            entity.HasOne(d => d.Alternate).WithMany(p => p.Juridictions)
+                .HasForeignKey(d => d.AlternateId)
+                .HasConstraintName("fk_alternate_id");
 
-            entity.HasOne(d => d.Business).WithMany(p => p.Juridictions)
-                .HasForeignKey(d => d.BusinessId)
-                .HasConstraintName("fk_businessids");
+            entity.HasOne(d => d.State).WithMany(p => p.Juridictions)
+                .HasForeignKey(d => d.StateId)
+                .HasConstraintName("fk_stateid_jurd");
         });
 
         modelBuilder.Entity<LovMaster>(entity =>

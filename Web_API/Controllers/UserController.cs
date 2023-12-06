@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Web_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace Web_API.Controllers
             _unitOfWork = unitOfWork;
             _config = config;
         }
-
+        
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Authenticate(string username, string password)
@@ -33,7 +33,7 @@ namespace Web_API.Controllers
             if (_unitOfWork.Users.Authenticate(usermodel)!=null)
             {
                 var tokenString = GenerateJSONWebToken(usermodel);
-                response = Ok(new { token = tokenString });
+                response = Ok(new { token = tokenString, usermodel.UserId, status ="Authorized" });
                 return response;
             }
             return response;
