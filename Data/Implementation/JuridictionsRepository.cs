@@ -1,12 +1,7 @@
-﻿using Data;
-using Data.Models;
+﻿using Data.Models;
 using Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Data.Implementation
 {
@@ -46,7 +41,7 @@ namespace Data.Implementation
 
         public IEnumerable<Juridiction> GetJuridictionsbyBusinessid(string businessid)
         {
-            var jurdictionmodel = context.Juridictions.Where(j => j.StateId.ToString().Equals(businessid));
+            var jurdictionmodel = context.Juridictions.Where(j => j.AlternateId.ToString().Equals(businessid));
             if (jurdictionmodel != null)
             {
                 return jurdictionmodel;
