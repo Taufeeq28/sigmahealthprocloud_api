@@ -1,18 +1,14 @@
 using Data.Models;
 using Data.Implementation;
 using Data.Repository;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BAL.Interfaces;
 using BAL.Services;
 using Serilog;
-using Serilog.AspNetCore;
-using Serilog.Extensions.Hosting;
+using Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +47,11 @@ builder.Services.AddDbContext<SigmaproIisContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("MyDbContext"));
 });
+builder.Services.AddDbContext<SigmaproIisContextUdf>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MyDbContextudf"));
+});
+
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacilityService, FacilityService>();
 builder.Services.AddSerilog();

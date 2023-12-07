@@ -15,12 +15,14 @@ namespace BAL.Services
     public class FacilityService : DataAccessProvider<Facility>, IFacilityService
     {
         private readonly SigmaproIisContext _dbContext;
-       private readonly ILogger<FacilityService> _logger;
+        private readonly SigmaproIisContextUdf _dbContextudf;
+        private readonly ILogger<FacilityService> _logger;
         private readonly string _corelationId=string.Empty;
-        public FacilityService(SigmaproIisContext dbContext, ILogger<FacilityService> logger) :base(dbContext)
+        public FacilityService(SigmaproIisContext dbContext, ILogger<FacilityService> logger, SigmaproIisContextUdf dbContextudf) : base(dbContext)
         {
-        _dbContext = dbContext;
-        _logger = logger;
+            _dbContext = dbContext;
+            _logger = logger;
+            _dbContextudf = dbContextudf;
         }
         #region Public Methods
         public async Task<PaginationModel<FacilitySearchResponse>> FacilitySearch(FacilitySearchRequest request)
@@ -29,7 +31,7 @@ namespace BAL.Services
             {
 
                 var (sql, parameters) = FormQueryAndParamsForFetchingFacilitySearch(request);
-                var result = await _dbContext.FacilitySearch.FromSqlRaw(sql, parameters.ToArray()).ToListAsync();
+                var result = await _dbContextudf.FacilitySearch.FromSqlRaw(sql, parameters.ToArray()).ToListAsync();
              
                 return PaginationHelper.Paginate(result, request.pageNumber, request.pageSize);
             }

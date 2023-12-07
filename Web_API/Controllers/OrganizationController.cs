@@ -1,6 +1,5 @@
 ﻿using Data.Models;
 using Data.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_API.Controllers
@@ -33,8 +32,8 @@ namespace Web_API.Controllers
             return Ok(orglist);
         }
         [HttpGet]
-        [Route("GetOrganizationByJurd/{jurdid}")]
-        public IActionResult GetOrganizationByJurd(string jurdid)
+        [Route("GetOrganizationByJurd")]
+        public IActionResult GetOrganizationByJurd([FromForm]string jurdid)
         {
             var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdid);
             var result = orgnizationlist.Select(o =>
