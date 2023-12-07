@@ -41,9 +41,6 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    #region User Define Function
-    public virtual DbSet<FacilitySearchResponse> FacilitySearch { get; set; }
-    #endregion
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=sigmaprodb.postgres.database.azure.com,5432;Database=sigmapro_iis;Username=sigmaprodb_user;Password=Rules@23$$11;TrustServerCertificate=False");
@@ -51,18 +48,6 @@ public partial class SigmaproIisContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
        
-        modelBuilder.Entity<FacilitySearchResponse>(e => { e.HasNoKey(); });
-        #endregion
-        modelBuilder.Entity<FacilitySearchResponse>(e => { e.HasNoKey(); });
-        #endregion
-        modelBuilder.Entity<FacilitySearchResponse>(e => { e.HasNoKey(); });
-        #endregion
-        modelBuilder.Entity<FacilitySearchResponse>(e => { e.HasNoKey(); });
-        #endregion
-        modelBuilder.Entity<FacilitySearchResponse>(e => { e.HasNoKey(); });
-        #endregion
-        modelBuilder.Entity<FacilitySearchResponse>(e => { e.HasNoKey(); });
-        #endregion
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Addresses_pkey");
