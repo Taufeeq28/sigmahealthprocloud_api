@@ -14,25 +14,38 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '8.x'  # Adjust to your desired version
           include-prerelease: true
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Build Presentation/API Layer
+        run: dotnet build --configuration Release Web_API/Web_API.csproj
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Build Data Layer
+        run: dotnet build --configuration Release Data/Data.csproj
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+      - name: Build BAL
+        run: dotnet build --configuration Release BAL/BAL.csproj
+
+      - name: Publish Presentation/API Layer
+        run: dotnet publish --configuration Release -o ./publish/Web_API Web_API/Web_API.csproj
+
+      - name: Publish Data Layer
+        run: dotnet publish --configuration Release -o ./publish/Data Data/Data.csproj
+
+      - name: Publish BAL
+        run: dotnet publish --configuration Release -o ./publish/BAL BAL/BAL.csproj
+
+      - name: Upload artifacts for deployment job
+        uses: actions/upload-artifact@v2
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: published-artifacts
+          path: ./publish
 
   deploy:
     runs-on: windows-latest
@@ -42,16 +55,17 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+      - name: Download published artifacts
+        uses: actions/download-artifact@v2
         with:
-          name: .net-app
-      
+          name: published-artifacts
+          path: ./publish
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'api-dev-sigmacloud'
           slot-name: 'Production'
-          package: .
+          package: ./publish/Web_API
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C61B8169BDBF4824980249B751DF76D6 }}
