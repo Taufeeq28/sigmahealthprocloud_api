@@ -62,7 +62,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'api-dev-sigmacloud'
+          app-name: 'dev-api-iis-sigmacloud'
           slot-name: 'Production'
           package: ./publish/Web_API
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C61B8169BDBF4824980249B751DF76D6 }}
