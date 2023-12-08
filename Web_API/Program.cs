@@ -62,7 +62,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "(Dev)Sigma Health Pro API V1");
+        // Specify an optional route prefix
+        c.RoutePrefix = string.Empty;
+    });
+}
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "(Stage)Sigma Health Pro API V1");
+        // Specify an optional route prefix
+        c.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();
