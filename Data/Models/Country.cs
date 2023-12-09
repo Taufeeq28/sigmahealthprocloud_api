@@ -7,7 +7,7 @@ public partial class Country
 {
     public Guid Id { get; set; }
 
-    public int? CountryId { get; set; }
+    public int CountryId { get; set; }
 
     public string? CountryName { get; set; }
 
@@ -20,6 +20,10 @@ public partial class Country
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public string? Alpha2code { get; set; }
+
+    public string? Alpha3code { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 

@@ -7,7 +7,7 @@ public partial class State
 {
     public Guid Id { get; set; }
 
-    public int? StateId { get; set; }
+    public int StateId { get; set; }
 
     public string? StateName { get; set; }
 

@@ -21,32 +21,32 @@ namespace Web_API.Controllers
             
         }
         [HttpGet]
-        [Route("GetAllJuridictions")]
+        [Route("getalljuridictions")]
         public IActionResult GetAllJuridictions()
         {
-           IEnumerable<Juridiction> juridiclist = _unitOfWork.Juridictions.GetAll();
-            var result = juridiclist.Select(j =>
+           IEnumerable<Juridiction> juridictionlist = _unitOfWork.Juridictions.GetAll();
+            var Juridictions = juridictionlist.Select(j =>
             new {
-                JuridictionId = j.JuridictionId,
+                JuridictionId = j.Id,
                 Juridictionname = j.JuridictionName,
 
             });
-            return Ok(juridiclist);
+            return Ok(Juridictions);
         }
 
         [HttpGet]
-        [Route("GetJuricdictionByBus/{businessid}")]
-        public IActionResult GetJuricdictionByBus(string businessid)
+        [Route("getjuricdictionbybusiness")]
+        public IActionResult GetJuricdictionByBusiness(string businessid)
         {
-            var juridiclist = _unitOfWork.Juridictions.GetJuridictionsbyBusinessid(businessid);
-            var result = juridiclist.Select(j =>
+            var juridictionlist = _unitOfWork.Juridictions.GetJuridictionsbyBusinessid(businessid);
+            var Juridictions = juridictionlist.Select(j =>
             new
             {
-                JuridictionId = j.JuridictionId,
+                JuridictionId = j.Id,
                 Juridictionname = j.JuridictionName,
 
             });
-            return Ok(result);
+            return Ok(Juridictions);
         }
     }
 }

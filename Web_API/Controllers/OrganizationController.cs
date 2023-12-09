@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using System;
+using Data.Models;
 using Data.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,32 +19,32 @@ namespace Web_API.Controllers
 
         }
         [HttpGet]
-        [Route("GetAllOrganizations")]
-        public IActionResult GetAllOrganizations()
+        [Route("getallorganizations")]
+        public IActionResult getallorganizations()
         {
-            IEnumerable<Organization> orglist = _unitOfWork.Organizations.GetAll();
-            var result = orglist.Select(o =>
+            IEnumerable<Organization> organizationlist = _unitOfWork.Organizations.GetAll();
+            var Organizations = organizationlist.Select(o =>
             new {
-                OrganizationId = o.OrganizationsId,
+                OrganizationId = o.Id,
                 OrganizationName = o.OrganizationName,
                 JuridictionId = o.JuridictionId
 
             });
-            return Ok(orglist);
+            return Ok(Organizations);
         }
         [HttpGet]
-        [Route("GetOrganizationByJurd")]
-        public IActionResult GetOrganizationByJurd([FromForm]string jurdid)
+        [Route("getorganizationbyjurdiction")]
+        public IActionResult GetOrganizationByJurdiction(string jurdid)
         {
             var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdid);
-            var result = orgnizationlist.Select(o =>
+            var Organizations = orgnizationlist.Select(o =>
             new
             {
-                OrganizationId = o.OrganizationsId,
+                OrganizationId = o.Id,
                 Organizationname = o.OrganizationName
                 
             });
-            return Ok(result);
+            return Ok(Organizations);
         }
 
     }

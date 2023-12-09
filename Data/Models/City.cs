@@ -9,8 +9,6 @@ public partial class City
 
     public string? CityName { get; set; }
 
-    public string? CityCode { get; set; }
-
     public DateTime? CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
@@ -25,7 +23,7 @@ public partial class City
 
     public Guid? StateId { get; set; }
 
-    public int? CityId { get; set; }
+    public int CityId { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 

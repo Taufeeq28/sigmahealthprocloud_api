@@ -7,7 +7,7 @@ public partial class County
 {
     public Guid Id { get; set; }
 
-    public int? CountyId { get; set; }
+    public int CountyId { get; set; }
 
     public string? CountyName { get; set; }
 

@@ -19,9 +19,15 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<BusinessConfiguration> BusinessConfigurations { get; set; }
 
+    public virtual DbSet<CitiesMaster> CitiesMasters { get; set; }
+
     public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Contact> Contacts { get; set; }
+
+    public virtual DbSet<CountiesMaster> CountiesMasters { get; set; }
+
+    public virtual DbSet<CountriesMaster> CountriesMasters { get; set; }
 
     public virtual DbSet<Country> Countries { get; set; }
 
@@ -37,6 +43,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<State> States { get; set; }
 
+    public virtual DbSet<StatesMaster> StatesMasters { get; set; }
+
     public virtual DbSet<TestAble> TestAbles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -47,7 +55,6 @@ public partial class SigmaproIisContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Addresses_pkey");
@@ -145,6 +152,23 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("password");
         });
 
+        modelBuilder.Entity<CitiesMaster>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("cities_master");
+
+            entity.Property(e => e.CityName)
+                .HasColumnType("character varying")
+                .HasColumnName("city_name");
+            entity.Property(e => e.County)
+                .HasColumnType("character varying")
+                .HasColumnName("county");
+            entity.Property(e => e.State)
+                .HasColumnType("character varying")
+                .HasColumnName("state");
+        });
+
         modelBuilder.Entity<City>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Cities_pkey");
@@ -158,10 +182,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
-            entity.Property(e => e.CityCode)
-                .HasColumnType("character varying")
-                .HasColumnName("city_code");
-            entity.Property(e => e.CityId).HasColumnName("city_id");
+            entity.Property(e => e.CityId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("city_id");
             entity.Property(e => e.CityName)
                 .HasColumnType("character varying")
                 .HasColumnName("city_name");
@@ -219,6 +242,32 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("FK_contact_type_id");
         });
 
+        modelBuilder.Entity<CountiesMaster>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("counties_master");
+
+            entity.Property(e => e.CountyCode)
+                .HasColumnType("character varying")
+                .HasColumnName("county_code");
+            entity.Property(e => e.CountyName)
+                .HasColumnType("character varying")
+                .HasColumnName("county_name");
+            entity.Property(e => e.State)
+                .HasColumnType("character varying")
+                .HasColumnName("state");
+        });
+
+        modelBuilder.Entity<CountriesMaster>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("countries_master");
+
+            entity.Property(e => e.Countryname).HasColumnName("countryname");
+        });
+
         modelBuilder.Entity<Country>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Countries_pkey");
@@ -228,7 +277,15 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
-            entity.Property(e => e.CountryId).HasColumnName("country_id");
+            entity.Property(e => e.Alpha2code)
+                .HasColumnType("character varying")
+                .HasColumnName("alpha2code");
+            entity.Property(e => e.Alpha3code)
+                .HasColumnType("character varying")
+                .HasColumnName("alpha3code");
+            entity.Property(e => e.CountryId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("country_id");
             entity.Property(e => e.CountryName)
                 .HasColumnType("character varying")
                 .HasColumnName("country_name");
@@ -257,7 +314,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.CountyCode)
                 .HasColumnType("character varying")
                 .HasColumnName("county_code");
-            entity.Property(e => e.CountyId).HasColumnName("county_id");
+            entity.Property(e => e.CountyId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("county_id");
             entity.Property(e => e.CountyName)
                 .HasColumnType("character varying")
                 .HasColumnName("county_name");
@@ -440,6 +499,8 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("states");
 
+            entity.HasIndex(e => e.CountryId, "fki_c");
+
             entity.HasIndex(e => e.CountryId, "fki_fk_countryids");
 
             entity.Property(e => e.Id)
@@ -454,7 +515,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.StateCode)
                 .HasColumnType("character varying")
                 .HasColumnName("state_code");
-            entity.Property(e => e.StateId).HasColumnName("state_id");
+            entity.Property(e => e.StateId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("state_id");
             entity.Property(e => e.StateName)
                 .HasColumnType("character varying")
                 .HasColumnName("state_name");
@@ -465,7 +528,21 @@ public partial class SigmaproIisContext : DbContext
 
             entity.HasOne(d => d.Country).WithMany(p => p.States)
                 .HasForeignKey(d => d.CountryId)
-                .HasConstraintName("fk_countryids");
+                .HasConstraintName("fk_country_id");
+        });
+
+        modelBuilder.Entity<StatesMaster>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("states_master");
+
+            entity.Property(e => e.StateCode)
+                .HasColumnType("character varying")
+                .HasColumnName("state_code");
+            entity.Property(e => e.StateName)
+                .HasColumnType("character varying")
+                .HasColumnName("state_name");
         });
 
         modelBuilder.Entity<TestAble>(entity =>
