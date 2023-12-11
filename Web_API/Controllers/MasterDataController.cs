@@ -51,10 +51,10 @@ namespace Web_API.Controllers
         }
 
         [HttpGet]
-        [Route("getstatesbycountryid/{countryid}")]
-        public IActionResult GetStatesbyCountryid(string countryid)
+        [Route("getstatesbycountryid")]
+        public IActionResult GetStatesbyCountryid([FromQuery] string countryid)
         {
-            IEnumerable<State> statelist = _unitOfWork.States.Find(pre => pre.CountryId.Value.ToString().ToLowerInvariant().Equals(countryid.ToLowerInvariant())).ToList();
+            IEnumerable<State> statelist = _unitOfWork.States.Find(pre => pre.CountryId.Value.ToString().ToLower().Equals(countryid.ToLower())).ToList();
             var States = statelist.Select(s =>
             new {
                 Id = s.Id,
@@ -85,9 +85,9 @@ namespace Web_API.Controllers
 
         [HttpGet]
         [Route("getallcountiesbystateid")]
-        public IActionResult GetAllCountiesByStateId(string stateid)
+        public IActionResult GetAllCountiesByStateId([FromQuery] string stateid)
         {
-            IEnumerable<County> countieslist = _unitOfWork.Counties.Find(pre => pre.StateId.Value.ToString().ToLowerInvariant().Equals(stateid.ToLowerInvariant())).ToList();
+            IEnumerable<County> countieslist = _unitOfWork.Counties.Find(pre => pre.StateId.Value.ToString().ToLower().Equals(stateid.ToLower())).ToList();
             var counties = countieslist.Select(cu =>
             new {
                 Id = cu.Id,
@@ -117,9 +117,9 @@ namespace Web_API.Controllers
 
         [HttpGet]
         [Route("getallcitiesbystateandcountyId")]
-        public IActionResult GetAllCitiesByStateId(string stateid, string countyid)
+        public IActionResult GetAllCitiesByStateId([FromQuery] string stateid, [FromQuery] string countyid)
         {
-            IEnumerable<City> citieslist = _unitOfWork.Cities.Find(pre => !(!pre.StateId.Value.ToString().ToLowerInvariant().Equals(stateid.ToLowerInvariant()) || !pre.CountyId.Value.ToString().ToLowerInvariant().Equals(countyid.ToLowerInvariant()))).ToList();
+            IEnumerable<City> citieslist = _unitOfWork.Cities.Find(pre => !(!pre.StateId.Value.ToString().ToLower().Equals(stateid.ToLower()) || !pre.CountyId.Value.ToString().ToLower().Equals(countyid.ToLower()))).ToList();
             var Cities = citieslist.Select(cu =>
             new {
                 Id = cu.Id,
@@ -132,9 +132,9 @@ namespace Web_API.Controllers
 
         [HttpGet]
         [Route("getallcitiesbycountyId")]
-        public IActionResult GetAllCitiesByCountyId(string countyid)
+        public IActionResult GetAllCitiesByCountyId([FromQuery] string countyid)
         {
-            IEnumerable<City> citieslist = _unitOfWork.Cities.Find(pre => !(!pre.CountyId.Value.ToString().ToLowerInvariant().Equals(countyid.ToLowerInvariant()))).ToList();
+            IEnumerable<City> citieslist = _unitOfWork.Cities.Find(pre => !(!pre.CountyId.Value.ToString().ToLower().Equals(countyid.ToLower()))).ToList();
             var Cities = citieslist.Select(cu =>
             new {
                 Id = cu.Id,

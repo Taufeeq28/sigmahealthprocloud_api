@@ -36,7 +36,7 @@ namespace Web_API.Controllers
 
         [HttpGet]
         [Route("getjuricdictionbybusiness")]
-        public IActionResult GetJuricdictionByBusiness([FromForm] string businessid)
+        public IActionResult GetJuricdictionByBusiness([FromQuery] string businessid)
         {
             var juridictionlist = _unitOfWork.Juridictions.GetJuridictionsbyBusinessid(businessid);
             var Juridictions = juridictionlist.Select(j =>

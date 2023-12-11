@@ -29,7 +29,7 @@ namespace Data.Implementation
 
         public IEnumerable<LovMaster> Find(Expression<Func<LovMaster, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.LovMasters.Where(predicate);
         }
 
         public IEnumerable<LovMaster> GetAll()

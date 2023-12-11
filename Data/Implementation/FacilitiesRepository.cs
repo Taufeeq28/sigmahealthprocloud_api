@@ -31,7 +31,7 @@ namespace Data.Implementation
 
         public IEnumerable<Facility> Find(Expression<Func<Facility, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.Facilities.Where(predicate);
         }
 
         public IEnumerable<Facility> GetAll()

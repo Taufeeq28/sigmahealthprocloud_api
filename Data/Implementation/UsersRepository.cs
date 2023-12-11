@@ -44,7 +44,7 @@ namespace Data.Implementation
 
         public IEnumerable<User> Find(Expression<Func<User, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.Users.Where(predicate);
         }
 
         public IEnumerable<User> GetAll()

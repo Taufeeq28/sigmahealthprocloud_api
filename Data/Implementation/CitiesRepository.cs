@@ -30,7 +30,7 @@ namespace Data.Implementation
 
         public IEnumerable<City> Find(Expression<Func<City, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.Cities.Where(predicate);
         }
 
         public IEnumerable<City> GetAll()

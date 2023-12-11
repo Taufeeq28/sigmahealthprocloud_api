@@ -31,7 +31,7 @@ namespace Data.Implementation
 
         public IEnumerable<Organization> Find(Expression<Func<Organization, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.Organizations.Where(predicate);
         }
 
         public IEnumerable<Organization> GetAll()

@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using Data.Repository;
+using System.Linq;
 using System.Linq.Expressions;
 
 
@@ -26,7 +27,7 @@ namespace Data.Implementation
 
         public IEnumerable<Juridiction> Find(Expression<Func<Juridiction, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.Juridictions.Where(predicate);
         }
 
         public IEnumerable<Juridiction> GetAll()

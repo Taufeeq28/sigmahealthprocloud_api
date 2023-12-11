@@ -1,4 +1,4 @@
-﻿using Data;
+﻿using Data.Models;using Data;
 using Data.Models;
 using Data.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,7 @@ namespace Data.Implementation
 
         public IEnumerable<Country> Find(Expression<Func<Country, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.Countries.Where(predicate);
         }
 
         public IEnumerable<Country> GetAll()

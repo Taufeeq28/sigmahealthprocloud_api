@@ -33,7 +33,8 @@ namespace Data.Implementation
 
         public IEnumerable<State> Find(Expression<Func<State, bool>> predicate)
         {
-            throw new NotImplementedException();
+              return context.States.Where(predicate);
+            
         }
 
         public IEnumerable<State> GetAll()

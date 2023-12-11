@@ -30,7 +30,7 @@ namespace Data.Implementation
 
         public IEnumerable<BusinessConfiguration> Find(Expression<Func<BusinessConfiguration, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return context.BusinessConfigurations.Where(predicate);
         }
 
         public IEnumerable<BusinessConfiguration> GetAll()

@@ -33,9 +33,9 @@ namespace Web_API.Controllers
         }
         [HttpGet]
         [Route("getorganizationbyjurdiction")]
-        public IActionResult GetOrganizationByJurdiction([FromForm]string jurdid)
+        public IActionResult GetOrganizationByJurdiction([FromQuery]string jurdictionid)
         {
-            var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdid);
+            var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdictionid);
             var Organizations = orgnizationlist.Select(o =>
             new
             {
