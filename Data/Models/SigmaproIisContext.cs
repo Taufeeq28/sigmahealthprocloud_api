@@ -215,18 +215,15 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("contacts");
 
-            entity.HasIndex(e => e.ContactTypeId, "fki_FK_contact_type_id");
-
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
-            entity.Property(e => e.ContactId)
-                .HasColumnType("character varying")
-                .HasColumnName("contact_id");
-            entity.Property(e => e.ContactTypeId).HasColumnName("contact_type_id");
             entity.Property(e => e.ContactValue)
                 .HasColumnType("character varying")
                 .HasColumnName("contact_value");
+            entity.Property(e => e.ContactsId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("contacts_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -236,10 +233,6 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
-
-            entity.HasOne(d => d.ContactType).WithMany(p => p.Contacts)
-                .HasForeignKey(d => d.ContactTypeId)
-                .HasConstraintName("FK_contact_type_id");
         });
 
         modelBuilder.Entity<CountiesMaster>(entity =>
@@ -446,7 +439,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("LOV_type");
             entity.Property(e => e.ReferenceId)
-                .HasColumnType("character varying")
+                .ValueGeneratedOnAdd()
                 .HasColumnName("reference_id");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
@@ -565,10 +558,6 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.LovMasterId, "fki_fk_LOV_id");
-
-            entity.HasIndex(e => e.LovMasterId, "fki_fk_user_type_id");
-
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -579,11 +568,16 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Designation)
                 .HasColumnType("character varying")
                 .HasColumnName("designation");
+            entity.Property(e => e.Gender)
+                .HasColumnType("character varying")
+                .HasColumnName("gender");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
-            entity.Property(e => e.LovMasterId).HasColumnName("LOV_master_id");
             entity.Property(e => e.Password)
                 .HasColumnType("character varying")
                 .HasColumnName("password");
+            entity.Property(e => e.SequenceId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("Sequence_id");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
@@ -597,10 +591,6 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.UserLasttname)
                 .HasColumnType("character varying")
                 .HasColumnName("user_lasttname");
-
-            entity.HasOne(d => d.LovMaster).WithMany(p => p.Users)
-                .HasForeignKey(d => d.LovMasterId)
-                .HasConstraintName("fk_LOV_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

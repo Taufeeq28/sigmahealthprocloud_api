@@ -7,7 +7,7 @@ public partial class Contact
 {
     public Guid Id { get; set; }
 
-    public string? ContactId { get; set; }
+    public int ContactsId { get; set; }
 
     public string? ContactValue { get; set; }
 
@@ -20,8 +20,4 @@ public partial class Contact
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
-
-    public Guid? ContactTypeId { get; set; }
-
-    public virtual LovMaster? ContactType { get; set; }
 }
