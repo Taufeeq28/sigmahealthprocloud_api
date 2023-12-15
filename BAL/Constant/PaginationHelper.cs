@@ -49,7 +49,7 @@ namespace BAL.Constant
                 paginatedResult.CurrentPage = pageNumber;
                 paginatedResult.PagingDetails = pagingDetails;
                 paginatedResult.ShowingDetails = showingDetails;
-                paginatedResult.Items = items.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                paginatedResult.Items = items.ToList();
             }
 
             return paginatedResult;

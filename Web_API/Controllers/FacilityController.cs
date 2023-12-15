@@ -30,8 +30,13 @@ namespace Web_API.Controllers
         public async Task<IActionResult> DeleteFacility([FromForm, Required] Guid facilityId)
          =>Ok(await _facilityService.DeleteFacility(facilityId).ConfigureAwait(true));
 
-            
-        
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateFacility([FromBody] CreateFacilityRequest obj)
+         => Ok(await _facilityService.CreateFacility(obj).ConfigureAwait(true));
+
+
+
 
 
     }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using NpgsqlTypes;
+using Serilog.Core;
 
 
 namespace BAL.Services
@@ -64,6 +65,40 @@ namespace BAL.Services
                 return ApiResponse<bool>.Fail(false, "Facility with the given ID not found.");
             }
         }
+        public async Task<ApiResponse<bool>> CreateFacility(CreateFacilityRequest obj)
+        {
+            try
+            {
+               
+                var newFacility = new Facility
+                {
+                    FacilityId = obj.FacilityId,
+                    FacilityName = obj.FacilityName,
+                    AdministeredAtLocation = null,
+                    SendingOrganization = null,
+                    ResponsibleOrganization = null,
+                    CreatedDate=DateTime.UtcNow,
+                    UpdatedDate=DateTime.UtcNow,
+                    CreatedBy = obj.CreatedBy,
+                    UpdatedBy = obj.UpdatedBy,
+                    Isdelete = false,
+                    OrganizationsId = obj.OrganizationsId,
+                    AddressId=obj.AddressId
+                };
+
+                _dbContext.Facilities.Add(newFacility);
+
+                await _dbContext.SaveChangesAsync();
+
+                return ApiResponse<bool>.Success(true, "Facility created successfully.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(CreateFacility)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<bool>.Fail(false, "An error occurred while creating the facility.");
+            }
+        }
+
         #endregion
 
         #region Private Methods

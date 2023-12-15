@@ -8,5 +8,6 @@ namespace BAL.Interfaces
     {
         Task<PaginationModel<FacilitySearchResponse>> FacilitySearch(FacilitySearchRequest request);
         Task<ApiResponse<bool>> DeleteFacility(Guid facilityId);
+        Task<ApiResponse<bool>> CreateFacility(CreateFacilityRequest obj);
     }
 }
