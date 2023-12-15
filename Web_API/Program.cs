@@ -22,6 +22,20 @@ builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog());
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+//Cors Config
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5173")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+    
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,6 +101,7 @@ app.UseAuthorization();
 app.UseSerilogRequestLogging();
 
 app.MapControllers();
+app.UseCors("AllowSpecificOrigin");
 
 app.MapGet("/", (SigmaproIisContext context) => { return context; });
 
