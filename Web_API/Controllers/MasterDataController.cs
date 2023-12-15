@@ -288,5 +288,39 @@ namespace Web_API.Controllers
         }
         #endregion
 
+        #region contacts
+        [HttpGet]
+        [Route("getcontactsbycontactid")]
+        public IActionResult GetContactsbyContactid([FromQuery, Required] string contactid)
+        {
+            try
+            {
+                IEnumerable<Contact> Contactlist = _unitOfWork.Contacts.Find(pre => pre.Id.Equals(contactid) && pre.Isdelete == false).ToList();
+                if (Contactlist != null && Contactlist.Any())
+                {
+                    var Contacts = Contactlist.Select(c =>
+                    new
+                    {
+                        Id = c.Id, 
+                        Contact_Type=c.ContactType,
+                        Contact_Value = c.ContactValue,
+                        isdelete = c.Isdelete
+
+                    });
+                    return Ok(Contacts);
+                }
+                return NotFound($"No record found for Contact {contactid}");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "An error occurred while processing GetContactsbyContactid request.");
+
+                // Return a 500 Internal Server Error with a generic message
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+        #endregion
+
     }
 }

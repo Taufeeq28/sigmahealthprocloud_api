@@ -20,4 +20,10 @@ public partial class Contact
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public string? ContactType { get; set; }
+
+    public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

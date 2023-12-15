@@ -30,4 +30,8 @@ public partial class User
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public Guid? ContactId { get; set; }
+
+    public virtual Contact? Contact { get; set; }
 }
