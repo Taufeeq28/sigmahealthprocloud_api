@@ -16,28 +16,42 @@ namespace Web_API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private IConfiguration _config;
-        
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUnitOfWork unitOfWork,IConfiguration config)
+
+        public UserController(IUnitOfWork unitOfWork,IConfiguration config,ILogger<UserController> logger)
         {
             _unitOfWork = unitOfWork;
             _config = config;
+            _logger = logger;
         }
         
         [AllowAnonymous]
         [HttpPost]
+        [Route("Authenticate")]
         public IActionResult Authenticate(string username, string password)
         {
-            IActionResult response = Unauthorized();
-            User usermodel = new User() { UserId = username, Password = password };
-            if (_unitOfWork.Users.Authenticate(usermodel)!=null)
+            try
             {
-                var tokenString = GenerateJSONWebToken(usermodel);
-                response = Ok(new { token = tokenString, usermodel.UserId, status ="Authorized" });
+                IActionResult response = Unauthorized();
+                User usermodel = new User() { UserId = username, Password = password };
+                if (_unitOfWork.Users.Authenticate(usermodel) != null)
+                {
+                    var tokenString = GenerateJSONWebToken(usermodel);
+                    response = Ok(new { token = tokenString, usermodel.UserId, status = "Authorized" });
+                    return response;
+                }
                 return response;
             }
-            return response;
-            
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "An error occurred while processing User Authenticate request.");
+
+                // Return a 500 Internal Server Error with a generic message
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
         private string GenerateJSONWebToken(User userInfo)
         {

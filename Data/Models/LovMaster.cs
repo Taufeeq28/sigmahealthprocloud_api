@@ -24,4 +24,6 @@ public partial class LovMaster
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public string? LongDescription { get; set; }
 }

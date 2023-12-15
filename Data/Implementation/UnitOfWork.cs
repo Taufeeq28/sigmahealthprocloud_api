@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using Data.Repository;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +12,25 @@ namespace Data.Implementation
     public class UnitOfWork : IUnitOfWork
     {
         private readonly SigmaproIisContext _context;
-        public UnitOfWork(SigmaproIisContext context)
+        private readonly ILogger<UnitOfWork> _logger;
+        public UnitOfWork(SigmaproIisContext context,ILogger<UnitOfWork> logger)
         {
             _context = context;
-            Cities = new CitiesRepository(_context);
-            Counties = new CountiesRepository(_context);
-            Countries = new CountriesRepository(_context);
-            States = new StatesRepository(_context);
-            Facilities = new FacilitiesRepository(_context);
-            Juridictions = new JuridictionsRepository(_context);
-            Organizations = new OrganizationsRepository(_context);
-            Users = new UsersRepository(_context);
+            _logger = logger;
+            Cities = new CitiesRepository(_context, _logger);
+            Counties = new CountiesRepository(_context,_logger);
+            Countries = new CountriesRepository(_context,_logger);
+            States = new StatesRepository(_context,_logger);
+            Facilities = new FacilitiesRepository(_context,_logger);
+            Juridictions = new JuridictionsRepository(_context,_logger);
+            Organizations = new OrganizationsRepository(_context,_logger);
+            Users = new UsersRepository(_context,_logger);
             
-            Contacts= new ContactsRepository(_context);
+            Contacts= new ContactsRepository(_context,_logger);
             
-            lOVTypeMaster=new LovTypeMasterRepository(_context);
-            Addresss=new AddressesRepository(_context);
-            BusinessConfiguration = new BusinessConfigurationRepository(_context);
+            lOVTypeMaster=new LovTypeMasterRepository(_context,_logger);
+            Addresss=new AddressesRepository(_context,_logger);
+            BusinessConfiguration = new BusinessConfigurationRepository(_context,_logger);
         }
         public ICitiesRepository Cities { get; private set; }
         public ICountiesRepository Counties { get; private set; }

@@ -1,6 +1,8 @@
 ﻿using Data;
 using Data.Models;
 using Data.Repository;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,46 +17,104 @@ namespace Data.Implementation
     {
         //private SigmaproIisContext context;
         private SigmaproIisContext context;
-        public StatesRepository(SigmaproIisContext _context) 
+        private readonly ILogger<UnitOfWork> _logger;
+        public StatesRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger) 
         {
 
             this.context = _context;
+            _logger = logger;
         }
 
         public void Add(State entity)
         {
-            context.States.Add(entity);
+            try
+            {
+                context.States.Add(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
         }
 
         public void AddRange(IEnumerable<State> entities)
         {
-            context.States.AddRange(entities);
+            try
+            {
+                context.States.AddRange(entities);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
         }
 
         public IEnumerable<State> Find(Expression<Func<State, bool>> predicate)
         {
-              return context.States.Where(predicate);
-            
+            try
+            {
+                return context.States.Where(predicate);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
+
         }
 
         public IEnumerable<State> GetAll()
         {
-            return context.States.ToList();
+            try
+            {
+                return context.States.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
         }
 
         public State? GetById(int id)
         {
-            return (State?)context.States.Find(id);
+            try
+            {
+                return (State?)context.States.Find(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
         }
 
         public void Remove(State entity)
         {
-            context.Remove(entity);
+            try
+            {
+                context.Remove(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
         }
 
         public void RemoveRange(IEnumerable<State> entities)
         {
-            context.RemoveRange(entities);
+            try
+            {
+                context.RemoveRange(entities);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw;
+            }
         }
     }
 }

@@ -435,6 +435,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Key)
                 .HasColumnType("character varying")
                 .HasColumnName("key");
+            entity.Property(e => e.LongDescription)
+                .HasColumnType("character varying")
+                .HasColumnName("long_description");
             entity.Property(e => e.LovType)
                 .HasColumnType("character varying")
                 .HasColumnName("LOV_type");

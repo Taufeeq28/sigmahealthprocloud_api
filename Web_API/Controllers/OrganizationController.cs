@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 using Data.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web_API.Controllers
 {
@@ -10,40 +11,74 @@ namespace Web_API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private IConfiguration _config;
+        private readonly ILogger<OrganizationController> _logger;
 
-        public OrganizationController(IUnitOfWork unitOfWork, IConfiguration config)
+        public OrganizationController(IUnitOfWork unitOfWork, IConfiguration config, ILogger<OrganizationController> logger)
         {
             _unitOfWork = unitOfWork;
             _config = config;
+            _logger = logger;
 
         }
         [HttpGet]
         [Route("getallorganizations")]
         public IActionResult getallorganizations()
         {
-            IEnumerable<Organization> organizationlist = _unitOfWork.Organizations.GetAll();
-            var Organizations = organizationlist.Select(o =>
-            new {
-                OrganizationId = o.Id,
-                OrganizationName = o.OrganizationName,
-                JuridictionId = o.JuridictionId
+            try
+            {
+                IEnumerable<Organization> organizationlist = _unitOfWork.Organizations.GetAll();
+                if (organizationlist != null && organizationlist.Any())
+                {
+                    var Organizations = organizationlist.Select(o =>
+                    new
+                    {
+                        OrganizationId = o.Id,
+                        OrganizationName = o.OrganizationName,
+                        JuridictionId = o.JuridictionId
 
-            });
-            return Ok(Organizations);
+                    });
+                    return Ok(Organizations);
+                }
+                return NotFound($"No data found for Organizations");
+
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "An error occurred while processing getallorganizations request.");
+
+                // Return a 500 Internal Server Error with a generic message
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
         [HttpGet]
         [Route("getorganizationbyjurdiction")]
-        public IActionResult GetOrganizationByJurdiction([FromQuery]string jurdictionid)
+        public IActionResult GetOrganizationByJurdiction([FromQuery, Required] string jurdictionid)
         {
-            var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdictionid);
-            var Organizations = orgnizationlist.Select(o =>
-            new
+            try
             {
-                OrganizationId = o.Id,
-                Organizationname = o.OrganizationName
-                
-            });
-            return Ok(Organizations);
+                var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdictionid);
+                if (orgnizationlist != null && orgnizationlist.Any())
+                {
+                    var Organizations = orgnizationlist.Select(o =>
+                    new
+                    {
+                        OrganizationId = o.Id,
+                        Organizationname = o.OrganizationName
+
+                    });
+                    return Ok(Organizations);
+                }
+                return NotFound($"No Organizations found for jurdiction{jurdictionid}");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                _logger.LogError(ex, "An error occurred while processing GetOrganizationByJurdiction request.");
+
+                // Return a 500 Internal Server Error with a generic message
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
     }
