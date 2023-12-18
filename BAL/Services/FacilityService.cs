@@ -42,7 +42,7 @@ namespace BAL.Services
                 throw new Exception(exp?.Message);
             }
         }
-        public async Task<ApiResponse<bool>> DeleteFacility(Guid facilityId)
+        public async Task<ApiResponse<string>> DeleteFacility(Guid facilityId)
         {
             try
             {
@@ -54,18 +54,18 @@ namespace BAL.Services
                     _dbContext.Facilities.Update(facility);
                     await _dbContext.SaveChangesAsync();
 
-                    return ApiResponse<bool>.Success(true, "Facility deleted successfully."); ; 
+                    return ApiResponse<string>.Success(null,"Facility deleted successfully.");
                 }
 
-                return ApiResponse<bool>.Fail(false,"Facility with the given ID not found.");
+                return ApiResponse<string>.Fail("Facility with the given ID not found.");
             }
             catch (Exception exp)
             {
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteFacility)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
-                return ApiResponse<bool>.Fail(false, "Facility with the given ID not found.");
+                return ApiResponse<string>.Fail( "Facility with the given ID not found.");
             }
         }
-        public async Task<ApiResponse<bool>> CreateFacility(CreateFacilityRequest obj)
+        public async Task<ApiResponse<string>> CreateFacility(CreateFacilityRequest obj)
         {
             try
             {
@@ -90,15 +90,50 @@ namespace BAL.Services
 
                 await _dbContext.SaveChangesAsync();
 
-                return ApiResponse<bool>.Success(true, "Facility created successfully.");
+                return ApiResponse<string>.Success(null,"Facility created successfully.");
             }
             catch (Exception exp)
             {
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(CreateFacility)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
-                return ApiResponse<bool>.Fail(false, "An error occurred while creating the facility.");
+                return ApiResponse<string>.Fail("An error occurred while creating the facility.");
             }
         }
+        public async Task<ApiResponse<string>> EditFacility(EditFacilityRequest obj)
+        {
+            try
+            {
+                if (obj == null)
+                {
+                    _logger.LogError($"CorelationId: {_corelationId} - Invalid input. EditFacilityRequest object is null in Method: {nameof(EditFacility)}");
+                    return ApiResponse<string>.Fail( "Invalid input. EditFacilityRequest object is null.");
+                }
+                var updateFacility = await _dbContext.Facilities.FindAsync(obj.Id);
 
+                if (updateFacility !=null)
+                {
+                    updateFacility.FacilityName = obj.FacilityName;
+                    updateFacility.AdministeredAtLocation = obj.AdministeredAtLocation;
+                    updateFacility.SendingOrganization = obj.SendingOrganization;
+                    updateFacility.ResponsibleOrganization = obj.ResponsibleOrganization;
+                    updateFacility.UpdatedDate = DateTime.UtcNow;
+                    updateFacility.UpdatedBy = obj.UpdatedBy;
+                    updateFacility.OrganizationsId = obj.OrganizationsId;
+                    updateFacility.AddressId = obj.AddressId;
+
+                    _dbContext.Facilities.Update(updateFacility);
+                    await _dbContext.SaveChangesAsync();
+
+                    return ApiResponse<string>.Success(null,"Facility record updated successfully.");
+                }
+                return ApiResponse<string>.Fail( "Facility with the given ID not found.");
+
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(EditFacility)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while creating the facility.");
+            }
+        }
         #endregion
 
         #region Private Methods

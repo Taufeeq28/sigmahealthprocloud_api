@@ -1,20 +1,21 @@
 ﻿
 namespace BAL.Constant
 {
-    public class ApiResponse<T>
+    public class ApiResponse<T> where T : class
     {
-        public bool IsSuccess { get; set; }
+        public string? Status { get; set; }
         public string? Message { get; set; }
         public T? Data { get; set; }
 
-        public static ApiResponse<T> Success(T data, string message = "Operation successful.")
+        public static ApiResponse<T> Success(T? data, string message = "Operation successful.")
         {
-            return new ApiResponse<T> { IsSuccess = true, Message = message, Data = data };
+            return new ApiResponse<T> { Status = "Success",Message = message, Data = data };
         }
 
-        public static ApiResponse<T> Fail(T data,string message = "Operation failed.")
+        public static ApiResponse<T> Fail(string message = "Operation failed.")
         {
-            return new ApiResponse<T> { IsSuccess = false, Message = message,Data=data };
+            return new ApiResponse<T> { Status = "Fail", Message = message, Data = null };
         }
     }
+
 }

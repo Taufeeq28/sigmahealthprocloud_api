@@ -35,6 +35,11 @@ namespace Web_API.Controllers
         public async Task<IActionResult> CreateFacility([FromBody] CreateFacilityRequest obj)
          => Ok(await _facilityService.CreateFacility(obj).ConfigureAwait(true));
 
+        [HttpPost]
+        [Route("edit")]
+        public async Task<IActionResult> EditFacility([FromBody] EditFacilityRequest obj)
+         => Ok(await _facilityService.EditFacility(obj).ConfigureAwait(true));
+
 
 
 

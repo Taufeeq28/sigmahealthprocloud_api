@@ -68,6 +68,7 @@ builder.Services.AddDbContext<SigmaproIisContextUdf>(options =>
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacilityService, FacilityService>();
+builder.Services.AddScoped(typeof(IDataAccessProvider<>), typeof(DataAccessProvider<>));
 builder.Services.AddSerilog();
 
 var app = builder.Build();
@@ -80,7 +81,7 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "(Dev)Sigma Health Pro API V1");
         // Specify an optional route prefix
-        c.RoutePrefix = string.Empty;
+        c.RoutePrefix = "swagger";
     });
 }
 else
