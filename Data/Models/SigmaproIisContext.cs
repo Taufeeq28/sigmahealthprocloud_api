@@ -218,6 +218,9 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
+            entity.Property(e => e.ContactType)
+                .HasColumnType("character varying")
+                .HasColumnName("contact_type");
             entity.Property(e => e.ContactValue)
                 .HasColumnType("character varying")
                 .HasColumnName("contact_value");
@@ -346,6 +349,7 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.AdministeredAtLocation)
                 .HasColumnType("character varying")
                 .HasColumnName("administered_at_location");
+            entity.Property(e => e.ContactId).HasColumnName("contact_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -372,6 +376,10 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.Address).WithMany(p => p.Facilities)
                 .HasForeignKey(d => d.AddressId)
                 .HasConstraintName("fk_fac_address_id");
+
+            entity.HasOne(d => d.Contact).WithMany(p => p.Facilities)
+                .HasForeignKey(d => d.ContactId)
+                .HasConstraintName("fk_contactid");
 
             entity.HasOne(d => d.Organizations).WithMany(p => p.Facilities)
                 .HasForeignKey(d => d.OrganizationsId)
@@ -564,6 +572,7 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
+            entity.Property(e => e.ContactId).HasColumnName("contact_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -580,7 +589,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("password");
             entity.Property(e => e.SequenceId)
                 .ValueGeneratedOnAdd()
-                .HasColumnName("Sequence_id");
+                .HasColumnName("sequence_id");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
@@ -594,6 +603,10 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.UserLasttname)
                 .HasColumnType("character varying")
                 .HasColumnName("user_lasttname");
+
+            entity.HasOne(d => d.Contact).WithMany(p => p.Users)
+                .HasForeignKey(d => d.ContactId)
+                .HasConstraintName("fk_contact_id");
         });
 
         OnModelCreatingPartial(modelBuilder);
