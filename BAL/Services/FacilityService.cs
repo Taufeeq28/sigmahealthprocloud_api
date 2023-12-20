@@ -5,6 +5,7 @@ using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.Index.HPRtree;
 using Npgsql;
 using NpgsqlTypes;
 using Serilog.Core;
@@ -39,9 +40,12 @@ namespace BAL.Services
                 }
 
                 var (sql, parameters) = FormQueryAndParamsForFetchingFacilitySearch(request);
+
+                
                 var result = await _dbContextudf.FacilitySearch.FromSqlRaw(sql, parameters.ToArray()).ToListAsync();
-             
-                return PaginationHelper.Paginate(result, request.pageNumber, request.pageSize);
+
+                long? totalRows = result.FirstOrDefault()?.TotalRows;
+                return PaginationHelper.Paginate(result, request.pageNumber, request.pageSize,Convert.ToInt32(totalRows));
             }
             catch (Exception exp)
             {

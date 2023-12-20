@@ -8,13 +8,13 @@ namespace BAL.Constant
 {
     public static class PaginationHelper
     {
-        public static PaginationModel<T> Paginate<T>(List<T> items, int pageNumber, int pageSize, int? totalRequestedItems = null)
+        public static PaginationModel<T> Paginate<T>(List<T> items, int pageNumber, int pageSize,int totalRows, int? totalRequestedItems = null)
         {
             var paginatedResult = new PaginationModel<T>();
 
             if (items != null && items.Count > 0)
             {
-                int totalRows = items.Count;
+                
                 paginatedResult.TotalCount = totalRows;
                 paginatedResult.TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
 
