@@ -30,6 +30,13 @@ namespace BAL.Services
         {
             try
             {
+                // Check if pageNumber and pageSize are valid
+                if (request.pageNumber <= 0 || request.pageSize <= 0)
+                {
+                    _logger.LogError($"CorelationId: {_corelationId} - Invalid page number or page size. Both must be greater than zero.");
+
+                    throw new ArgumentException("Invalid page number or page size. Both must be greater than zero.");
+                }
 
                 var (sql, parameters) = FormQueryAndParamsForFetchingFacilitySearch(request);
                 var result = await _dbContextudf.FacilitySearch.FromSqlRaw(sql, parameters.ToArray()).ToListAsync();
@@ -152,13 +159,13 @@ namespace BAL.Services
     new NpgsqlParameter
     {
         ParameterName = "@pagenumber",
-        Value = request.pageNumber == 1 ? DBNull.Value : request.pageNumber,
+        Value = request.pageNumber == 0 ? DBNull.Value : request.pageNumber,
         NpgsqlDbType = NpgsqlDbType.Integer
     },
     new NpgsqlParameter
     {
         ParameterName = "@pagesize",
-        Value = request.pageSize == 10 ? DBNull.Value : request.pageSize,
+        Value = request.pageSize == 0 ? DBNull.Value : request.pageSize,
         NpgsqlDbType = NpgsqlDbType.Integer
     },
     new NpgsqlParameter
