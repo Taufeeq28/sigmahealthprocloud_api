@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.Constant;
+using Data.Models;
 using Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,101 +16,77 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public BusinessConfigurationRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
         }
 
-        public void Add(BusinessConfiguration entity)
+        public async Task<IEnumerable<BusinessConfiguration>> Find(Expression<Func<BusinessConfiguration, bool>> predicate)
+        {
+            return await context.BusinessConfigurations.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<BusinessConfiguration>> GetAllAsync()
+        {
+            return await context.Set<BusinessConfiguration>().ToListAsync();
+        }
+
+        public async Task<BusinessConfiguration> GetByIdAsync(int id)
+        {
+            return await context.Set<BusinessConfiguration>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(BusinessConfiguration entity)
         {
             try
             {
-                context.BusinessConfigurations.Add(entity);
+                await context.Set<BusinessConfiguration>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "BusinessConfiguration inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the BusinessConfiguration.");
             }
         }
 
-        public void AddRange(IEnumerable<BusinessConfiguration> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(BusinessConfiguration entity)
         {
             try
             {
-                context.BusinessConfigurations.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "BusinessConfiguration Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the BusinessConfiguration.");
+            }
+        }
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var entity = await context.Set<BusinessConfiguration>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<BusinessConfiguration>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "BusinessConfiguration deleted successfully.");
+                }
+
+                return ApiResponse<string>.Fail("BusinessConfiguration with the given ID not found.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("BusinessConfiguration with the given ID not found.");
             }
         }
 
-        public IEnumerable<BusinessConfiguration> Find(Expression<Func<BusinessConfiguration, bool>> predicate)
-        {
-            try
-            {
-                return context.BusinessConfigurations.Where(predicate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public IEnumerable<BusinessConfiguration> GetAll()
-        {
-            try
-            {
-                return context.BusinessConfigurations.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public BusinessConfiguration? GetById(int id)
-        {
-            try
-            {
-                return (BusinessConfiguration?)context.BusinessConfigurations.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void Remove(BusinessConfiguration entity)
-        {
-            try
-            {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void RemoveRange(IEnumerable<BusinessConfiguration> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
     }
 }

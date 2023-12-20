@@ -1,6 +1,8 @@
 ﻿using Data;
+using Data.Constant;
 using Data.Models;
 using Data.Repository;
+using Data.RequestModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,100 +18,101 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public CountiesRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
         }
+        public async Task<IEnumerable<County>> Find(Expression<Func<County, bool>> predicate)
+        {
+            return await context.Counties.Where(predicate).ToListAsync();
+        }
 
-        public void Add(County entity)
+        public async Task<IEnumerable<County>> GetAllAsync()
+        {
+            return await context.Counties.Where(c => c.Isdelete == false).ToListAsync();
+        }
+
+        public async Task<County> GetByIdAsync(int id)
+        {
+            return await context.Set<County>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(County entity)
         {
             try
             {
-                context.Counties.Add(entity);
+                await context.Set<County>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "County inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the County.");
             }
         }
 
-        public void AddRange(IEnumerable<County> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(County entity)
         {
             try
             {
-                context.Counties.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "County Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the County.");
+            }
+        }
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var entity = await context.Set<County>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<County>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "County deleted successfully.");
+                }
+
+                return ApiResponse<string>.Fail("County with the given ID not found.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("County with the given ID not found.");
             }
         }
 
-        public IEnumerable<County> Find(Expression<Func<County, bool>> predicate)
+        public async Task<List<CountyModel>> GetCountybyStateid(Guid stateid)
         {
             try
             {
-                return context.Counties.Where(predicate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                var countylist = new List<CountyModel>();
+                var counties = await context.Counties.Where(c => c.StateId.ToString().ToLower().Equals(stateid.ToString().ToLower()) && c.Isdelete == false).ToListAsync();
+                foreach (var c in counties)
+                {
+                    var countymod = new CountyModel()
+                    {
+                        Id = c.Id,
+                        CountyId = c.CountyId,
+                        CountyName = c.CountyName,
+                        CountyCode = c.CountyCode,
+                    };
+                    countylist.Add(countymod);
+                }
 
-        public IEnumerable<County> GetAll()
-        {
-            try
-            {
-                return context.Counties.ToList();
+                return countylist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public County? GetById(int id)
-        {
-            try
-            {
-                return (County?)context.Counties.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void Remove(County entity)
-        {
-            try
-            {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void RemoveRange(IEnumerable<County> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetCountybyStateid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
             }
         }
     }

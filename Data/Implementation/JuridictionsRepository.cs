@@ -1,5 +1,8 @@
-﻿using Data.Models;
+﻿using Data.Constant;
+using Data.Models;
 using Data.Repository;
+using Data.RequestModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,120 +14,107 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public JuridictionsRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger) 
         {
             this.context = _context;
             _logger = logger;
         }
 
-        public void Add(Juridiction entity)
+        public async Task<IEnumerable<Juridiction>> Find(Expression<Func<Juridiction, bool>> predicate)
+        {
+            return await context.Juridictions.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Juridiction>> GetAllAsync()
+        {
+            return await context.Juridictions.Where(j=>j.Isdelete==false).ToListAsync();
+        }
+
+        public async Task<Juridiction> GetByIdAsync(int id)
+        {
+            return await context.Set<Juridiction>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(Juridiction entity)
         {
             try
             {
-                context.Juridictions.Add(entity);
+                await context.Set<Juridiction>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Juridiction inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the Juridiction.");
             }
         }
 
-
-        public void AddRange(IEnumerable<Juridiction> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(Juridiction entity)
         {
             try
             {
-                context.Juridictions.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Juridiction Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the Juridiction.");
             }
         }
-
-        public IEnumerable<Juridiction> Find(Expression<Func<Juridiction, bool>> predicate)
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
             {
-                return context.Juridictions.Where(predicate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public IEnumerable<Juridiction> GetAll()
-        {
-            try
-            {
-                return context.Juridictions.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public Juridiction? GetById(int id)
-        {
-            try
-            {
-                return (Juridiction?)context.Juridictions.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public IEnumerable<Juridiction> GetJuridictionsbyBusinessid(string businessid)
-        {
-            try
-            {
-                var jurdictionmodel = context.Juridictions.Where(j => j.AlternateId.ToString().Equals(businessid));
-                if (jurdictionmodel != null)
+                var entity = await context.Set<Juridiction>().FindAsync(id);
+                if (entity != null)
                 {
-                    return jurdictionmodel;
+                    context.Set<Juridiction>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "Juridiction deleted successfully.");
                 }
-                return null;
+
+                return ApiResponse<string>.Fail("Juridiction with the given ID not found.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetJuridictionsbyBusinessid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("Juridiction with the given ID not found.");
             }
         }
 
-        public void Remove(Juridiction entity)
+        public async Task<List<JuridictionModel>> GetJuridictionsbyBusinessid(Guid businessid)
         {
             try
             {
-                context.Remove(entity);
+                var jurdlist = new List<JuridictionModel>();
+                var jurdiction = await context.Juridictions.Where(j => j.AlternateId.ToString().ToLower().Equals(businessid.ToString().ToLower()) && j.Isdelete == false).ToListAsync();
+                foreach (var entity in jurdiction)
+                {
+                    var jurdictionmod = new JuridictionModel()
+                    {
+                        JuridictionId=entity.JuridictionId,
+                        JuridictionName=entity.JuridictionName,
+                        StateId=entity.StateId,
+                        AlternateId=entity.AlternateId
+
+                    };
+                    jurdlist.Add(jurdictionmod);
+                }
+                return jurdlist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetJuridictionsbyBusinessid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message);
             }
         }
 
-        public void RemoveRange(IEnumerable<Juridiction> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+        
+
+
     }
 }

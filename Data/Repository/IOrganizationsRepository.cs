@@ -1,4 +1,6 @@
-﻿using Data.Models;
+﻿using Data.Constant;
+using Data.Models;
+using Data.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repository
 {
-    public interface IOrganizationsRepository : IGenericRepository<Organization>
+    public interface IOrganizationsRepository : IGenericRepository<OrganizationModel>
     {
-        public IEnumerable<Organization> GetOrganizationByJuridictionId(string jurdid);
+        public Task<List<OrganizationModel>> GetOrganizationByJuridictionId(Guid jurdid);
+        
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Data;
+using Data.Constant;
 using Data.Models;
 using Data.Repository;
+using Data.RequestModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,101 +18,105 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public ContactsRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
         }
 
-        public void Add(Contact entity)
+        public async Task<IEnumerable<Contact>> Find(Expression<Func<Contact, bool>> predicate)
+        {
+            return await context.Contacts.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Contact>> GetAllAsync()
+        {
+            return await context.Set<Contact>().ToListAsync();
+        }
+
+        public async Task<Contact> GetByIdAsync(int id)
+        {
+            return await context.Set<Contact>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(Contact entity)
         {
             try
             {
-                context.Contacts.Add(entity);
+                await context.Set<Contact>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Contact inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the Contact.");
             }
         }
 
-        public void AddRange(IEnumerable<Contact> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(Contact entity)
         {
             try
             {
-                context.Contacts.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Contact Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the Contact.");
+            }
+        }
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var entity = await context.Set<Contact>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<Contact>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "Contact deleted successfully.");
+                }
+
+                return ApiResponse<string>.Fail("Contact with the given ID not found.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("Contact with the given ID not found.");
             }
         }
 
-        public IEnumerable<Contact> Find(Expression<Func<Contact, bool>> predicate)
+        public async Task<List<ContactsModel>> GetContactsbyContactid(string contactid)
         {
             try
             {
-                return context.Contacts.Where(predicate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                var contactlist = new List<ContactsModel>();
+                var contacts = await context.Contacts.Where(s => s.ContactsId.Equals(contactid) && s.Isdelete == false).ToListAsync();
+                foreach (var l in contacts)
+                {
+                    var contactsmod = new ContactsModel()
+                    {
+                        Id = l.Id,
+                        ContactsId=l.ContactsId,
+                        ContactType=l.ContactType,
+                        ContactValue=l.ContactValue                                            
 
-        public IEnumerable<Contact> GetAll()
-        {
-            try
-            {
-                return context.Contacts.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                    };
+                    contactlist.Add(contactsmod);
+                }
 
-        public Contact? GetById(int id)
-        {
-            try
-            {
-                return (Contact?)context.Contacts.Find(id);
+                return contactlist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetContactsbyContactid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
             }
-        }
-
-        public void Remove(Contact entity)
-        {
-            try
-            {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void RemoveRange(IEnumerable<Contact> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
+        
         }
     }
 }

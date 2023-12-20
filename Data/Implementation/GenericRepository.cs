@@ -1,5 +1,7 @@
-﻿using Data.Models;
+﻿using Data.Constant;
+using Data.Models;
 using Data.Repository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,46 +18,51 @@ namespace Data.Implementation
         {
             _context = context;
         }
-
-        public void Add(T entity)
+       
+        public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
         {
-            _context.Set<T>().Add(entity);
+            return await _context.Set<T>().Where(predicate).ToListAsync();
         }
 
-        public void AddRange(IEnumerable<T> entities)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            _context.Set<T>().AddRange(entities);
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
-        {
-            return _context.Set<T>().Where(predicate);
-        }
-
-        public IEnumerable<T> GetAll()
-        {
-            return _context.Set<T>().ToList();
-        }
-
-        public T? GetById(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             
-            return _context.Set<T>().Find(id);
+            return await _context.Set<T>().FindAsync(id);
         }
         public T? GetByuserId(string? user_id)
         {
 
             return _context.Set<T>().Find(user_id);
         }
-
-        public void Remove(T entity)
+        public async Task<ApiResponse<string>> InsertAsync(T entity)
         {
-            _context.Set<T>().Remove(entity);
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return ApiResponse<string>.Success(null, "entity inserted successfully.");
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+
+        public async Task<ApiResponse<string>> UpdateAsync(T entity)
         {
-            _context.Set<T>().RemoveRange(entities);
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return ApiResponse<string>.Success(null, "entity updated successfully.");
+        }
+
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
+        {
+            var entity = await _context.Set<T>().FindAsync(id);
+            if (entity != null)
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();                
+            }
+            return ApiResponse<string>.Success(null, "entity removed successfully.");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.Constant;
 using Data.Models;
 using Data.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -16,100 +17,75 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public FacilitiesRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
         }
 
-        public void Add(Facility entity)
+        public async Task<IEnumerable<Facility>> Find(Expression<Func<Facility, bool>> predicate)
+        {
+            return await context.Facilities.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Facility>> GetAllAsync()
+        {
+            return await context.Set<Facility>().ToListAsync();
+        }
+
+        public async Task<Facility> GetByIdAsync(int id)
+        {
+            return await context.Set<Facility>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(Facility entity)
         {
             try
             {
-                context.Facilities.Add(entity);
+                await context.Set<Facility>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Facility inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the Facility.");
             }
         }
 
-        public void AddRange(IEnumerable<Facility> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(Facility entity)
         {
             try
             {
-                context.Facilities.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Facility Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the Facility.");
             }
         }
-
-        public IEnumerable<Facility> Find(Expression<Func<Facility, bool>> predicate)
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
             {
-                return context.Facilities.Where(predicate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                var entity = await context.Set<Facility>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<Facility>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "Facility deleted successfully.");
+                }
 
-        public IEnumerable<Facility> GetAll()
-        {
-            try
-            {
-                return context.Facilities.ToList();
+                return ApiResponse<string>.Fail("Facility with the given ID not found.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public Facility? GetById(int id)
-        {
-            try
-            {
-                return (Facility?)context.Facilities.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void Remove(Facility entity)
-        {
-            try
-            {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void RemoveRange(IEnumerable<Facility> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("Facility with the given ID not found.");
             }
         }
     }

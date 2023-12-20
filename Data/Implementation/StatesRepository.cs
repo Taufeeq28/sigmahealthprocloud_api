@@ -1,6 +1,9 @@
 ﻿using Data;
+using Data.Constant;
 using Data.Models;
 using Data.Repository;
+using Data.RequestModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using System;
@@ -18,6 +21,7 @@ namespace Data.Implementation
         //private SigmaproIisContext context;
         private SigmaproIisContext context;
         private readonly ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public StatesRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger) 
         {
 
@@ -25,95 +29,120 @@ namespace Data.Implementation
             _logger = logger;
         }
 
-        public void Add(State entity)
+        public async Task<IEnumerable<State>> Find(Expression<Func<State, bool>> predicate)
+        {
+            return await context.States.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<State>> GetAllAsync()
+        {
+            return await context.States.Where(s => s.Isdelete == false).ToListAsync();
+        }
+
+        public async Task<State> GetByIdAsync(int id)
+        {
+            return await context.Set<State>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(State entity)
         {
             try
             {
-                context.States.Add(entity);
+                await context.Set<State>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "State inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the State.");
             }
         }
 
-        public void AddRange(IEnumerable<State> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(State entity)
         {
             try
             {
-                context.States.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "State Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the State.");
             }
         }
-
-        public IEnumerable<State> Find(Expression<Func<State, bool>> predicate)
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
             {
-                return context.States.Where(predicate);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
+                var entity = await context.Set<State>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<State>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "State deleted successfully.");
+                }
 
-        }
-
-        public IEnumerable<State> GetAll()
-        {
-            try
-            {
-                return context.States.ToList();
+                return ApiResponse<string>.Fail("State with the given ID not found.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("State with the given ID not found.");
             }
         }
-
-        public State? GetById(int id)
+        public async Task<List<StateModel>> GetStatebyCountryid(Guid countryid)
         {
             try
-            {
-                return (State?)context.States.Find(id);
+            { 
+                var statelist=new List<StateModel>();
+                var state= await context.States.Where(s => s.CountryId.ToString().ToLower().Equals(countryid.ToString().ToLower()) && s.Isdelete == false).ToListAsync();
+                foreach (var s in state) 
+                {
+                    var statemod = new StateModel()
+                    {
+                        Id = s.Id,
+                        StateId = s.StateId,
+                        StateName = s.StateName,
+                        StateCode = s.StateCode,
+                    };
+                    statelist.Add(statemod);
+                }
+                               
+                return statelist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetStatebyCountryid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
             }
         }
-
-        public void Remove(State entity)
+        public async Task<List<StateModel>> GetAllStates()
         {
             try
             {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                var statelist = new List<StateModel>();
+                var state = await context.States.Where(s => s.Isdelete == false).ToListAsync();
+                foreach (var s in state)
+                {
+                    var statemod = new StateModel()
+                    {
+                        Id = s.Id,
+                        StateId = s.StateId,
+                        StateName = s.StateName,
+                        StateCode = s.StateCode,
+                    };
+                    statelist.Add(statemod);
+                }
 
-        public void RemoveRange(IEnumerable<State> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
+                return statelist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetAllStates)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
             }
         }
     }

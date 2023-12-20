@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Data.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace Data.Repository
 {
     public interface ILOVTypeMasterRepository: IGenericRepository<LovMaster>
     {
+        public Task<List<LOVMasterModel>> GetLOVMasterbyLOVTypeid(string lovtype);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Data;
 using Data.Models;
+using Data.Constant;
 using Data.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Data.Implementation
 {
@@ -15,101 +18,77 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public AddressesRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
+        }        
+
+        public async Task<IEnumerable<Address>> Find(Expression<Func<Address, bool>> predicate)
+        {
+            return await context.Addresses.Where(predicate).ToListAsync();
         }
 
-        public void Add(Address entity)
+        public async Task<IEnumerable<Address>> GetAllAsync()
         {
-            try
-            {
-                context.Addresses.Add(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
+            return await context.Set<Address>().ToListAsync();
         }
 
-        public void AddRange(IEnumerable<Address> entities)
+        public async Task<Address> GetByIdAsync(int id)
         {
-            try
-            {
-                context.Addresses.AddRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
+            return await context.Set<Address>().FindAsync(id);
         }
 
-        public IEnumerable<Address> Find(Expression<Func<Address, bool>> predicate)
+        public async Task<ApiResponse<string>> InsertAsync(Address entity)
         {
             try
-            {
-                return context.Addresses.Where(predicate);
+            { 
+            await context.Set<Address>().AddAsync(entity);
+            await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Address inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the Address.");
             }
         }
 
-        public IEnumerable<Address> GetAll()
+        public async Task<ApiResponse<string>> UpdateAsync(Address entity)
+        {
+            try
+            { 
+            context.Entry(entity).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "Address Updated successfully.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the Address.");
+            }
+        }
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
             {
-                return context.Addresses.ToList();
+                var entity = await context.Set<Address>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<Address>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "Address deleted successfully.");
+                }
+
+                return ApiResponse<string>.Fail("Address with the given ID not found.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("Address with the given ID not found.");
             }
         }
 
-        public Address? GetById(int id)
-        {
-            try
-            {
-                return (Address?)context.Addresses.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void Remove(Address entity)
-        {
-            try
-            {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void RemoveRange(IEnumerable<Address> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
     }
 }

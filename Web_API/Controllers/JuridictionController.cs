@@ -24,64 +24,14 @@ namespace Web_API.Controllers
         }
         [HttpGet]
         [Route("getalljuridictions")]
-        public IActionResult GetAllJuridictions()
-        {
-            try
-            {
-                IEnumerable<Juridiction> juridictionlist = _unitOfWork.Juridictions.GetAll();
-                if (juridictionlist != null && juridictionlist.Any())
-                {
-                    var Juridictions = juridictionlist.Select(j =>
-                    new
-                    {
-                        JuridictionId = j.Id,
-                        Juridictionname = j.JuridictionName,
-
-                    });
-                    return Ok(Juridictions);
-                }
-                return NotFound($"No data found for Juridictions");
-
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "An error occurred while processing GetAllJuridictions request.");
-
-                // Return a 500 Internal Server Error with a generic message
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-        }
+        public async Task<IActionResult> GetAllJuridictions()
+             => Ok(await _unitOfWork.Juridictions.GetAllAsync().ConfigureAwait(true));
 
         [HttpGet]
         [Route("getjuricdictionbybusiness")]
-        public IActionResult GetJuricdictionByBusiness([FromQuery,Required] string businessid)
-        {
-            try
-            {
-                var juridictionlist = _unitOfWork.Juridictions.GetJuridictionsbyBusinessid(businessid);
-                if (juridictionlist != null && juridictionlist.Any())
-                {
-                    var Juridictions = juridictionlist.Select(j =>
-                    new
-                    {
-                        JuridictionId = j.Id,
-                        Juridictionname = j.JuridictionName,
+        public async Task<IActionResult> GetJuricdictionByBusiness([FromQuery,Required] Guid businessid)
+             => Ok(await _unitOfWork.Juridictions.GetJuridictionsbyBusinessid(businessid).ConfigureAwait(true));
+                
 
-                    });
-                    return Ok(Juridictions);
-                }
-                return NotFound($"No data found for Juridictions for businesss{businessid}");
-
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "An error occurred while processing GetJuricdictionByBusiness request.");
-
-                // Return a 500 Internal Server Error with a generic message
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-        }
     }
 }

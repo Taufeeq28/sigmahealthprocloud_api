@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Data.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Data.Repository
 {
     public interface IJuridictionsRepository : IGenericRepository<Juridiction>
     {
-        public IEnumerable<Juridiction> GetJuridictionsbyBusinessid(string businessid);
+        public Task<List<JuridictionModel>> GetJuridictionsbyBusinessid(Guid businessid);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.Constant;
 using Data.Models;
 using Data.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -18,38 +19,14 @@ namespace Data.Implementation
         
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
 
         public UsersRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
-        }
-      
-        public void Add(User entity)
-        {
-            try
-            {
-                context.Users.Add(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void AddRange(IEnumerable<User> entities)
-        {
-            try
-            {
-                context.Users.AddRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+        }     
+        
 
         public User Authenticate(User users)
         {
@@ -69,68 +46,68 @@ namespace Data.Implementation
             }
         }
 
-        public IEnumerable<User> Find(Expression<Func<User, bool>> predicate)
+        public async Task<IEnumerable<User>> Find(Expression<Func<User, bool>> predicate)
+        {
+            return await context.Users.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await context.Set<User>().ToListAsync();
+        }
+
+        public async Task<User> GetByIdAsync(int id)
+        {
+            return await context.Set<User>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(User entity)
         {
             try
             {
-                return context.Users.Where(predicate);
+                await context.Set<User>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "User inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the User.");
             }
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<ApiResponse<string>> UpdateAsync(User entity)
         {
             try
             {
-                return context.Users.ToList();
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "User Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the User.");
             }
         }
-
-        public User? GetById(int id)
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
             {
-                return (User?)context.Users.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                var entity = await context.Set<User>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<User>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "User deleted successfully.");
+                }
 
-        public void Remove(User entity)
-        {
-            try
-            {
-                context.Remove(entity);
+                return ApiResponse<string>.Fail("User with the given ID not found.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
-
-        public void RemoveRange(IEnumerable<User> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("User with the given ID not found.");
             }
         }
     }

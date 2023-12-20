@@ -1,6 +1,9 @@
 ﻿using Data;
+using Data.Constant;
 using Data.Models;
 using Data.Repository;
+using Data.RequestModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,100 +18,129 @@ namespace Data.Implementation
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
+        private readonly string _corelationId = string.Empty;
         public CitiesRepository(SigmaproIisContext _context,ILogger<UnitOfWork> logger)
         {
             this.context = _context;
             _logger = logger;
         }
 
-        public void Add(City entity)
+        public async Task<IEnumerable<City>> Find(Expression<Func<City, bool>> predicate)
+        {
+            return await context.Cities.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<City>> GetAllAsync()
+        {
+            return await context.Set<City>().ToListAsync();
+        }
+
+        public async Task<City> GetByIdAsync(int id)
+        {
+            return await context.Set<City>().FindAsync(id);
+        }
+
+        public async Task<ApiResponse<string>> InsertAsync(City entity)
         {
             try
             {
-                context.Cities.Add(entity);
+                await context.Set<City>().AddAsync(entity);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "City inserted successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Add)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the City.");
             }
         }
 
-        public void AddRange(IEnumerable<City> entities)
+        public async Task<ApiResponse<string>> UpdateAsync(City entity)
         {
             try
             {
-                context.Cities.AddRange(entities);
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(null, "City Updated successfully.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(AddRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while Updating the City.");
             }
         }
-
-        public IEnumerable<City> Find(Expression<Func<City, bool>> predicate)
+        public async Task<ApiResponse<string>> DeleteAsync(Guid id)
         {
             try
             {
-                return context.Cities.Where(predicate);
+                var entity = await context.Set<City>().FindAsync(id);
+                if (entity != null)
+                {
+                    context.Set<City>().Remove(entity);
+                    await context.SaveChangesAsync();
+                    return ApiResponse<string>.Success(id.ToString(), "City deleted successfully.");
+                }
+
+                return ApiResponse<string>.Fail("City with the given ID not found.");
             }
-            catch (Exception ex)
+            catch (Exception exp)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(Find)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("City with the given ID not found.");
             }
         }
-
-        public IEnumerable<City> GetAll()
+        public async Task<List<CityModel>> GetCitybyStateid(Guid stateid)
         {
             try
             {
-                return context.Cities.ToList();
+                var citylist = new List<CityModel>();
+                var cities = await context.Cities.Where(c => c.StateId.ToString().ToLower().Equals(stateid.ToString().ToLower()) && c.Isdelete == false).ToListAsync();
+                foreach (var c in cities)
+                {
+                    var citymod = new CityModel()
+                    {
+                        Id = c.Id,
+                        CityId = c.CityId,
+                        CityName = c.CityName
+                        
+                    };
+                    citylist.Add(citymod);
+                }
+
+                return citylist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetAll)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetCitybyStateid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
             }
         }
-
-        public City? GetById(int id)
+        public async Task<List<CityModel>> GetCitybyStateidandCountyid(Guid stateid, Guid countyid)
         {
             try
             {
-                return (City?)context.Cities.Find(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(GetById)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                var citylist = new List<CityModel>();
+                var cities = await context.Cities.Where(c => c.StateId.ToString().ToLower().Equals(stateid.ToString().ToLower()) &&
+                c.CountyId.ToString().ToLower().Equals(countyid.ToString().ToLower()) &&
+                c.Isdelete == false).ToListAsync();
+                foreach (var c in cities)
+                {
+                    var citymod = new CityModel()
+                    {
+                        Id = c.Id,
+                        CityId = c.CityId,
+                        CityName = c.CityName
 
-        public void Remove(City entity)
-        {
-            try
-            {
-                context.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Exception occurred in Method: {nameof(Remove)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
-            }
-        }
+                    };
+                    citylist.Add(citymod);
+                }
 
-        public void RemoveRange(IEnumerable<City> entities)
-        {
-            try
-            {
-                context.RemoveRange(entities);
+                return citylist;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception occurred in Method: {nameof(RemoveRange)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
-                throw;
+                _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetCitybyStateidandCountyid)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                throw new Exception(ex.Message); ;
             }
         }
     }

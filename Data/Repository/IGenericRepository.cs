@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Constant;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,15 +10,14 @@ namespace Data.Repository
 {
     public interface IGenericRepository<T> where T : class
     {
-        T? GetById(int id);
-        IEnumerable<T> GetAll();
+        Task<T> GetByIdAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync();
 
-        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
-        void Add(T entity);
-        void AddRange(IEnumerable<T> entities);
-        void Remove(T entity);
+        Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
+        Task<ApiResponse<string>> InsertAsync(T entity);
+        Task<ApiResponse<string>> UpdateAsync(T entity);
 
-        void RemoveRange(IEnumerable<T> entities);
+        Task<ApiResponse<string>> DeleteAsync(Guid id);
 
     }
 }

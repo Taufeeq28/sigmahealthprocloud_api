@@ -1,5 +1,8 @@
-﻿using Data.Models;
+﻿using BAL.Request;
+using Data.Implementation;
+using Data.Models;
 using Data.Repository;
+using Data.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,66 +23,30 @@ namespace Web_API.Controllers
             _logger = logger;
 
         }
+
         [HttpGet]
         [Route("getallorganizations")]
-        public IActionResult getallorganizations()
-        {
-            try
-            {
-                IEnumerable<Organization> organizationlist = _unitOfWork.Organizations.GetAll();
-                if (organizationlist != null && organizationlist.Any())
-                {
-                    var Organizations = organizationlist.Select(o =>
-                    new
-                    {
-                        OrganizationId = o.Id,
-                        OrganizationName = o.OrganizationName,
-                        JuridictionId = o.JuridictionId
-
-                    });
-                    return Ok(Organizations);
-                }
-                return NotFound($"No data found for Organizations");
-
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "An error occurred while processing getallorganizations request.");
-
-                // Return a 500 Internal Server Error with a generic message
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-        }
+        public async Task<IActionResult> GetAllOrganizations()
+            => Ok(await _unitOfWork.Organizations.GetAllAsync().ConfigureAwait(true));
         [HttpGet]
         [Route("getorganizationbyjurdiction")]
-        public IActionResult GetOrganizationByJurdiction([FromQuery, Required] string jurdictionid)
-        {
-            try
-            {
-                var orgnizationlist = _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdictionid);
-                if (orgnizationlist != null && orgnizationlist.Any())
-                {
-                    var Organizations = orgnizationlist.Select(o =>
-                    new
-                    {
-                        OrganizationId = o.Id,
-                        Organizationname = o.OrganizationName
+        public async Task<IActionResult> GetOrganizationByJurdiction([FromQuery, Required] Guid jurdictionid)
+            => Ok(await _unitOfWork.Organizations.GetOrganizationByJuridictionId(jurdictionid).ConfigureAwait(true));
+        
+        [HttpPut]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteOrganization([FromForm, Required] Guid orgid)
+         => Ok(await _unitOfWork.Organizations.DeleteAsync(orgid).ConfigureAwait(true));
 
-                    });
-                    return Ok(Organizations);
-                }
-                return NotFound($"No Organizations found for jurdiction{jurdictionid}");
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                _logger.LogError(ex, "An error occurred while processing GetOrganizationByJurdiction request.");
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateOrganization([FromBody] OrganizationModel obj)
+         => Ok(await _unitOfWork.Organizations.InsertAsync(obj).ConfigureAwait(true));
 
-                // Return a 500 Internal Server Error with a generic message
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-        }
+        [HttpPost]
+        [Route("edit")]
+        public async Task<IActionResult> EditOrganization([FromBody] OrganizationModel obj)
+         => Ok(await _unitOfWork.Organizations.UpdateAsync(obj).ConfigureAwait(true));
 
     }
 }
