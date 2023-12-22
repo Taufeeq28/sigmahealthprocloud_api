@@ -1,5 +1,6 @@
 ﻿using BAL.Constant;
 using BAL.Request;
+using BAL.Responses;
 using Data.Models;
 
 namespace BAL.Interfaces
@@ -10,5 +11,6 @@ namespace BAL.Interfaces
         Task<ApiResponse<string>> DeleteFacility(Guid facilityId);
         Task<ApiResponse<string>> CreateFacility(CreateFacilityRequest obj);
         Task<ApiResponse<string>> EditFacility(EditFacilityRequest obj);
+        Task<ApiResponse<FacilityDetailsResponse>> GetFacilityDetailsById(Guid facilityId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BAL.Constant;
 using BAL.Interfaces;
 using BAL.Request;
+using BAL.Responses;
 using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -145,6 +146,29 @@ namespace BAL.Services
                 return ApiResponse<string>.Fail("An error occurred while creating the facility.");
             }
         }
+        public async Task<ApiResponse<FacilityDetailsResponse>> GetFacilityDetailsById(Guid facilityId)
+        {
+            try
+            {
+                var facility = await _dbContext.Facilities.FindAsync(facilityId);
+
+                if (facility != null)
+                {
+                    var facilityDetails = FacilityDetailsResponse.FromFacilityEntity(facility);
+
+                    return ApiResponse<FacilityDetailsResponse>.Success(facilityDetails, "Facility details fetched successfully.");
+                }
+
+                _logger.LogError($"Facility with ID {facilityId} not found.");
+                return ApiResponse<FacilityDetailsResponse>.Fail("Facility not found.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<FacilityDetailsResponse>.Fail("An error occurred while fetching facility details.");
+            }
+        }
+
         #endregion
 
         #region Private Methods

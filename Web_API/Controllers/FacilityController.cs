@@ -40,6 +40,12 @@ namespace Web_API.Controllers
         public async Task<IActionResult> EditFacility([FromBody] EditFacilityRequest obj)
          => Ok(await _facilityService.EditFacility(obj).ConfigureAwait(true));
 
+        [HttpGet]
+        [Route("facilityDetailsById")]
+        public async Task<IActionResult> GetFacilityDetailsById(Guid facilityId)
+        => Ok(await _facilityService.GetFacilityDetailsById(facilityId).ConfigureAwait(true));
+           
+        
 
 
 
