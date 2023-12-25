@@ -42,7 +42,6 @@ namespace BAL.Services
 
                 var (sql, parameters) = FormQueryAndParamsForFetchingFacilitySearch(request);
 
-                
                 var result = await _dbContextudf.FacilitySearch.FromSqlRaw(sql, parameters.ToArray()).ToListAsync();
 
                 long? totalRows = result.FirstOrDefault()?.TotalRows;
