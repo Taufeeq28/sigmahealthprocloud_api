@@ -1,4 +1,7 @@
-﻿using Data.Models;
+﻿using BAL.Interfaces;
+using BAL.Request;
+using BAL.Services;
+using Data.Models;
 using Data.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +17,13 @@ namespace Web_API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private IConfiguration _config;
         private readonly ILogger<MasterDataController> _logger;
-        public MasterDataController(IUnitOfWork unitOfWork, IConfiguration config, ILogger<MasterDataController> logger)
+        private IMasterDataService _masterdataservice;
+        public MasterDataController(IUnitOfWork unitOfWork, IConfiguration config, ILogger<MasterDataController> logger, IMasterDataService masterdataservice)
         {
             _unitOfWork = unitOfWork;
             _config = config;
             _logger = logger;
+            _masterdataservice = masterdataservice;
         }
         #region Countries
         [HttpGet]
@@ -74,5 +79,11 @@ namespace Web_API.Controllers
         public async Task<IActionResult> GetContactsbyContactid([FromQuery, Required] string contactid)
             => Ok(await _unitOfWork.Contacts.GetContactsbyContactid(contactid).ConfigureAwait(true));
         #endregion
+
+        [HttpPost]
+        [Route("generate-next-id")]
+        public async Task<IActionResult> GenerateNextId([FromBody] GenerateNextIdRequest obj)
+        => Ok(await _masterdataservice.GenerateNextId(obj).ConfigureAwait(true));
+
     }
 }

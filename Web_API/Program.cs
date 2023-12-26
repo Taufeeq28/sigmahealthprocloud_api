@@ -69,6 +69,7 @@ builder.Services.AddDbContext<SigmaproIisContextUdf>(options =>
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacilityService, FacilityService>();
 builder.Services.AddScoped(typeof(IDataAccessProvider<>), typeof(DataAccessProvider<>));
+builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddSerilog();
 
 var app = builder.Build();

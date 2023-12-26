@@ -6,7 +6,6 @@ namespace Data.Models
 {
     public class FacilitySearchResponse
     {
-        //
         public Guid? id { get; set; }
         public string? facilityid { get; set; }
         public string ? jurisdiction { get; set; }

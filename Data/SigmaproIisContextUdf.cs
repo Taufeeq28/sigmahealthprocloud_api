@@ -1,10 +1,6 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Data
 {
@@ -19,13 +15,12 @@ namespace Data
         {
         }
         public virtual DbSet<FacilitySearchResponse> FacilitySearch { get; set; }
+        public DbSet<GenerateNextIdResponse> GenerateNextIdResults { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FacilitySearchResponse>(e =>
-            {
-                e.HasNoKey();
-            });
-
+            modelBuilder.Entity<GenerateNextIdResponse>().HasNoKey();
+            modelBuilder.Entity<FacilitySearchResponse>().HasNoKey();
+            
             OnModelCreatingPartial(modelBuilder);
         }
 

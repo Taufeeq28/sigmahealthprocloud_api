@@ -2,13 +2,9 @@
 using BAL.Interfaces;
 using BAL.Request;
 using BAL.Responses;
-using BAL.Services;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework.Interfaces;
 using Web_API.Controllers;
 
 namespace WebApi.Tests
@@ -153,7 +149,6 @@ namespace WebApi.Tests
             // Arrange
             var createFacilityRequest = new CreateFacilityRequest
             {
-                FacilityId = "FCS_001",
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",
@@ -187,7 +182,6 @@ namespace WebApi.Tests
             // Arrange
             var createFacilityRequest = new CreateFacilityRequest
             {
-                FacilityId = "FCS_001",
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",

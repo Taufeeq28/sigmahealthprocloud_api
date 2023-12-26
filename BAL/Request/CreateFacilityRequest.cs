@@ -5,8 +5,7 @@ namespace BAL.Request
 {
     public class CreateFacilityRequest
     {
-        [Required]
-        public string? FacilityId { get; set; }
+      
 
         [Required]
         public string? FacilityName { get; set; }

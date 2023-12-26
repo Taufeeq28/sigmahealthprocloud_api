@@ -163,7 +163,6 @@ namespace BAL.Tests
             // Arrange
             var createFacilityRequest = new CreateFacilityRequest
             {
-                FacilityId = "FCS_001",
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",
@@ -191,7 +190,6 @@ namespace BAL.Tests
             // Arrange
             var createFacilityRequest = new CreateFacilityRequest
             {
-                FacilityId = "FCS_001",
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",

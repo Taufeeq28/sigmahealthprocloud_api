@@ -80,28 +80,65 @@ namespace BAL.Services
         {
             try
             {
-               
-                var newFacility = new Facility
+                var generateNextIdRequest = new GenerateNextIdRequest
                 {
-                    FacilityId = obj.FacilityId,
-                    FacilityName = obj.FacilityName,
-                    AdministeredAtLocation = null,
-                    SendingOrganization = null,
-                    ResponsibleOrganization = null,
-                    CreatedDate=DateTime.UtcNow,
-                    UpdatedDate=DateTime.UtcNow,
-                    CreatedBy = obj.CreatedBy,
-                    UpdatedBy = obj.UpdatedBy,
-                    Isdelete = false,
-                    OrganizationsId = obj.OrganizationsId,
-                    AddressId=obj.AddressId
+                    output_table_name = Constants.OUTPUT_TABLE_NAM_FACILITIES,
+                    start_column_name = Constants.START_CLOUMN_NAME_FACILITY_ID_START,
+                    suffix_column_name = Constants.SUFFIX_CLOUMN_NAME_FACILITY_ID_SUFFIX,
+                    output_column_name = Constants.OUTPUT_CLOUMN_NAME_FACILITY_ID
                 };
+                MasterDataService _masterdataservice = new MasterDataService(_dbContext,_logger,_dbContextudf);
+                var nextIdApiResponse = await _masterdataservice.GenerateNextId(generateNextIdRequest);
 
-                _dbContext.Facilities.Add(newFacility);
+                if (nextIdApiResponse.Status == ApiResponsesConstants.SUCCESS_STATUS)
+                {
+                    string nextId = nextIdApiResponse.Data.next_id.ToString();
 
-                await _dbContext.SaveChangesAsync();
+                    using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            if (_dbContext.Facilities.Any(f => f.FacilityId == nextId))
+                            {
+                                transaction.Rollback();
+                                return ApiResponse<string>.Fail($"Facility with ID {nextId} already exists.");
+                            }
 
-                return ApiResponse<string>.Success(null,"Facility created successfully.");
+                            var newFacility = new Facility
+                            {
+                                FacilityId = nextId,
+                                FacilityName = obj.FacilityName,
+                                AdministeredAtLocation = null,
+                                SendingOrganization = null,
+                                ResponsibleOrganization = null,
+                                CreatedDate = DateTime.UtcNow,
+                                UpdatedDate = DateTime.UtcNow,
+                                CreatedBy = obj.CreatedBy,
+                                UpdatedBy = obj.UpdatedBy,
+                                Isdelete = false,
+                                OrganizationsId = obj.OrganizationsId,
+                                AddressId = obj.AddressId
+                            };
+
+                            _dbContext.Facilities.Add(newFacility);
+
+                            await _dbContext.SaveChangesAsync();
+
+                            transaction.Commit();
+
+                            return ApiResponse<string>.Success(null, $"Facility - {nextId} created successfully.");
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+                else
+                {
+                    return ApiResponse<string>.Fail($"Failed to generate next ID: {nextIdApiResponse.Message}");
+                }
             }
             catch (Exception exp)
             {
@@ -109,6 +146,7 @@ namespace BAL.Services
                 return ApiResponse<string>.Fail("An error occurred while creating the facility.");
             }
         }
+
         public async Task<ApiResponse<string>> EditFacility(EditFacilityRequest obj)
         {
             try
