@@ -29,15 +29,7 @@ public partial class Facility
 
     public Guid? OrganizationsId { get; set; }
 
-    public Guid? AddressId { get; set; }
-
-    public Guid? ContactId { get; set; }
-
     public Guid? UserId { get; set; }
-
-    public virtual Address? Address { get; set; }
-
-    public virtual Contact? Contact { get; set; }
 
     public virtual Organization? Organizations { get; set; }
 

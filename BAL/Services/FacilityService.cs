@@ -6,10 +6,9 @@ using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NetTopologySuite.Index.HPRtree;
 using Npgsql;
 using NpgsqlTypes;
-using Serilog.Core;
+
 
 
 namespace BAL.Services
@@ -82,12 +81,14 @@ namespace BAL.Services
             {
                 var generateNextIdRequest = new GenerateNextIdRequest
                 {
-                    output_table_name = Constants.OUTPUT_TABLE_NAM_FACILITIES,
+                    output_table_name = Constants.OUTPUT_TABLE_NAME_FACILITIES,
                     start_column_name = Constants.START_CLOUMN_NAME_FACILITY_ID_START,
                     suffix_column_name = Constants.SUFFIX_CLOUMN_NAME_FACILITY_ID_SUFFIX,
                     output_column_name = Constants.OUTPUT_CLOUMN_NAME_FACILITY_ID
                 };
-                MasterDataService _masterdataservice = new MasterDataService(_dbContext,_logger,_dbContextudf);
+
+                MasterDataService _masterdataservice = new MasterDataService(_dbContext ,Constants.CreateLogger<MasterDataService>(), _dbContextudf);
+
                 var nextIdApiResponse = await _masterdataservice.GenerateNextId(generateNextIdRequest);
 
                 if (nextIdApiResponse.Status == ApiResponsesConstants.SUCCESS_STATUS)
@@ -116,8 +117,7 @@ namespace BAL.Services
                                 CreatedBy = obj.CreatedBy,
                                 UpdatedBy = obj.UpdatedBy,
                                 Isdelete = false,
-                                OrganizationsId = obj.OrganizationsId,
-                                AddressId = obj.AddressId
+                                OrganizationsId = obj.OrganizationsId
                             };
 
                             _dbContext.Facilities.Add(newFacility);
@@ -146,7 +146,7 @@ namespace BAL.Services
                 return ApiResponse<string>.Fail("An error occurred while creating the facility.");
             }
         }
-
+       
         public async Task<ApiResponse<string>> EditFacility(EditFacilityRequest obj)
         {
             try
@@ -167,7 +167,6 @@ namespace BAL.Services
                     updateFacility.UpdatedDate = DateTime.UtcNow;
                     updateFacility.UpdatedBy = obj.UpdatedBy;
                     updateFacility.OrganizationsId = obj.OrganizationsId;
-                    updateFacility.AddressId = obj.AddressId;
 
                     _dbContext.Facilities.Update(updateFacility);
                     await _dbContext.SaveChangesAsync();

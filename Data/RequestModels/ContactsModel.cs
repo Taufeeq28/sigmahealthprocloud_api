@@ -13,7 +13,7 @@ namespace Data.RequestModels
         public Guid Id { get; set; }
 
         [Required]
-        public int ContactsId { get; set; }
+        public string? ContactsId { get; set; }
 
         [Required]
         public string? ContactValue { get; set; }

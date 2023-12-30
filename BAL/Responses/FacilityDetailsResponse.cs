@@ -12,7 +12,6 @@ namespace BAL.Responses
         public DateTime? UpdatedDate { get; set; }
         public string? UpdatedBy { get; set; }
         public Guid? OrganizationsId { get; set; }
-        public Guid? AddressId { get; set; }
 
         public static FacilityDetailsResponse FromFacilityEntity(Facility facility)
         {
@@ -25,7 +24,7 @@ namespace BAL.Responses
                 UpdatedDate = facility.UpdatedDate,
                 UpdatedBy = facility.UpdatedBy,
                 OrganizationsId = facility.OrganizationsId,
-                AddressId = facility.AddressId
+                
             };
         }
     }

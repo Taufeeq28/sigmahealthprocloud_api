@@ -152,8 +152,8 @@ namespace WebApi.Tests
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
+                OrganizationsId = Guid.NewGuid()
+                
             };
 
             var expectedApiResponse = ApiResponse<string>.Success(null, "Facility created successfully.");
@@ -185,8 +185,7 @@ namespace WebApi.Tests
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
+                OrganizationsId = Guid.NewGuid()
             };
 
             var expectedApiResponse = ApiResponse<string>.Fail("An error occurred while creating the facility.");
@@ -220,8 +219,7 @@ namespace WebApi.Tests
                 SendingOrganization = "Org1",
                 ResponsibleOrganization = "ResOrg1",
                 UpdatedBy = "User1",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
+                OrganizationsId = Guid.NewGuid()
             };
 
             var expectedResponse = ApiResponse<string>.Success(null, "Facility record updated successfully.");
@@ -254,8 +252,8 @@ namespace WebApi.Tests
                 SendingOrganization = "Org1",
                 ResponsibleOrganization = "ResOrg1",
                 UpdatedBy = "User1",
-                OrganizationsId = Guid.Empty,
-                AddressId = Guid.Empty
+                OrganizationsId = Guid.Empty
+               
             };
 
             var expectedResponse = ApiResponse<string>.Fail("Invalid input. EditFacilityRequest object is null.");
@@ -291,8 +289,8 @@ namespace WebApi.Tests
                 ResponsibleOrganization = "Org B",
                 UpdatedDate = DateTime.UtcNow,
                 UpdatedBy = "Admin",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
+                OrganizationsId = Guid.NewGuid()
+                
             };
 
             _facilityServiceMock

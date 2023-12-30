@@ -11,15 +11,18 @@ namespace Data.Constant
         public string? Status { get; set; }
         public string? Message { get; set; }
         public T? Data { get; set; }
-
+        public List<T>? DataList { get; set; }
         public static ApiResponse<T> Success(T? data, string message = "Operation successful.")
         {
-            return new ApiResponse<T> { Status = "Success", Message = message, Data = data };
+            return new ApiResponse<T> { Status = ApiResponsesConstants.SUCCESS_STATUS, Message = message, Data = data };
         }
-
+        public static ApiResponse<T> SuccessList(List<T>? dataList, string message = "Operation successful.")
+        {
+            return new ApiResponse<T> { Status = ApiResponsesConstants.SUCCESS_STATUS, Message = message, DataList = dataList };
+        }
         public static ApiResponse<T> Fail(string message = "Operation failed.")
         {
-            return new ApiResponse<T> { Status = "Fail", Message = message, Data = null };
+            return new ApiResponse<T> { Status = ApiResponsesConstants.FAILURE_STATUS, Message = message, Data = null };
         }
     }
 

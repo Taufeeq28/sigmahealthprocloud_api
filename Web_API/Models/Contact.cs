@@ -23,9 +23,9 @@ public partial class Contact
 
     public string? ContactType { get; set; }
 
-    public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
+    public Guid? EntityId { get; set; }
 
-    public virtual ICollection<Site> Sites { get; set; } = new List<Site>();
+    public string? EntityType { get; set; }
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

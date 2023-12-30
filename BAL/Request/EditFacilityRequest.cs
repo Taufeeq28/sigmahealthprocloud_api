@@ -27,7 +27,6 @@ namespace BAL.Request
         [Required]
         public Guid? OrganizationsId { get; set; }
 
-        [Required]
-        public Guid? AddressId { get; set; }
+        
     }
 }

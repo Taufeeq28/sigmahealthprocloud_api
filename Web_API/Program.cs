@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5173")
+            builder.WithOrigins("http://localhost:5173", "https://dev-sigmacloud-app.azurewebsites.net")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
@@ -70,6 +70,10 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacilityService, FacilityService>();
 builder.Services.AddScoped(typeof(IDataAccessProvider<>), typeof(DataAccessProvider<>));
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
+builder.Services.AddScoped<IAddressesService, AddressesService>();
+
+builder.Services.AddScoped<IAddressesRepository, AddressesRepository>();
+
 builder.Services.AddSerilog();
 
 var app = builder.Build();

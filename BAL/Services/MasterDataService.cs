@@ -15,9 +15,9 @@ namespace BAL.Services
     {
         private readonly SigmaproIisContext _dbContext;
         private readonly SigmaproIisContextUdf _dbContextudf;
-        private readonly ILogger<FacilityService> _logger;
+        private readonly ILogger<MasterDataService> _logger;
         private readonly string _corelationId = string.Empty;
-        public MasterDataService(SigmaproIisContext dbContext, ILogger<FacilityService> logger, SigmaproIisContextUdf dbContextudf) : base(dbContext)
+        public MasterDataService(SigmaproIisContext dbContext, ILogger<MasterDataService> logger, SigmaproIisContextUdf dbContextudf) : base(dbContext)
         {
             _dbContext = dbContext;
             _logger = logger;

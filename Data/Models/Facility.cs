@@ -29,13 +29,13 @@ public partial class Facility
 
     public Guid? OrganizationsId { get; set; }
 
-    public Guid? AddressId { get; set; }
-
-    public Guid? ContactId { get; set; }
-
-    public virtual Address? Address { get; set; }
-
-    public virtual Contact? Contact { get; set; }
+    public Guid? UserId { get; set; }
 
     public virtual Organization? Organizations { get; set; }
+
+    public virtual ICollection<Provider> Providers { get; set; } = new List<Provider>();
+
+    public virtual ICollection<Site> Sites { get; set; } = new List<Site>();
+
+    public virtual User? User { get; set; }
 }

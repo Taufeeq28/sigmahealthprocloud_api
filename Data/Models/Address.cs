@@ -39,9 +39,9 @@ public partial class Address
 
     public virtual County? County { get; set; }
 
-    public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
-
     public virtual ICollection<Organization> Organizations { get; set; } = new List<Organization>();
+
+    public virtual ICollection<Site> Sites { get; set; } = new List<Site>();
 
     public virtual State? State { get; set; }
 }

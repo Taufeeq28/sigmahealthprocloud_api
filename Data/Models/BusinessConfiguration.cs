@@ -27,5 +27,9 @@ public partial class BusinessConfiguration
 
     public string? OrganizationIdStart { get; set; }
 
+    public string? AddressIdSuffix { get; set; }
+
+    public string? AddressIdStart { get; set; }
+
     public virtual ICollection<Juridiction> Juridictions { get; set; } = new List<Juridiction>();
 }

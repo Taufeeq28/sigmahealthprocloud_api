@@ -167,7 +167,6 @@ namespace BAL.Tests
                 CreatedBy = "User1",
                 UpdatedBy = "User1",
                 OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
             };
 
             var mockedDbSet = new Mock<DbSet<Facility>>();
@@ -193,8 +192,8 @@ namespace BAL.Tests
                 FacilityName = "New Facility",
                 CreatedBy = "User1",
                 UpdatedBy = "User1",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
+                OrganizationsId = Guid.NewGuid()
+               
             };
 
             _dbContextMock.Setup(db => db.Facilities.Add(It.IsAny<Facility>())).Throws(new Exception("Simulated database error"));
@@ -220,8 +219,7 @@ namespace BAL.Tests
                 SendingOrganization = "Org1",
                 ResponsibleOrganization = "ResOrg1",
                 UpdatedBy = "User1",
-                OrganizationsId = Guid.Empty,
-                AddressId = Guid.Empty
+                OrganizationsId = Guid.Empty
             };
 
             var expectedResponse = ApiResponse<string>.Fail("Facility with the given ID not found.");
@@ -250,9 +248,8 @@ namespace BAL.Tests
                 SendingOrganization = "UpdatedSendingOrg",
                 ResponsibleOrganization = "UpdatedResponsibleOrg",
                 UpdatedBy = "UpdatedUser",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
-                // Set other properties as needed
+                OrganizationsId = Guid.NewGuid()
+                
             };
 
             var existingFacility = new Facility
@@ -263,9 +260,8 @@ namespace BAL.Tests
                 SendingOrganization = "ExistingSendingOrg",
                 ResponsibleOrganization = "ExistingResponsibleOrg",
                 UpdatedBy = "ExistingUser",
-                OrganizationsId = validRequest.OrganizationsId,
-                AddressId =validRequest.AddressId
-                // Set other properties as needed
+                OrganizationsId = validRequest.OrganizationsId
+               
             };
 
             var expectedResponse = ApiResponse<string>.Success(null, "Facility record updated successfully.");
@@ -302,8 +298,7 @@ namespace BAL.Tests
                 ResponsibleOrganization = "Org B",
                 UpdatedDate = DateTime.UtcNow,
                 UpdatedBy = "Admin",
-                OrganizationsId = Guid.NewGuid(),
-                AddressId = Guid.NewGuid()
+                OrganizationsId = Guid.NewGuid()
             };
 
             var expectedResponse = ApiResponse<FacilityDetailsResponse>.Success(

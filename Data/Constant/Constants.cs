@@ -1,7 +1,6 @@
-﻿
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-namespace BAL
+namespace Data
 {
     public static class Constants
     {

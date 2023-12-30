@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Web_API.Models;
+namespace Data.Models;
 
 public partial class Site
 {
