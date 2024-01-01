@@ -83,7 +83,7 @@ namespace BAL.Services
                     UpdatedBy = obj.UpdatedBy,
                     Isdelete = false,
                     OrganizationsId = obj.OrganizationsId,
-                    AddressId=obj.AddressId
+                    //AddressId=obj.AddressId
                 };
 
                 _dbContext.Facilities.Add(newFacility);
@@ -118,7 +118,7 @@ namespace BAL.Services
                     updateFacility.UpdatedDate = DateTime.UtcNow;
                     updateFacility.UpdatedBy = obj.UpdatedBy;
                     updateFacility.OrganizationsId = obj.OrganizationsId;
-                    updateFacility.AddressId = obj.AddressId;
+                    //updateFacility.AddressId = obj.AddressId;
 
                     _dbContext.Facilities.Update(updateFacility);
                     await _dbContext.SaveChangesAsync();

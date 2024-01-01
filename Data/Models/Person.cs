@@ -3,13 +3,19 @@ using System.Collections.Generic;
 
 namespace Data.Models;
 
-public partial class Contact
+public partial class Person
 {
     public Guid Id { get; set; }
 
-    public string ContactsId { get; set; } = null!;
+    public int PersonId { get; set; }
 
-    public string? ContactValue { get; set; }
+    public string? PersonType { get; set; }
+
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public string? Gender { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
@@ -21,11 +27,7 @@ public partial class Contact
 
     public bool? Isdelete { get; set; }
 
-    public string? ContactType { get; set; }
-
-    public Guid? EntityId { get; set; }
-
-    public string? EntityType { get; set; }
+    public string? DateOfBirth { get; set; }
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

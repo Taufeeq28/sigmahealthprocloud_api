@@ -33,6 +33,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<County> Counties { get; set; }
 
+    public virtual DbSet<EntityAddress> EntityAddresses { get; set; }
+
     public virtual DbSet<Facility> Facilities { get; set; }
 
     public virtual DbSet<Juridiction> Juridictions { get; set; }
@@ -40,6 +42,12 @@ public partial class SigmaproIisContext : DbContext
     public virtual DbSet<LovMaster> LovMasters { get; set; }
 
     public virtual DbSet<Organization> Organizations { get; set; }
+
+    public virtual DbSet<Person> People { get; set; }
+
+    public virtual DbSet<Provider> Providers { get; set; }
+
+    public virtual DbSet<Site> Sites { get; set; }
 
     public virtual DbSet<State> States { get; set; }
 
@@ -215,6 +223,14 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("contacts");
 
+            entity.HasIndex(e => e.EntityId, "fki_entity_organization_contact");
+
+            entity.HasIndex(e => e.EntityId, "fki_entity_provider_contact");
+
+            entity.HasIndex(e => e.EntityId, "fki_entity_site_contact");
+
+            entity.HasIndex(e => e.EntityId, "fki_f");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -225,12 +241,16 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("contact_value");
             entity.Property(e => e.ContactsId)
-                .ValueGeneratedOnAdd()
+                .HasColumnType("character varying")
                 .HasColumnName("contacts_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.EntityId).HasColumnName("entity_id");
+            entity.Property(e => e.EntityType)
+                .HasColumnType("character varying")
+                .HasColumnName("entity_type");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
@@ -332,24 +352,55 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("fk_stateids");
         });
 
+        modelBuilder.Entity<EntityAddress>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("entity_address_pkey");
+
+            entity.ToTable("entity_address");
+
+            entity.HasIndex(e => e.EntityId, "fki_entity_facility_id");
+
+            entity.HasIndex(e => e.EntityId, "fki_entity_organization_id");
+
+            entity.HasIndex(e => e.EntityId, "fki_entity_provider_id");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.AddressType)
+                .HasColumnType("character varying")
+                .HasColumnName("address_type");
+            entity.Property(e => e.Addressid).HasColumnName("addressid");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.EntityId).HasColumnName("entity_id");
+            entity.Property(e => e.EntityType)
+                .HasColumnType("character varying")
+                .HasColumnName("entity_type");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
         modelBuilder.Entity<Facility>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Facilities_pkey");
 
             entity.ToTable("facilities");
 
-            entity.HasIndex(e => e.AddressId, "fki_fk_fac_address_id");
+            entity.HasIndex(e => e.UserId, "fki_fk_facility_user_id");
 
             entity.HasIndex(e => e.OrganizationsId, "fki_organizations_id");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
-            entity.Property(e => e.AddressId).HasColumnName("address_id");
             entity.Property(e => e.AdministeredAtLocation)
                 .HasColumnType("character varying")
                 .HasColumnName("administered_at_location");
-            entity.Property(e => e.ContactId).HasColumnName("contact_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -372,18 +423,15 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
-
-            entity.HasOne(d => d.Address).WithMany(p => p.Facilities)
-                .HasForeignKey(d => d.AddressId)
-                .HasConstraintName("fk_fac_address_id");
-
-            entity.HasOne(d => d.Contact).WithMany(p => p.Facilities)
-                .HasForeignKey(d => d.ContactId)
-                .HasConstraintName("fk_contactid");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Organizations).WithMany(p => p.Facilities)
                 .HasForeignKey(d => d.OrganizationsId)
                 .HasConstraintName("organizations_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Facilities)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("fk_facility_user_id");
         });
 
         modelBuilder.Entity<Juridiction>(entity =>
@@ -497,6 +545,143 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("fk_juridiction_id");
         });
 
+        modelBuilder.Entity<Person>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Person_pkey");
+
+            entity.ToTable("person");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.DateOfBirth)
+                .HasColumnType("character varying")
+                .HasColumnName("date_of_birth");
+            entity.Property(e => e.FirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("first_name");
+            entity.Property(e => e.Gender)
+                .HasColumnType("character varying")
+                .HasColumnName("gender");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.LastName)
+                .HasColumnType("character varying")
+                .HasColumnName("last_name");
+            entity.Property(e => e.PersonId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("person_id");
+            entity.Property(e => e.PersonType)
+                .HasColumnType("character varying")
+                .HasColumnName("person_type");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
+        modelBuilder.Entity<Provider>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Provider_pkey");
+
+            entity.ToTable("provider");
+
+            entity.HasIndex(e => e.FacilityId, "fki_provider_facility_id_fkey");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.ContactNumber)
+                .HasColumnType("character varying")
+                .HasColumnName("contact_number");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Email)
+                .HasColumnType("character varying")
+                .HasColumnName("email");
+            entity.Property(e => e.FacilityId).HasColumnName("facility_id");
+            entity.Property(e => e.ProviderId)
+                .HasColumnType("character varying")
+                .HasColumnName("provider_id");
+            entity.Property(e => e.ProviderName)
+                .HasColumnType("character varying")
+                .HasColumnName("provider_name");
+            entity.Property(e => e.ProviderType)
+                .HasColumnType("character varying")
+                .HasColumnName("provider_type");
+            entity.Property(e => e.Specialty)
+                .HasColumnType("character varying")
+                .HasColumnName("specialty");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.Facility).WithMany(p => p.Providers)
+                .HasForeignKey(d => d.FacilityId)
+                .HasConstraintName("provider_facility_id_fkey");
+        });
+
+        modelBuilder.Entity<Site>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Site_pkey");
+
+            entity.ToTable("site");
+
+            entity.HasIndex(e => e.FacilityId, "fki_facilities_id");
+
+            entity.HasIndex(e => e.AddressId, "fki_fk_site_address_id");
+
+            entity.HasIndex(e => e.FacilityId, "fki_fk_site_facility_id");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.AddressId).HasColumnName("address_id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.FacilityId).HasColumnName("facility_id");
+            entity.Property(e => e.IsImmunizationSite).HasColumnName("is_immunization_site");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.ParentSite)
+                .HasColumnType("character varying")
+                .HasColumnName("parent_site");
+            entity.Property(e => e.SiteContactPerson)
+                .HasColumnType("character varying")
+                .HasColumnName("site_contact_person");
+            entity.Property(e => e.SiteId)
+                .HasColumnType("character varying")
+                .HasColumnName("site_id");
+            entity.Property(e => e.SiteName)
+                .HasColumnType("character varying")
+                .HasColumnName("site_name");
+            entity.Property(e => e.SitePinNumber)
+                .HasColumnType("character varying")
+                .HasColumnName("site_pin_number");
+            entity.Property(e => e.SiteType)
+                .HasColumnType("character varying")
+                .HasColumnName("site_type");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.Sites)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("fk_site_address_id");
+
+            entity.HasOne(d => d.Facility).WithMany(p => p.Sites)
+                .HasForeignKey(d => d.FacilityId)
+                .HasConstraintName("fk_site_facility_id");
+        });
+
         modelBuilder.Entity<State>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("States_pkey");
@@ -569,6 +754,8 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("users");
 
+            entity.HasIndex(e => e.PersonId, "fki_fk_user_person_id");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -587,6 +774,7 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Password)
                 .HasColumnType("character varying")
                 .HasColumnName("password");
+            entity.Property(e => e.PersonId).HasColumnName("person_id");
             entity.Property(e => e.SequenceId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("sequence_id");
@@ -594,19 +782,20 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
-            entity.Property(e => e.UserFirstname)
-                .HasColumnType("character varying")
-                .HasColumnName("user_firstname");
             entity.Property(e => e.UserId)
                 .HasColumnType("character varying")
                 .HasColumnName("user_id");
-            entity.Property(e => e.UserLasttname)
+            entity.Property(e => e.UserType)
                 .HasColumnType("character varying")
-                .HasColumnName("user_lasttname");
+                .HasColumnName("user_type");
 
             entity.HasOne(d => d.Contact).WithMany(p => p.Users)
                 .HasForeignKey(d => d.ContactId)
                 .HasConstraintName("fk_contact_id");
+
+            entity.HasOne(d => d.Person).WithMany(p => p.Users)
+                .HasForeignKey(d => d.PersonId)
+                .HasConstraintName("fk_user_person_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

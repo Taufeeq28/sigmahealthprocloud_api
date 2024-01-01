@@ -13,9 +13,7 @@ public partial class User
 
     public string? Password { get; set; }
 
-    public string? UserFirstname { get; set; }
-
-    public string? UserLasttname { get; set; }
+    public string? UserType { get; set; }
 
     public string? Gender { get; set; }
 
@@ -33,5 +31,11 @@ public partial class User
 
     public Guid? ContactId { get; set; }
 
+    public Guid? PersonId { get; set; }
+
     public virtual Contact? Contact { get; set; }
+
+    public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
+
+    public virtual Person? Person { get; set; }
 }
