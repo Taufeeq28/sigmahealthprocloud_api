@@ -1,6 +1,4 @@
 using Data.Models;
-using Data.Implementation;
-using Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +7,8 @@ using BAL.Interfaces;
 using BAL.Services;
 using Serilog;
 using Data;
+using BAL.Repository;
+using BAL.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -2,7 +2,7 @@
 using BAL.Request;
 using BAL.Services;
 using Data.Models;
-using Data.Repository;
+using BAL.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;

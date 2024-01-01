@@ -1,5 +1,5 @@
-﻿using Data.Models;
-using Data.Repository;
+﻿using BAL.Repository;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

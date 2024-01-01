@@ -1,6 +1,6 @@
-﻿using Data.Implementation;
+﻿using BAL.Repository;
+using BAL.Implementation;
 using Data.Models;
-using Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
