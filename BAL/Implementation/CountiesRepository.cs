@@ -102,6 +102,7 @@ namespace BAL.Implementation
                         CountyId = c.CountyId,
                         CountyName = c.CountyName,
                         CountyCode = c.CountyCode,
+                        StateId= c.StateId                        
                     };
                     countylist.Add(countymod);
                 }

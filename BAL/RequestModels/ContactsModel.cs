@@ -21,6 +21,10 @@ namespace BAL.RequestModels
         [Required]
 
         public string? ContactType { get; set; }
+        [Required]
+        public Guid? EntityId { get; set; }
+        [Required]
+        public string? EntityType { get; set; }
 
     }
 }

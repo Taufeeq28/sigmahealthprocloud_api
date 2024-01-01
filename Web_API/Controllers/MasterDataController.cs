@@ -76,7 +76,7 @@ namespace Web_API.Controllers
         #region Contacts
         [HttpGet]
         [Route("getcontactsbycontactid")]
-        public async Task<IActionResult> GetContactsbyContactid([FromQuery, Required] string contactid)
+        public async Task<IActionResult> GetContactsbyContactid([FromQuery, Required] Guid contactid)
             => Ok(await _unitOfWork.Contacts.GetContactsbyContactid(contactid).ConfigureAwait(true));
         #endregion
 

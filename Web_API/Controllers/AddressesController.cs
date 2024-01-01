@@ -1,6 +1,6 @@
 ﻿using BAL.Interfaces;
 using BAL.Request;
-using Data.Repository;
+using BAL.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;

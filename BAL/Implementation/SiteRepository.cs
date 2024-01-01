@@ -116,7 +116,7 @@ namespace BAL.Implementation
                 var newsite = new Site()
                 {
                     SiteId = sitemod.SiteId,
-                    SiteName = sitemod.SiteName,
+                    SiteName = sitemod.SiteName,            
                     SiteType = sitemod.SiteType,
                     ParentSite = sitemod.ParentSite,
                     SiteContactPerson = sitemod.SiteContactPerson,
@@ -151,7 +151,7 @@ namespace BAL.Implementation
             try
             {
                 var updateSite = new Site();// await context.Sites.FindAsync(entity.Id);
-                if (updateSite != null)
+                if (entity != null)
                 {
                     updateSite.AddressId = entity.AddressId;
                     updateSite.SiteName = entity.SiteName;
@@ -180,7 +180,8 @@ namespace BAL.Implementation
                 var entity = await context.Set<Site>().FindAsync(id);
                 if (entity != null)
                 {
-                    context.Set<Site>().Remove(entity);
+                    entity.Isdelete = true;
+                    context.Sites.Update(entity);
                     await context.SaveChangesAsync();
                     return ApiResponse<string>.Success(id.ToString(), "Site deleted successfully.");
                 }

@@ -42,9 +42,23 @@ namespace BAL.Implementation
         {
             try
             {
-                await context.Set<LovMaster>().AddAsync(entity);
+                var newlovtype = new LovMaster()
+                {
+                    Key = entity.Key,
+                    Value = entity.Value,
+                    ReferenceId = entity.ReferenceId,
+                    LovType = entity.LovType,
+                    LongDescription = entity.LongDescription,
+                    UpdatedBy = entity.UpdatedBy,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    Isdelete = entity.Isdelete,
+                    UpdatedDate = entity.UpdatedDate
+                };
+                context.LovMasters.Add(newlovtype);
                 await context.SaveChangesAsync();
-                return ApiResponse<string>.Success(null, "LovMaster inserted successfully.");
+                return ApiResponse<string>.Success(newlovtype.Id.ToString(), "LovMaster inserted successfully.");
+                               
             }
             catch (Exception exp)
             {
@@ -55,11 +69,34 @@ namespace BAL.Implementation
 
         public async Task<ApiResponse<string>> UpdateAsync(LovMaster entity)
         {
+            if (entity == null)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Invalid input. EditLovMasterRequest object is null in Method: {nameof(UpdateAsync)}");
+                return ApiResponse<string>.Fail("Invalid input. EditSiteRequest object is null.");
+            }
             try
             {
+                var updatelovmaster = new LovMaster();
+                if (entity != null)
+                {
+                    updatelovmaster.Key = entity.Key;
+                    updatelovmaster.Value = entity.Value;
+                    updatelovmaster.ReferenceId = entity.ReferenceId;
+                    updatelovmaster.LovType = entity.LovType;
+                    updatelovmaster.LongDescription=entity.LongDescription;
+                    updatelovmaster.UpdatedBy = entity.UpdatedBy;
+                   
+                    context.LovMasters.Update(updatelovmaster);
+                    await context.SaveChangesAsync();
+
+                    return ApiResponse<string>.Success(updatelovmaster.Id.ToString(), "LovMaster record updated successfully.");
+                }
+                return ApiResponse<string>.Fail("LovMaster with the given ID not found.");
+
+                /*
                 context.Entry(entity).State = EntityState.Modified;
                 await context.SaveChangesAsync();
-                return ApiResponse<string>.Success(null, "LovMaster Updated successfully.");
+                return ApiResponse<string>.Success(null, "LovMaster Updated successfully.");*/
             }
             catch (Exception exp)
             {

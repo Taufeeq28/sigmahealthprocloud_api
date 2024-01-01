@@ -10,6 +10,6 @@ namespace BAL.Repository
 {
     public interface IContactsRepository : IGenericRepository<Contact>
     {
-        public Task<List<ContactsModel>> GetContactsbyContactid(string contactid);
+        public Task<List<ContactsModel>> GetContactsbyContactid(Guid contactid);
     }
 }

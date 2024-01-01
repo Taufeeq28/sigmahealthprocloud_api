@@ -104,7 +104,7 @@ namespace BAL.Implementation
                        CountryId = c.CountryId,
                        CountryName = c.CountryName,
                        Alpha2code= c.Alpha2code,
-                       Alpha3code= c.Alpha3code,
+                       Alpha3code= c.Alpha3code
                     };
                     countrylist.Add(countrymod);
                 }

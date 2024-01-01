@@ -99,8 +99,7 @@ namespace BAL.Implementation
                         JuridictionId = entity.JuridictionId,
                         JuridictionName = entity.JuridictionName,
                         StateId = entity.StateId,
-                        AlternateId = entity.AlternateId
-
+                        AlternateId = entity.AlternateId                        
                     };
                     jurdlist.Add(jurdictionmod);
                 }

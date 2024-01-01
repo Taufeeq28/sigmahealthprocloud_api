@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BAL.RequestModels
 {
-    public class JuridictionModel : BaseModel
+    public class JuridictionModel 
     {
         [Required]
         public string? JuridictionId { get; set; }

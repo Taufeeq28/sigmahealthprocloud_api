@@ -100,7 +100,9 @@ namespace BAL.Implementation
                     {
                         Id = c.Id,
                         CityId = c.CityId,
-                        CityName = c.CityName
+                        CityName = c.CityName,
+                        CountyId = c.CountyId,
+                        StateId= c.StateId
 
                     };
                     citylist.Add(citymod);
@@ -128,7 +130,9 @@ namespace BAL.Implementation
                     {
                         Id = c.Id,
                         CityId = c.CityId,
-                        CityName = c.CityName
+                        CityName = c.CityName,
+                        CountyId = c.CountyId,
+                        StateId  = c.StateId
 
                     };
                     citylist.Add(citymod);

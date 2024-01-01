@@ -89,12 +89,12 @@ namespace BAL.Implementation
             }
         }
 
-        public async Task<List<ContactsModel>> GetContactsbyContactid(string contactid)
+        public async Task<List<ContactsModel>> GetContactsbyContactid(Guid contactid)
         {
             try
             {
                 var contactlist = new List<ContactsModel>();
-                var contacts = await context.Contacts.Where(s => s.ContactsId.Equals(contactid) && s.Isdelete == false).ToListAsync();
+                var contacts = await context.Contacts.Where(s => s.Id.ToString().ToLower().Equals(contactid.ToString().ToLower()) && s.Isdelete == false).ToListAsync();
                 foreach (var l in contacts)
                 {
                     var contactsmod = new ContactsModel()
@@ -102,7 +102,9 @@ namespace BAL.Implementation
                         Id = l.Id,
                         ContactsId = l.ContactsId,
                         ContactType = l.ContactType,
-                        ContactValue = l.ContactValue
+                        ContactValue = l.ContactValue,
+                        EntityId = l.EntityId,
+                        EntityType=l.EntityType
 
                     };
                     contactlist.Add(contactsmod);
