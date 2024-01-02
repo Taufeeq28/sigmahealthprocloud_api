@@ -27,5 +27,11 @@ namespace Web_API.Controllers
         public async Task<IActionResult> GetAddresses([FromBody] GetAddressesRequest getAddressesRequest)
 
           => Ok(await _addressesService.GetAddresses(getAddressesRequest).ConfigureAwait(true));
+
+        [HttpPost]
+        [Route("create-entity-addresses")]
+        public async Task<IActionResult> CreateEntityAddress([FromBody] CreateEntityAddressRequest createEntityAddressRequest)
+
+         => Ok(await _addressesService.CreateEntityAddress(createEntityAddressRequest).ConfigureAwait(true));
     }
 }

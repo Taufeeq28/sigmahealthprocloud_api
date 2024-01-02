@@ -84,7 +84,52 @@ namespace BAL.Services
                 return ApiResponse<GetAddressesResponse>.Fail($"An error occurred while fetching addresses: {ex.Message}");
             }
         }
+        public async Task<ApiResponse<string>> CreateEntityAddress(CreateEntityAddressRequest obj)
+        {
+            try
+            {
+           
 
+                    using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                           
+                            var newCreateEntityAddress = new  EntityAddress
+                            {
+                                EntityType = obj.EntityType,
+                                AddressType = obj.AddressType,
+                                Addressid = obj.Addressid,
+                                CreatedDate = DateTime.UtcNow,
+                                UpdatedDate = DateTime.UtcNow,
+                                CreatedBy = obj.CreatedBy,
+                                Isprimary = false,
+                                EntityId = obj.EntityId
+                            };
+
+                            _dbContext.EntityAddresses.Add(newCreateEntityAddress);
+
+                            await _dbContext.SaveChangesAsync();
+
+                            transaction.Commit();
+
+                            return ApiResponse<string>.Success(null, $"Entity address inserted successfully.");
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                
+                
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_correlationId} - Exception occurred in Method: {nameof(CreateEntityAddress)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while creating entity address.");
+            }
+        }
 
         #region Private Methods
         private Expression<Func<Address, bool>> BuildWhereCondition(string identifier)
