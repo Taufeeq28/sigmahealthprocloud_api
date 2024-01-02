@@ -1,6 +1,4 @@
 using Data.Models;
-using Data.Implementation;
-using Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +7,8 @@ using BAL.Interfaces;
 using BAL.Services;
 using Serilog;
 using Data;
+using BAL.Repository;
+using BAL.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,13 +66,26 @@ builder.Services.AddDbContext<SigmaproIisContextUdf>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MyDbContextudf"));
 });
 
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacilityService, FacilityService>();
 builder.Services.AddScoped(typeof(IDataAccessProvider<>), typeof(DataAccessProvider<>));
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
 
 builder.Services.AddScoped<IAddressesRepository, AddressesRepository>();
+builder.Services.AddScoped<IBusinessConfigurationRepository, BusinessConfigurationRepository>();
+builder.Services.AddScoped<ICitiesRepository, CitiesRepository>();
+builder.Services.AddScoped<IContactsRepository, ContactsRepository>();
+builder.Services.AddScoped<ICountiesRepository, CountiesRepository>();
+builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+builder.Services.AddScoped<IFacilitiesRepository, FacilitiesRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IJuridictionsRepository, JuridictionsRepository>();
+builder.Services.AddScoped<ILOVTypeMasterRepository, LovTypeMasterRepository>();
+builder.Services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
+builder.Services.AddScoped<ISiteRepository, SiteRepository>();
+builder.Services.AddScoped<IStatesRepository, StatesRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 builder.Services.AddSerilog();
 

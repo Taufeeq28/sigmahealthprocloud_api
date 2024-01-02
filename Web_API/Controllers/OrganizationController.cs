@@ -1,8 +1,8 @@
-﻿using BAL.Request;
-using Data.Implementation;
+﻿using BAL.Repository;
+using BAL.Request;
+using BAL.RequestModels;
+using BAL.Implementation;
 using Data.Models;
-using Data.Repository;
-using Data.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
