@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BAL.Tests\BAL.Tests.csproj" />
     <ProjectReference Include="..\Web_API\Web_API.csproj" />
   </ItemGroup>
 
