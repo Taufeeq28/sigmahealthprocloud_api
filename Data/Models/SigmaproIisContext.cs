@@ -43,6 +43,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<Organization> Organizations { get; set; }
 
+    public virtual DbSet<Patient> Patients { get; set; }
+
     public virtual DbSet<Person> People { get; set; }
 
     public virtual DbSet<Provider> Providers { get; set; }
@@ -552,15 +554,114 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("fk_juridiction_id");
         });
 
+        modelBuilder.Entity<Patient>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Patient_pkey");
+
+            entity.ToTable("patient");
+
+            entity.HasIndex(e => e.PersonId, "fki_fk_patient_person_id");
+
+            entity.HasIndex(e => e.CityId, "fki_patient_city_id");
+
+            entity.HasIndex(e => e.CountryId, "fki_patient_country_id");
+
+            entity.HasIndex(e => e.StateId, "fki_s");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.AliasFirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("alias_first_name");
+            entity.Property(e => e.AliasLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("alias_last_name");
+            entity.Property(e => e.AliasMidddleName)
+                .HasColumnType("character varying")
+                .HasColumnName("alias_midddle_name");
+            entity.Property(e => e.CityId).HasColumnName("city_id");
+            entity.Property(e => e.CountryId).HasColumnName("country_id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.DateOfHistoryVaccine).HasColumnName("date_of_history_vaccine");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.PatientId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("patient_id");
+            entity.Property(e => e.PatientPrimaryLanguage)
+                .HasColumnType("character varying")
+                .HasColumnName("patient_primary_language");
+            entity.Property(e => e.PatientStatus)
+                .HasColumnType("character varying")
+                .HasColumnName("patient_status");
+            entity.Property(e => e.PatientStatusIndicatorProviderlevel)
+                .HasColumnType("character varying")
+                .HasColumnName("patient_status_indicator_providerlevel");
+            entity.Property(e => e.PatientStatusJuridictionLevel)
+                .HasColumnType("character varying")
+                .HasColumnName("patient_status_juridiction_level");
+            entity.Property(e => e.PersonId).HasColumnName("person_id");
+            entity.Property(e => e.ProtectionIndicator)
+                .HasColumnType("character varying")
+                .HasColumnName("protection_indicator");
+            entity.Property(e => e.ProtectionIndicatorEffectiveDate).HasColumnName("protection_indicator_effective_date");
+            entity.Property(e => e.ReminderRecallStatus)
+                .HasColumnType("character varying")
+                .HasColumnName("reminder_recall_status");
+            entity.Property(e => e.ReminderRecallStatusEffectiveDate).HasColumnName("reminder_recall_status_effective_date");
+            entity.Property(e => e.ResponsiblePersonFirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("responsible_person_first_name");
+            entity.Property(e => e.ResponsiblePersonLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("responsible_person_last_name");
+            entity.Property(e => e.ResponsiblePersonMidddleName)
+                .HasColumnType("character varying")
+                .HasColumnName("responsible_person_midddle_name");
+            entity.Property(e => e.ResponsiblePersonRelationshipToPatient)
+                .HasColumnType("character varying")
+                .HasColumnName("responsible_person_relationship_to_patient");
+            entity.Property(e => e.StateId).HasColumnName("state_id");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.City).WithMany(p => p.Patients)
+                .HasForeignKey(d => d.CityId)
+                .HasConstraintName("patient_city_id");
+
+            entity.HasOne(d => d.Country).WithMany(p => p.Patients)
+                .HasForeignKey(d => d.CountryId)
+                .HasConstraintName("patient_country_id");
+
+            entity.HasOne(d => d.Person).WithMany(p => p.Patients)
+                .HasForeignKey(d => d.PersonId)
+                .HasConstraintName("fk_patient_person_id");
+
+            entity.HasOne(d => d.State).WithMany(p => p.Patients)
+                .HasForeignKey(d => d.StateId)
+                .HasConstraintName("patient_state_id");
+        });
+
         modelBuilder.Entity<Person>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Person_pkey");
 
             entity.ToTable("person");
 
+            entity.HasIndex(e => e.BirthStateId, "fki_patient_birth_state_id");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
+            entity.Property(e => e.BirthOrder)
+                .HasColumnType("character varying")
+                .HasColumnName("birth_order");
+            entity.Property(e => e.BirthStateId).HasColumnName("birth_state_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
@@ -578,6 +679,18 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.LastName)
                 .HasColumnType("character varying")
                 .HasColumnName("last_name");
+            entity.Property(e => e.MiddleName)
+                .HasColumnType("character varying")
+                .HasColumnName("middle_name");
+            entity.Property(e => e.MotherFirstName)
+                .HasColumnType("character varying")
+                .HasColumnName(" mother_first_name");
+            entity.Property(e => e.MotherLastName)
+                .HasColumnType("character varying")
+                .HasColumnName(" mother_last_name");
+            entity.Property(e => e.MotherMaidenLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_maiden_last_name");
             entity.Property(e => e.PersonId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("person_id");
@@ -588,6 +701,10 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.BirthState).WithMany(p => p.People)
+                .HasForeignKey(d => d.BirthStateId)
+                .HasConstraintName("patient_birth_state_id");
         });
 
         modelBuilder.Entity<Provider>(entity =>

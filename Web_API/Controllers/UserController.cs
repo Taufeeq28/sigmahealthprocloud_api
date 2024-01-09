@@ -1,4 +1,5 @@
 ﻿using BAL.Repository;
+using BAL.RequestModels;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,10 +36,12 @@ namespace Web_API.Controllers
             {
                 IActionResult response = Unauthorized();
                 User usermodel = new User() { UserId = username, Password = password };
-                if (_unitOfWork.Users.Authenticate(usermodel) != null)
+                Userloginmodel loginmod = _unitOfWork.Users.Authenticate(usermodel);
+                if (loginmod != null)
                 {
+                    
                     var tokenString = GenerateJSONWebToken(usermodel);
-                    response = Ok(new { token = tokenString, usermodel.UserId, status = "Authorized" });
+                    response = Ok(new { token = tokenString, loginmod.UserId,loginmod.UserRole,loginmod.FacilityName,loginmod.JuridictionName, status = "Authorized" });                    
                     return response;
                 }
                 return response;

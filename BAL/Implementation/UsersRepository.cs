@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using BAL.RequestModels;
 
 namespace BAL.Implementation
 {
@@ -27,14 +28,36 @@ namespace BAL.Implementation
         }
 
 
-        public User Authenticate(User users)
+        public Userloginmodel Authenticate(User users)
         {
             try
             {
                 var usermodel = context.Users.Where(u => u.UserId == users.UserId).FirstOrDefault();
-                if (usermodel != null && usermodel.UserId.Equals(users.UserId) && usermodel.Password.Equals(users.Password))
+                var usermod = context.Users.Join(context.Facilities, u => u.Id, f => f.UserId, (u, f) => new { users = u, fid = f.Id, orgid = f.OrganizationsId, facilities = f }).
+                    Join(context.Organizations, f => f.orgid, o => o.Id, (f, o) => new { facility = f.facilities, f.users, org = o, juridictionid = o.JuridictionId }).
+                    Join(context.Juridictions, o => o.juridictionid, j => j.Id, (o, j) => new { facility = o.facility, o.users, o.org, jurd = j })
+                    .Where(u => u.users.UserId == users.UserId).
+                    Select(i=>new
+                    {
+                        i.users.UserId,
+                        i.users.Password,
+                        i.users.UserType,
+                        i.facility.FacilityName,
+                        i.jurd.JuridictionName
+                    }
+                    ).FirstOrDefault();
+                var model = new Userloginmodel()
                 {
-                    return usermodel;
+                    UserId = usermod.UserId,
+                    Password = usermod.Password,
+                    UserRole = usermod.UserType,
+                    FacilityName = usermod.FacilityName,
+                    JuridictionName = usermod.JuridictionName
+                };
+                    
+                if (usermod != null && usermod.UserId.Equals(users.UserId) && usermod.Password.Equals(users.Password))
+                {
+                    return model;
                 }
                 return null;
             }

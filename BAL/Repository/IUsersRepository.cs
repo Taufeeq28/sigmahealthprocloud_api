@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using BAL.RequestModels;
+using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace BAL.Repository
 {
     public interface IUsersRepository : IGenericRepository<User>
     {
-        public User Authenticate(User users);
+        public Userloginmodel Authenticate(User users);
     }
 }
