@@ -118,5 +118,52 @@ namespace BAL.Services
             }
         }
 
+        public async Task<ApiResponse<string>> UpdateEntityContact(UpdateEntiyContactRequest updateRequest)
+        {
+            try
+            {
+                using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var contactToUpdate = await _dbContext.Contacts
+                    .FirstOrDefaultAsync(c => c.Id == updateRequest.ContactId);
+
+                        if (contactToUpdate == null)
+                        {
+                            return ApiResponse<string>.Fail("Contact not found for the provided ID");
+                        }
+
+
+                        contactToUpdate.ContactValue = updateRequest.NewContactValue?? contactToUpdate.ContactValue;
+                        contactToUpdate.UpdatedDate = DateTime.UtcNow;
+                        contactToUpdate.UpdatedBy = updateRequest.UpdatedBy ?? contactToUpdate.UpdatedBy;
+                        contactToUpdate.ContactType = updateRequest.NewContactType ?? contactToUpdate.UpdatedBy;
+                        contactToUpdate.Isdelete = updateRequest.isDelete ?? contactToUpdate.Isdelete;
+
+
+                        await _dbContext.SaveChangesAsync();
+                        transaction.Commit();
+                        return ApiResponse<string>.Success(null, $"Contact data updated successfully!");
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+               
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError($"Database exception: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<string>.Fail($"A database error occurred while updating contact data: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Exception occurred during contact data update: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<string>.Fail($"An error occurred while updating contact data: {ex.Message}");
+            }
+        }
     }
 }

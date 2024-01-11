@@ -8,5 +8,6 @@ namespace BAL.Interfaces
     {
         Task<ApiResponse<string>> CreateEntityContact(CreateEntityContactsRequest obj);
         Task<ApiResponse<GetContactResponse>> GetEntityContact(GetEntityAddressesRequest getContactRequest);
+        Task<ApiResponse<string>> UpdateEntityContact(UpdateEntiyContactRequest updateRequest);
     }
 }

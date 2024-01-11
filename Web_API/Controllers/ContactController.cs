@@ -33,5 +33,10 @@ namespace Web_API.Controllers
 
        => Ok(await _contactService.GetEntityContact(getContactRequest).ConfigureAwait(true));
 
+        [HttpPost]
+        [Route("update-entity-contact")]
+        public async Task<IActionResult> UpdateEntityContact([FromBody] UpdateEntiyContactRequest updateReques)
+      => Ok(await _contactService.UpdateEntityContact(updateReques).ConfigureAwait(true));
+
     }
 }
