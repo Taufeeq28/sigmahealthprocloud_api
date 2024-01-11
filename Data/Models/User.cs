@@ -29,11 +29,9 @@ public partial class User
 
     public bool? Isdelete { get; set; }
 
-    public Guid? ContactId { get; set; }
-
     public Guid? PersonId { get; set; }
 
-    public virtual Contact? Contact { get; set; }
+    public string? ImageUrl { get; set; }
 
     public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
 

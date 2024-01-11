@@ -13,7 +13,7 @@ namespace BAL.RequestModels
         public Guid Id { get; set; }
 
         [Required]
-        public string ContactsId { get; set; }
+        public int ContactsId { get; set; }
 
         [Required]
         public string? ContactValue { get; set; }

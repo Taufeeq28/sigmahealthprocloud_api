@@ -7,7 +7,7 @@ public partial class Contact
 {
     public Guid Id { get; set; }
 
-    public string ContactsId { get; set; } = null!;
+    public int ContactsId { get; set; }
 
     public string? ContactValue { get; set; }
 
@@ -26,6 +26,4 @@ public partial class Contact
     public Guid? EntityId { get; set; }
 
     public string? EntityType { get; set; }
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
