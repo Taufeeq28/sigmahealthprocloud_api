@@ -71,7 +71,7 @@ builder.Services.AddScoped<IFacilityService, FacilityService>();
 builder.Services.AddScoped(typeof(IDataAccessProvider<>), typeof(DataAccessProvider<>));
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
-
+builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IAddressesRepository, AddressesRepository>();
 builder.Services.AddScoped<IBusinessConfigurationRepository, BusinessConfigurationRepository>();
 builder.Services.AddScoped<ICitiesRepository, CitiesRepository>();
