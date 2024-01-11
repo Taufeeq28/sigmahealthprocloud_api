@@ -46,19 +46,21 @@ namespace BAL.Implementation
                         i.jurd.JuridictionName
                     }
                     ).FirstOrDefault();
-                var model = new Userloginmodel()
-                {
-                    UserId = usermod.UserId,
-                    Password = usermod.Password,
-                    UserRole = usermod.UserType,
-                    FacilityName = usermod.FacilityName,
-                    JuridictionName = usermod.JuridictionName
-                };
+               
                     
                 if (usermod != null && usermod.UserId.Equals(users.UserId) && usermod.Password.Equals(users.Password))
                 {
+                    var model = new Userloginmodel()
+                    {
+                        UserId = usermod.UserId,
+                        Password = usermod.Password,
+                        UserRole = usermod.UserType,
+                        FacilityName = usermod.FacilityName,
+                        JuridictionName = usermod.JuridictionName
+                    };
                     return model;
                 }
+
                 return null;
             }
             catch (Exception ex)
