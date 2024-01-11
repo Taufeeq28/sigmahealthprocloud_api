@@ -7,7 +7,7 @@ public partial class Contact
 {
     public Guid Id { get; set; }
 
-    public int ContactsId { get; set; }
+    public string ContactsId { get; set; } = null!;
 
     public string? ContactValue { get; set; }
 

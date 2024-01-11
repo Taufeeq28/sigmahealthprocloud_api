@@ -249,7 +249,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("contact_value");
             entity.Property(e => e.ContactsId)
-                .ValueGeneratedOnAdd()
+                .HasColumnType("character varying")
                 .HasColumnName("contacts_id");
             entity.Property(e => e.CreatedBy)
                 .HasColumnType("character varying")
