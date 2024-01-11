@@ -41,7 +41,7 @@ namespace Web_API.Controllers
                 {
                     
                     var tokenString = GenerateJSONWebToken(usermodel);
-                    response = Ok(new { token = tokenString, loginmod.UserId,loginmod.UserRole,loginmod.FacilityName,loginmod.JuridictionName, status = "Authorized" });                    
+                    response = Ok(new { token = tokenString, loginmod.UserId,loginmod.UserName,loginmod.FirstName,loginmod.LastName,loginmod.Email,loginmod.PhoneNumber,loginmod.UserRole,loginmod.FacilityName,loginmod.JuridictionName, status = "Authorized",loginmod.imageurl });                    
                     return response;
                 }
                 return response;

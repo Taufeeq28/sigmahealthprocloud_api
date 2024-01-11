@@ -40,6 +40,7 @@ namespace BAL.Implementation
                     .Where(u => u.users.UserId == users.UserId).
                     Select(i => new
                     {
+                        i.users.Id,
                         i.users.UserId,
                         i.pers.FirstName,
                         i.pers.LastName,
@@ -50,7 +51,7 @@ namespace BAL.Implementation
                         i.users.ImageUrl
                     }
                     ).FirstOrDefault();
-                var contactsmod = context.Contacts.Where(c => c.EntityId == users.Id).ToList().Select(i => new
+                var contactsmod = context.Contacts.Where(c => c.EntityId == usermod.Id).ToList().Select(i => new
                 {
                     i.ContactType,
                     i.ContactValue,
