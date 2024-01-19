@@ -61,7 +61,7 @@ public partial class Patient
 
     public virtual City? City { get; set; }
 
-    public virtual County? Country { get; set; }
+    public virtual Country? Country { get; set; }
 
     public virtual Person? Person { get; set; }
 

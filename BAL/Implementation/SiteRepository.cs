@@ -13,6 +13,8 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BAL.Implementation
 {
@@ -50,7 +52,8 @@ namespace BAL.Implementation
                 return siteModelList;
             }
 
-            var siteList = await context.Sites.Join(context.Facilities, st => st.FacilityId.Value.ToString(), ft => ft.Id.ToString(), (st, ft) => new { sites = st, addid = st.AddressId, facilities = ft }).
+            var siteList = await context.Sites.
+                 Join(context.Facilities, st => st.FacilityId.Value.ToString(), ft => ft.Id.ToString(), (st, ft) => new { sites = st, addid = st.AddressId, facilities = ft }).
                  Join(context.Addresses, f => f.addid, a => a.Id, (f, a) => new { facility = f.facilities, f.sites, add = a }).
                  Join(context.Cities, st => st.add.CityId, ct => ct.Id, (st, ct) => new { st.facility, st.sites, st.add, cities = ct }).
                  Join(context.States, ct => ct.cities.StateId, st => st.Id, (ct, st) => new { ct.facility, ct.sites, ct.add, states = st, ct.cities }).

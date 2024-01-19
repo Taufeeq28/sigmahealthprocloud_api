@@ -55,6 +55,8 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestapBehavior", true);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SigmaproIisContext>(options =>
@@ -84,6 +86,7 @@ builder.Services.AddScoped<IJuridictionsRepository, JuridictionsRepository>();
 builder.Services.AddScoped<ILOVTypeMasterRepository, LovTypeMasterRepository>();
 builder.Services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
 builder.Services.AddScoped<ISiteRepository, SiteRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IStatesRepository, StatesRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 

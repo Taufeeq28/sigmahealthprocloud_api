@@ -106,6 +106,9 @@ namespace BAL.Implementation
                         StateId = s.StateId,
                         StateName = s.StateName,
                         StateCode = s.StateCode,
+                        CountryId = s.CountryId
+
+
                     };
                     statelist.Add(statemod);
                 }
@@ -132,6 +135,7 @@ namespace BAL.Implementation
                         StateId = s.StateId,
                         StateName = s.StateName,
                         StateCode = s.StateCode,
+                        CountryId = s.CountryId
                     };
                     statelist.Add(statemod);
                 }

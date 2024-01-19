@@ -21,6 +21,7 @@ namespace BAL.Repository
         IAddressesRepository Addresss { get; }
         ILOVTypeMasterRepository lOVTypeMaster { get; }
         ISiteRepository Sites { get; }
+        IPatientRepository Patients { get; }
         int Save();
 
     }
