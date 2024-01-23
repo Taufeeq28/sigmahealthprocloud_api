@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BAL.RequestModels
 {
@@ -59,6 +60,7 @@ namespace BAL.RequestModels
         [Required]
         public Guid? PersonId { get; set; }
 
-       
+        [JsonIgnore]
+        public long? TotalRows { get; set; }
     }
 }

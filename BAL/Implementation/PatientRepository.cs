@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using SQLitePCL;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.PortableExecutable;
+using Azure.Core;
 
 namespace BAL.Implementation
 {
@@ -31,7 +32,8 @@ namespace BAL.Implementation
         {
             return await context.Set<PatientModel>().ToListAsync();
         }
-        public async Task<IEnumerable<PatientModel>> GetAllAsync(SearchPatientParams search)
+
+        public async Task<PaginationModel<PatientModel>> GetAllAsync(SearchPatientParams search)
         {
             var patientModelList = new List<PatientModel>();
             string keyword = search.keyword.IsNullOrEmpty() ? string.Empty : search.keyword.Trim().ToLower();
@@ -67,8 +69,7 @@ namespace BAL.Implementation
                     //i.countries.CountyName,
                     i.cities.CityName,
                     i.cities.State.StateName
-                }).ToPagedListAsync(search.pagenumber, search.pagesize);
-
+                }).ToListAsync();
 
             Parallel.ForEach(patientList, async i =>
             {
@@ -87,7 +88,10 @@ namespace BAL.Implementation
                 patientModelList.Add(model);
             });
             Task.WhenAll();
-            return patientModelList;
+
+            long? totalRows = patientModelList.Count();
+            var response = patientModelList.Skip(search.pagenumber).Take(search.pagesize).ToList();
+            return PaginationHelper.Paginate(response, search.pagenumber, search.pagesize, Convert.ToInt32(totalRows));
         }
 
         public async Task<PatientModel> GetByIdAsync(int id)
