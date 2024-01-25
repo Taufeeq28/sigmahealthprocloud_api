@@ -49,16 +49,25 @@ namespace BAL.RequestModels
         public string? City { get; set; }
 
         [Required]
+        public Guid? CityId { get; set; }
+
+        [Required]
         public string? State { get; set; }
+
+        [Required]
+        public Guid? StateId { get; set; }
 
         [Required]
         public string? Country { get; set; }
 
         [Required]
+        public Guid? CountryId { get; set; }
+
+        [Required]
         public string? ZipCode { get; set; }
 
         [Required]
-        public Guid? PersonId { get; set; }
+        public Guid PersonId { get; set; }
 
         [JsonIgnore]
         public long? TotalRows { get; set; }

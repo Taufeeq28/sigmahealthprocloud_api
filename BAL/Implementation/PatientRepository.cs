@@ -1,5 +1,4 @@
-﻿using BAL.Pagination;
-using BAL.Repository;
+﻿using BAL.Repository;
 using BAL.RequestModels;
 using BAL.Constant;
 using Data.Models;
@@ -7,14 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq.Expressions;
-using SQLitePCL;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Reflection.PortableExecutable;
-using Azure.Core;
+using BAL.Responses;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using BAL.Interfaces;
 
 namespace BAL.Implementation
 {
-    public class PatientRepository : IGenericRepository<PatientModel>, IPatientRepository
+    public class PatientRepository : IGenericRepository<PatientModel>, IPatientRepository, IPatientService
     {
         private SigmaproIisContext context;
         private ILogger<UnitOfWork> _logger;
@@ -50,25 +48,34 @@ namespace BAL.Implementation
 
             var patientList = await context.Patients.
 
-                Join(context.People, pt => pt.PersonId.Value.ToString(), ft => ft.Id.ToString(), (pt, ft) => new { patients = pt, person = ft }).
+                Join(context.People, pt => pt.PersonId, ft => ft.Id, (pt, ft) => new { patients = pt, person = ft }).
 
                 Join(context.Cities, pt => pt.patients.CityId, ct => ct.Id, (pt, ct) => new { pt.person, pt.patients, cities = ct }).
 
                 Join(context.States, pt => pt.patients.StateId, st => st.Id, (ct, st) => new { ct.person, ct.patients, states = st, ct.cities }).
 
-                 //Join(context.Counties, pt => pt.patients.CountryId, ct => ct.Id, (cr, ct) => new { cr.person, cr.patients, cr.states, countries = ct, cr.cities }).
-                 Where(i => i.person.FirstName.ToLower().Contains(keyword)).
+                 Join(context.Countries, pt => pt.patients.CountryId, ct => ct.Id, (cr, ct) => new { cr.person, cr.patients, cr.states, countries = ct, cr.cities }).
+                 Where(i => i.person.FirstName.ToLower().Contains(keyword)&& i.patients.Isdelete==false).
                 Select(i => new
                 {
                     i.patients.Id,
                     i.person.FirstName,
+                    i.person.MiddleName,
                     i.person.LastName,
+                    i.person.Gender,
+                    i.person.MotherFirstName,
+                    i.person.MotherLastName,
+                    i.person.MotherMaidenLastName,
                     i.patients.PersonId,
+                    i.person.PersonType,
                     i.patients.DateOfHistoryVaccine,
                     i.patients.PatientStatus,
-                    //i.countries.CountyName,
+                    i.countries.CountryName,
+                    countryid = i.countries.Id,
                     i.cities.CityName,
-                    i.cities.State.StateName
+                    cityid = i.cities.Id,
+                    i.states.StateName,
+                    stateid = i.states.Id
                 }).ToListAsync();
 
             Parallel.ForEach(patientList, async i =>
@@ -77,12 +84,22 @@ namespace BAL.Implementation
                 {   
                     Id = i.Id,
                     FirstName = i.FirstName,
+                    LastName = i.LastName,
+                    MiddleName=i.MiddleName,
+                    Gender=i.Gender,
+                    MotherFirstName=i.MotherFirstName,
+                    MotherLastName=i.MotherLastName,
+                    MotherMaidenLastName=i.MotherMaidenLastName,
+                    PersonType=i.PersonType,
                     PersonId = i.PersonId,
                     DateOfHistoryVaccine1 = i.DateOfHistoryVaccine,
                     PatientStatus = i.PatientStatus,
-                    //Country = i.CountyName,
+                    Country = i.CountryName,
+                    CountryId = i.countryid,
                     State = i.StateName,
-                    City = i.CityName
+                    StateId = i.stateid,
+                    City = i.CityName,
+                    CityId = i.cityid
 
                 };
                 patientModelList.Add(model);
@@ -90,13 +107,31 @@ namespace BAL.Implementation
             Task.WhenAll();
 
             long? totalRows = patientModelList.Count();
-            var response = patientModelList.Skip(search.pagenumber).Take(search.pagesize).ToList();
+            var response = patientModelList.Skip(search.pagesize * (search.pagenumber-1)).Take(search.pagesize).ToList();
             return PaginationHelper.Paginate(response, search.pagenumber, search.pagesize, Convert.ToInt32(totalRows));
         }
 
-        public async Task<PatientModel> GetByIdAsync(int id)
+        public async Task<ApiResponse<PatientDetailsResponse>> GetPatientDetailsById(Guid patientId)
         {
-            return await context.Set<PatientModel>().FindAsync(id);
+            try
+            {
+                var patient = await context.Patients.FindAsync(patientId);
+                if (patient != null)
+                {
+                    var person = await context.People.FindAsync(patient.PersonId);
+                    var patientDetails = PatientDetailsResponse.FromPatientEntity(patient, person);
+
+                    return ApiResponse<PatientDetailsResponse>.Success(patientDetails, "Patient details fetched successfully.");
+                }
+
+                _logger.LogError($"Patient with ID {patientId} not found.");
+                return ApiResponse<PatientDetailsResponse>.Fail("Patient not found.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"An error occurred: {exp.Message}, Stack trace: {exp.StackTrace}");
+                return ApiResponse<PatientDetailsResponse>.Fail("An error occurred while fetching facility details.");
+            }
         }
 
         public async Task<ApiResponse<string>> InsertAsync(PatientModel model)
@@ -121,7 +156,15 @@ namespace BAL.Implementation
                     UpdatedDate = model.UpdatedDate,
                     Isdelete = model.Isdelete,
                 };
-                context.People.Add(newperson);
+                if (model.Id.ToString() == "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                {
+                    context.People.Add(newperson);
+                }
+                else
+                {
+                    newperson.Id = model.PersonId;
+                    context.People.Update(newperson);
+                }
                 await context.SaveChangesAsync();
 
                 TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
@@ -142,7 +185,16 @@ namespace BAL.Implementation
                     CountryId = new Guid(model.Country)
 
                 };
-                context.Patients.Add(newpatient);
+                if (model.Id.ToString() == "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                {
+                    context.Patients.Add(newpatient);
+                }
+                else
+                {
+                    newpatient.Id = model.Id;
+                    context.Patients.Update(newpatient);
+                }
+
                 await context.SaveChangesAsync();
                 return ApiResponse<string>.Success(newpatient.Id.ToString(), "Patient created successfully.");
             }
@@ -196,6 +248,11 @@ namespace BAL.Implementation
                 {
                     entity.Isdelete = true;
                     context.Patients.Update(entity);
+
+                    var personEntity = await context.Set<Person>().FindAsync(entity.PersonId);
+                    personEntity.Isdelete = true;
+                    context.People.Update(personEntity);
+
                     await context.SaveChangesAsync();
                     return ApiResponse<string>.Success(id.ToString(), "Patient deleted successfully.");
                 }
@@ -209,5 +266,9 @@ namespace BAL.Implementation
             }
         }
 
-           }
+        public Task<PatientModel> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

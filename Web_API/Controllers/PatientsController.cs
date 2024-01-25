@@ -1,7 +1,9 @@
 ﻿using BAL.Constant;
+using BAL.Interfaces;
 using BAL.Repository;
 using BAL.RequestModels;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web_API.Controllers
 {
@@ -12,11 +14,13 @@ namespace Web_API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private IConfiguration _config;
         private readonly ILogger<PatientsController> _logger;
-        public PatientsController(IUnitOfWork unitOfWork, IConfiguration config, ILogger<PatientsController> logger)
+        private IPatientService _patientService;
+        public PatientsController(IUnitOfWork unitOfWork, IConfiguration config, ILogger<PatientsController> logger, IPatientService patientService)
         {
             _unitOfWork = unitOfWork;
             _config = config;
             _logger = logger;
+            _patientService = patientService;
 
         }
         [HttpPost]
@@ -33,5 +37,15 @@ namespace Web_API.Controllers
         [Route("searchpatient")]
         public async Task<IActionResult> SearchPatient(SearchPatientParams model) =>
             Ok(await _unitOfWork.Patients.GetAllAsync(model).ConfigureAwait(true));
+
+        [HttpPut]
+        [Route("deletepatient")]
+        public async Task<IActionResult> DeletePatient([FromForm, Required] Guid patientId) =>
+            Ok(await _unitOfWork.Patients.DeleteAsync(patientId).ConfigureAwait(true));
+
+        [HttpGet]
+        [Route("patientDetailsById")]
+        public async Task<IActionResult> GetPatientDetailsById(Guid patientId) =>
+            Ok(await _patientService.GetPatientDetailsById(patientId).ConfigureAwait(true));
     }
 }

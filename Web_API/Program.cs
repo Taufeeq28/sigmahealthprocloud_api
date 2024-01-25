@@ -70,6 +70,7 @@ builder.Services.AddDbContext<SigmaproIisContextUdf>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFacilityService, FacilityService>();
+builder.Services.AddScoped<IPatientService, PatientRepository>();
 builder.Services.AddScoped(typeof(IDataAccessProvider<>), typeof(DataAccessProvider<>));
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();

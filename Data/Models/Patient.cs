@@ -51,7 +51,7 @@ public partial class Patient
 
     public bool? Isdelete { get; set; }
 
-    public Guid? PersonId { get; set; }
+    public Guid PersonId { get; set; }
 
     public Guid? CityId { get; set; }
 
