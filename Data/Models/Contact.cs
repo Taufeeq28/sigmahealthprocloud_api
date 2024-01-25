@@ -26,6 +26,4 @@ public partial class Contact
     public Guid? EntityId { get; set; }
 
     public string? EntityType { get; set; }
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

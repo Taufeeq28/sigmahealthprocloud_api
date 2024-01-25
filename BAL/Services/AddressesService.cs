@@ -8,10 +8,6 @@ using System.Linq.Expressions;
 using BAL.Constant;
 using System.Data.Common;
 using BAL.Request;
-using System.Linq;
-using System.Security.Cryptography;
-using NetTopologySuite.Densify;
-using System.Security.Principal;
 
 namespace BAL.Services
 {

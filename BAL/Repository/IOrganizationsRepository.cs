@@ -11,7 +11,7 @@ namespace BAL.Repository
 {
     public interface IOrganizationsRepository : IGenericRepository<OrganizationModel>
     {
-        public Task<List<OrganizationModel>> GetOrganizationByJuridictionId(Guid jurdid);
+        public Task<ApiResponse<List<OrganizationModel>>> GetOrganizationByJuridictionId(Guid jurdid);
 
     }
 }

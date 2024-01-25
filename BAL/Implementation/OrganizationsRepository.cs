@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using BAL.Responses;
 
 namespace BAL.Implementation
 {
@@ -36,17 +37,24 @@ namespace BAL.Implementation
             {
                 var orgList = new List<OrganizationModel>();
                 var organization = await context.Organizations.Where(o => o.Isdelete == false).ToListAsync();
+
                 foreach (var entity in organization)
                 {
                     var organizationmod = new OrganizationModel()
                     {
+                        Id = entity.Id,
                         OrganizationsId = entity.OrganizationsId,
                         OrganizationName = entity.OrganizationName,
                         JuridictionId = entity.JuridictionId,
-                        AddressId = entity.AddressId
+                        AddressId = entity.AddressId,
+                        CreatedDate = entity.CreatedDate,
+                        CreatedBy = entity.CreatedBy,
+                        UpdatedBy = entity.UpdatedBy                        
+                        
                     };
                     orgList.Add(organizationmod);
                 }
+                Task.WhenAll();
 
                 return orgList;
             }
@@ -93,7 +101,7 @@ namespace BAL.Implementation
             catch (Exception exp)
             {
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
-                return ApiResponse<string>.Fail("An error occurred while creating the facility.");
+                return ApiResponse<string>.Fail("An error occurred while creating the organization.");
             }
         }
 
@@ -125,7 +133,7 @@ namespace BAL.Implementation
             catch (Exception exp)
             {
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(UpdateAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
-                return ApiResponse<string>.Fail("An error occurred while creating the facility.");
+                return ApiResponse<string>.Fail("An error occurred while creating the organization.");
             }
         }
         public async Task<ApiResponse<string>> DeleteAsync(Guid orgid)
@@ -152,31 +160,38 @@ namespace BAL.Implementation
             }
         }
 
-        public async Task<List<OrganizationModel>> GetOrganizationByJuridictionId(Guid jurdid)
+        public async Task<ApiResponse<List<OrganizationModel>>> GetOrganizationByJuridictionId(Guid jurdid)
         {
             try
             {
                 var orgList = new List<OrganizationModel>();
-                var organization = await context.Organizations.Where(i => i.JuridictionId.ToString().ToLower().Equals(jurdid.ToString().ToLower()) && i.Isdelete == false).ToListAsync();
+                var organization = await context.Organizations.Where(i => i.JuridictionId.ToString().ToLower().Equals(jurdid.ToString().ToLower()) && i.Isdelete == false)
+                    .ToListAsync();
+                Task.WhenAll();
                 foreach (var entity in organization)
                 {
                     var organizationmod = new OrganizationModel()
                     {
+                        Id=entity.Id,                        
                         OrganizationsId = entity.OrganizationsId,
                         OrganizationName = entity.OrganizationName,
                         JuridictionId = entity.JuridictionId,
-                        AddressId = entity.AddressId
+                        AddressId = entity.AddressId,
+                        CreatedDate = entity.CreatedDate,
+                        CreatedBy = entity.CreatedBy,
+                        UpdatedBy=entity.UpdatedBy,
                     };
                     orgList.Add(organizationmod);
                 }
-
-                return orgList;
+                return ApiResponse<List<OrganizationModel>>.Success(orgList, "Organization details fetched successfully.");
+                //return orgList;
 
 
             }
             catch (Exception ex)
             {
                 _logger.LogError($"CorelationId: {_corelationId} -Exception occurred in Method: {nameof(GetOrganizationByJuridictionId)} Error: {ex?.Message}, Stack trace: {ex?.StackTrace}");
+                //return ApiResponse<List<OrganizationModel>>.Fail("An error occurred while fetching the organization.");
                 throw new Exception(ex?.Message);
             }
         }
