@@ -23,6 +23,12 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
+        [Route("create-master-addresses")]
+        public async Task<IActionResult> CreateMasterAddress([FromBody] CreateMasterAddressRequest createMasterAddressRequest)
+
+        => Ok(await _addressesService.CreateMasterAddress(createMasterAddressRequest).ConfigureAwait(true));
+
+        [HttpPost]
         [Route("get-addresses")]
         public async Task<IActionResult> GetAddresses([FromBody] GetAddressesRequest getAddressesRequest)
 

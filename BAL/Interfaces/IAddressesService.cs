@@ -11,6 +11,7 @@ namespace BAL.Interfaces
             Task<ApiResponse<GetAddressesResponse>> GetEntityAddresses(GetEntityAddressesRequest getAddressesRequest);
             Task<ApiResponse<string>> UpdateEntityAddress(UpdateEntityAddressRequest obj);
             Task<ApiResponse<string>> DeleteEntityAddress(Guid entityAddressId);
+            Task<ApiResponse<string>> CreateMasterAddress(CreateMasterAddressRequest obj);
         }
     
 }
