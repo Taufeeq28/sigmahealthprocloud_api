@@ -12,25 +12,32 @@ namespace BAL.RequestModels
         [Required]
         public string? UserId { get; set; }
         [Required]
-        public string? UserName { get; set; }
+        public string? username { get; set; }
         [Required]
-        public string? FirstName { get; set; }
+        public string? firstName { get; set; }
         [Required]
-        public string? LastName { get; set; }
+        public string? lastName { get; set; }
         [Required]
-        public string? Email { get; set; }
+        public string? email { get; set; }
+       
         [Required]
-        public string? PhoneNumber { get; set; }
+        public string? password { get; set; }
         [Required]
-        public string? Password { get; set; }
+        public string? position { get; set; }
         [Required]
-        public string? UserRole { get; set; }
+        public string? gender { get; set; }
         [Required]
-        public string? FacilityName { get; set; }
+        public string? phone { get; set; }
         [Required]
-        public string? JuridictionName { get; set; }
+        public string? birthdate { get; set; }
         [Required]
-        public string? imageurl { get; set; }
+        public string? role { get; set; }
+        [Required]
+        public string? facility { get; set; }
+        [Required]
+        public string? juridiction { get; set; }
+        [Required]
+        public string? image { get; set; }
 
 
     }

@@ -41,14 +41,18 @@ namespace BAL.Implementation
                     Select(i => new
                     {
                         i.users.Id,
+                        i.users.Designation,
                         i.users.UserId,
                         i.pers.FirstName,
                         i.pers.LastName,
+                        i.pers.DateOfBirth,
                         i.users.Password,
                         i.users.UserType,
                         i.facility.FacilityName,
                         i.jurd.JuridictionName,
-                        i.users.ImageUrl
+                        i.users.ImageUrl,
+                        i.users.Gender
+                        
                     }
                     ).FirstOrDefault();
                 var contactsmod = context.Contacts.Where(c => c.EntityId == usermod.Id).ToList().Select(i => new
@@ -64,13 +68,16 @@ namespace BAL.Implementation
                     var model = new Userloginmodel()
                     {
                         UserId = usermod.UserId,
-                        UserName = usermod.FirstName + usermod.LastName,
-                        FirstName = usermod.FirstName,
-                        LastName = usermod.LastName,
-                        Password = usermod.Password,
-                        UserRole = usermod.UserType,
-                        FacilityName = usermod.FacilityName,
-                        JuridictionName = usermod.JuridictionName,
+                        gender = usermod.Gender,
+                        username = usermod.FirstName +" "+ usermod.LastName,
+                        firstName = usermod.FirstName,
+                        lastName = usermod.LastName,
+                        password = usermod.Password,
+                        position=usermod.Designation,
+                        role = usermod.UserType,
+                        facility = usermod.FacilityName,
+                        juridiction = usermod.JuridictionName,
+                        birthdate=usermod.DateOfBirth
                           
 
                 };
@@ -79,10 +86,10 @@ namespace BAL.Implementation
                         switch (item.ContactType.ToUpper())
                         {
                             case "PHONE":
-                                model.PhoneNumber = item.ContactValue;
+                                model.phone = item.ContactValue;
                                 break;
                             case "EMAIL":
-                                model.Email = item.ContactValue;
+                                model.email = item.ContactValue;
                                 break;
 
                             default: break;
