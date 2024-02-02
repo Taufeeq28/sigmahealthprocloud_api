@@ -26,6 +26,7 @@ namespace BAL.Implementation
         public IContactsRepository Contacts { get; private set; }
         public ILOVTypeMasterRepository lOVTypeMaster { get; private set; }
         public IAddressesRepository Addresss { get; private set; }
+        public IOrdersRepository Orders { get; private set; }
         public IBusinessConfigurationRepository BusinessConfiguration { get; private set; }
         public ISiteRepository Sites { get; private set; }
         public IPatientRepository Patients { get; private set; }
@@ -47,6 +48,7 @@ namespace BAL.Implementation
             lOVTypeMaster = new LovTypeMasterRepository(_context, _logger);
             Addresss = new AddressesRepository(_context, _logger);
             BusinessConfiguration = new BusinessConfigurationRepository(_context, _logger);
+            Orders = new OrdersRepository(_context, _logger);
             Sites = new SiteRepository(_context, _logger);
             Patients = new PatientRepository(_context, _logger);
         }
