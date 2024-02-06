@@ -91,7 +91,7 @@ namespace BAL.Implementation
                     MotherLastName=i.MotherLastName,
                     MotherMaidenLastName=i.MotherMaidenLastName,
                     PersonType=i.PersonType,
-                    PersonId = i.PersonId,
+                    PersonId = (Guid)i.PersonId,
                     DateOfHistoryVaccine1 = i.DateOfHistoryVaccine,
                     PatientStatus = i.PatientStatus,
                     Country = i.CountryName,
