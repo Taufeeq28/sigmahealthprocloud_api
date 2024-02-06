@@ -3,13 +3,21 @@ using System.Collections.Generic;
 
 namespace Data.Models;
 
-public partial class Contact
+public partial class Cpt
 {
     public Guid Id { get; set; }
 
-    public string ContactsId { get; set; } = null!;
+    public int CptId { get; set; }
 
-    public string? ContactValue { get; set; }
+    public string? CptCode { get; set; }
+
+    public string? CptDescription { get; set; }
+
+    public Guid? CvxCodeId { get; set; }
+
+    public string? Comment { get; set; }
+
+    public string? CptCodeId { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
@@ -21,11 +29,5 @@ public partial class Contact
 
     public bool? Isdelete { get; set; }
 
-    public string? ContactType { get; set; }
-
-    public Guid? EntityId { get; set; }
-
-    public string? EntityType { get; set; }
-
-    public bool Isprimary { get; set; }
+    public DateOnly? ReleaseDate { get; set; }
 }

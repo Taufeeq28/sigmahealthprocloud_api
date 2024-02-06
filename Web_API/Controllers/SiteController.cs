@@ -33,6 +33,11 @@ namespace Web_API.Controllers
         public async Task<IActionResult> SearchSite(SearchParams model) =>
             Ok(await _unitOfWork.Sites.GetAllAsync(model).ConfigureAwait(true));
 
+        [HttpPost]
+        [Route("getsitedetailsbyid")]
+        public async Task<IActionResult> GetSiteDetailsById(Guid sitetId) =>
+           Ok(await _unitOfWork.Sites.GetSiteDetailsById(sitetId).ConfigureAwait(true));
+
 
 
     }

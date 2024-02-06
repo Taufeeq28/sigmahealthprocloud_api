@@ -35,5 +35,9 @@ public partial class User
 
     public virtual ICollection<Facility> Facilities { get; set; } = new List<Facility>();
 
+    public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
     public virtual Person? Person { get; set; }
 }

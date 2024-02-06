@@ -3,13 +3,21 @@ using System.Collections.Generic;
 
 namespace Data.Models;
 
-public partial class Contact
+public partial class CvxVi
 {
     public Guid Id { get; set; }
 
-    public string ContactsId { get; set; } = null!;
+    public int CvxVisId { get; set; }
 
-    public string? ContactValue { get; set; }
+    public Guid? CvxCodeId { get; set; }
+
+    public string? VisDocumentName { get; set; }
+
+    public string? VisFullyEncodedText { get; set; }
+
+    public DateOnly? VisEditionDate { get; set; }
+
+    public string? VisEditionStatus { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
@@ -20,12 +28,4 @@ public partial class Contact
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
-
-    public string? ContactType { get; set; }
-
-    public Guid? EntityId { get; set; }
-
-    public string? EntityType { get; set; }
-
-    public bool Isprimary { get; set; }
 }

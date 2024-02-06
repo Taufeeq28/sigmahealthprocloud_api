@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BAL.Responses;
 
 namespace BAL.Repository
 {
     public interface ISiteRepository : IGenericRepository<SiteModel>
     {
         public Task<IEnumerable<SiteModel>> GetAllAsync(SearchParams search);
+        Task<ApiResponse<SiteModel>> GetSiteDetailsById(Guid siteId);
     }
 }

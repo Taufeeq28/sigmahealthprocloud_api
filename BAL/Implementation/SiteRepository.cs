@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using BAL.Responses;
+using System.Data.Common;
 
 namespace BAL.Implementation
 {
@@ -36,81 +38,128 @@ namespace BAL.Implementation
         {
             return await context.Set<SiteModel>().ToListAsync();
         }
-        public async Task<IEnumerable<SiteModel>> GetAllAsync(SearchParams search)
+        public async Task<IEnumerable<SiteModel>> GetAllAsync(SearchParams search)                                                          
         {
             var siteModelList = new List<SiteModel>();
-            string keyword = search.keyword.IsNullOrEmpty() ? string.Empty : search.keyword.Trim().ToLower();
-            string facilityname = search.facility_name.IsNullOrEmpty() ? string.Empty : search.facility_name.Trim().ToLower();
-            string cityname = search.city.IsNullOrEmpty() ? string.Empty : search.city.Trim().ToLower();
-            string statename = search.state.IsNullOrEmpty() ? string.Empty : search.state.Trim().ToLower();
-            string sitetype = search.site_type.IsNullOrEmpty() ? string.Empty : search.site_type.Trim().ToLower();
-            string parentsite = search.parent_site.IsNullOrEmpty() ? string.Empty : search.parent_site.Trim().ToLower();
-            string sitename = search.site_name.IsNullOrEmpty() ? string.Empty : search.site_name.Trim().ToLower();
-            string sitepinnumber = search.sitepinnumber.IsNullOrEmpty() ? string.Empty : search.sitepinnumber.Trim().ToLower();
-            if (keyword.IsNullOrEmpty() && facilityname.IsNullOrEmpty() && cityname.IsNullOrEmpty() && statename.IsNullOrEmpty() && sitetype.IsNullOrEmpty() && sitepinnumber.IsNullOrEmpty() && sitename.IsNullOrEmpty() && parentsite.IsNullOrEmpty())
+            var query = (
+              from site in context.Sites
+              join facility in context.Facilities on site.FacilityId.ToString() equals facility.Id.ToString()
+              join entityAddress in context.EntityAddresses on site.Id equals entityAddress.EntityId
+              join entityContact in context.Contacts on site.Id equals entityContact.EntityId
+              join address in context.Addresses on entityAddress.Addressid equals address.Id
+              join city in context.Cities on address.CityId equals city.Id
+              join state in context.States on address.StateId equals state.Id
+              where (
+                  (string.IsNullOrWhiteSpace(search.keyword) ||
+                  site.SiteName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                  facility.FacilityName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                  city.CityName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                  state.StateName.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                  site.SiteType.ToLower().IndexOf(search.keyword.ToLower()) >= 0 ||
+                  site.ParentSite.ToLower().IndexOf(search.keyword.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.site_name) || site.SiteName.ToLower().IndexOf(search.site_name.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.facility_name) || facility.FacilityName.ToLower().IndexOf(search.facility_name.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.city) || city.CityName.ToLower().IndexOf(search.city.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.state) || state.StateName.ToLower().IndexOf(search.state.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.site_type) || site.SiteType.ToLower().IndexOf(search.site_type.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.parent_site) || site.ParentSite.ToLower().IndexOf(search.parent_site.ToLower()) >= 0)
+                  &&
+                  (string.IsNullOrWhiteSpace(search.sitepinnumber) || site.SitePinNumber.ToLower().IndexOf(search.sitepinnumber.ToLower()) >= 0)
+              )
+              select new SiteModel
+              {
+                  Address = $"{address.Line1} {address.Line2} {address.Suite}",
+                  FacilityName = facility.FacilityName,
+                  SiteName = site.SiteName,
+                  ParentSite = site.ParentSite,
+                  SiteType = site.SiteType,
+                  SitePinNumber = site.SitePinNumber,
+                  IsImmunizationSite = site.IsImmunizationSite,
+                  SiteId = site.SiteId,
+                  CityName = city.CityName,
+                  StateName = state.StateName,
+                  ZipCode = address.ZipCode,
+                  FacilityId = site.FacilityId,
+                  SiteContactPerson = site.SiteContactPerson,
+                  Id = site.Id,
+                  AddressId = address.Id,
+                  ContactId = entityContact.Id
+
+              }) ;
+
+            if (!string.IsNullOrWhiteSpace(search.orderby))
             {
-                return siteModelList;
+                switch (search.orderby.ToLower())
+                {
+                    case "site_name":
+                        query = query.OrderBy(s => s.SiteName);
+                        break;
+                      
+                }
             }
 
-            var siteList = await context.Sites.
-                 Join(context.Facilities, st => st.FacilityId.Value.ToString(), ft => ft.Id.ToString(), (st, ft) => new { sites = st, addid = st.AddressId, facilities = ft }).
-                 Join(context.Addresses, f => f.addid, a => a.Id, (f, a) => new { facility = f.facilities, f.sites, add = a }).
-                 Join(context.Cities, st => st.add.CityId, ct => ct.Id, (st, ct) => new { st.facility, st.sites, st.add, cities = ct }).
-                 Join(context.States, ct => ct.cities.StateId, st => st.Id, (ct, st) => new { ct.facility, ct.sites, ct.add, states = st, ct.cities }).
-                 Where(i => i.sites.SiteName.ToLower().Contains(keyword) || i.facility.FacilityName.ToLower().Contains(keyword) || i.cities.CityName.ToLower().Contains(keyword)
-                 || i.states.StateName.ToLower().Contains(keyword) || i.sites.SiteType.ToLower().Contains(keyword) || i.sites.ParentSite.ToLower().Contains(keyword)).
-                 Where(i => i.sites.SiteName.ToLower().Contains(sitename)
-                       && i.facility.FacilityName.ToLower().Contains(facilityname)
-                       && i.cities.CityName.ToLower().Contains(cityname)
-                       && i.states.StateName.ToLower().Contains(statename)
-                       && i.sites.SiteType.ToLower().Contains(sitetype)
-                       && i.sites.ParentSite.ToLower().Contains(parentsite)
-                       && i.sites.SitePinNumber.ToLower().Contains(sitepinnumber)).Select(i => new
-                       {
-                           i.sites.SiteName,
-                           i.facility.FacilityName,
-                           i.cities.CityName,
-                           i.states.StateName,
-                           i.add.Line1,
-                           i.add.Line2,
-                           i.add.Suite,
-                           i.sites.ParentSite,
-                           i.sites.SiteType,
-                           i.sites.SitePinNumber,
-                           i.sites.IsImmunizationSite,
-                           i.sites.SiteId,
-                           i.add.ZipCode
-                       }).ToPagedListAsync(search.pagenumber, search.pagesize);
+            var siteList = await query.ToPagedListAsync(search.pagenumber, search.pagesize);
 
-            Parallel.ForEach(siteList, async i =>
-            {
-                var model = new SiteModel()
-                {
-                    Address = $"{i.Line1} {i.Line2} {i.Suite}",
-                    FacilityName = i.FacilityName,
-                    SiteName = i.SiteName,
-                    ParentSite = i.ParentSite,
-                    SiteType = i.SiteType,
-                    SitePinNumber = i.SitePinNumber,
-                    IsImmunizationSite = i.IsImmunizationSite,
-                    SiteId = i.SiteId,
-                    CityName = i.CityName,
-                    StateName = i.StateName,
-                    ZipCode = i.ZipCode
-                };
-                siteModelList.Add(model);
+            siteModelList.AddRange(siteList);
 
-            });
-            Task.WhenAll();
             return siteModelList;
-
         }
-
-        public async Task<SiteModel> GetByIdAsync(int id)
+        public async Task<ApiResponse<SiteModel>> GetSiteDetailsById(Guid siteId)
         {
-            return await context.Set<SiteModel>().FindAsync(id);
-        }
+            try
+            {
+                var query = (
+                    from site in context.Sites
+                    join facility in context.Facilities on site.FacilityId.ToString() equals facility.Id.ToString()
+                    join entityAddress in context.EntityAddresses on site.Id equals entityAddress.EntityId
+                    join address in context.Addresses on entityAddress.Addressid equals address.Id
+                    join city in context.Cities on address.CityId equals city.Id
+                    join state in context.States on address.StateId equals state.Id
+                    where site.Id == siteId
+                    select new SiteModel
+                    {
+                        SiteId = site.SiteId.ToString(),
+                        SiteName = site.SiteName,
+                        SiteType = site.SiteType,
+                        ParentSite = site.ParentSite,
+                        SiteContactPerson = site.SiteContactPerson,
+                        FacilityName = facility.FacilityName,
+                        CityName = city.CityName,
+                        StateName = state.StateName,
+                        ZipCode = address.ZipCode,
+                        IsImmunizationSite = site.IsImmunizationSite,
+                        SitePinNumber = site.SitePinNumber,
+                        Address = $"{address.Line1} {address.Line2} {address.Suite}",
 
+                    });
+                
+                var result = await query.ToListAsync();
+                if (result.Count == 0 || result != null)
+                {
+                    return ApiResponse<SiteModel>.SuccessList(result, "Site fetched successfully!");
+                }
+                else
+                {
+                    return ApiResponse<SiteModel>.Fail("Site not found.");
+                }
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError($"CorrelationId: {_corelationId} - Database exception: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<SiteModel>.Fail($"A database error occurred while fetching sites: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"CorrelationId: {_corelationId} - Exception occurred in GetAddresses: {ex.Message}, Stack trace: {ex.StackTrace}");
+                return ApiResponse<SiteModel>.Fail($"An error occurred while fetching site: {ex.Message}");
+            }
+        }
         public async Task<ApiResponse<string>> InsertAsync(SiteModel sitemod)
         {
 
@@ -196,6 +245,10 @@ namespace BAL.Implementation
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(DeleteAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
                 return ApiResponse<string>.Fail("Site with the given ID not found.");
             }
+        }
+        public async Task<SiteModel> GetByIdAsync(int id)
+        {
+            return await context.Set<SiteModel>().FindAsync(id);
         }
 
     }
