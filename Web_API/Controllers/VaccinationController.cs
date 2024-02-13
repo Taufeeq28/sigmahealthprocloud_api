@@ -22,7 +22,7 @@ namespace Web_API.Controllers
 
         }
         #region Orders
-        [HttpGet]
+        [HttpPost]
         [Route("searchorders")]
         public async Task<IActionResult> SearchOrders(SearchOrderParams model)
            => Ok(await _unitOfWork.Orders.GetAllAsync(model).ConfigureAwait(true));
@@ -46,6 +46,19 @@ namespace Web_API.Controllers
         public async Task<IActionResult> EditOrder([FromBody] OrderModel obj)
          => Ok(await _unitOfWork.Orders.UpdateAsync(obj).ConfigureAwait(true));
 
+        [HttpGet]
+        [Route("getallfacilities")]
+        public async Task<IActionResult> GetAllFacilities()
+           => Ok(await _unitOfWork.Facilities.GetAllAsync().ConfigureAwait(true));
+        [HttpGet]
+        [Route("getallproducts")]
+        public async Task<IActionResult> GetAllProducts()
+          => Ok(await _unitOfWork.Products.GetAllAsync().ConfigureAwait(true));
+
+        [HttpPost]
+        [Route("getallvaccinesbyfacilityid")]
+        public async Task<IActionResult> GetAllVaccinesbyfacilityid(Guid facilityid,int pagenumber, int pagesize)
+         => Ok(await _unitOfWork.Products.GetAllVaccinesbyfacilityid(facilityid,pagenumber,pagesize).ConfigureAwait(true));
         #endregion
     }
 }

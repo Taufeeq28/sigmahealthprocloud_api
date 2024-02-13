@@ -9,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using BAL.Responses;
 
 namespace BAL.Implementation
 {
@@ -30,7 +31,22 @@ namespace BAL.Implementation
 
         public async Task<IEnumerable<Facility>> GetAllAsync()
         {
-            return await context.Set<Facility>().ToListAsync();
+            var facilitylist=new List<Facility>();
+
+            var facilities= await context.Set<Facility>().ToListAsync();
+            foreach(var f in facilities) 
+            {
+                var facility = new Facility()
+                {
+                    Id = f.Id,
+                    FacilityId = f.FacilityId,
+                    FacilityName = f.FacilityName,
+                    UserId = f.UserId
+                };
+                facilitylist.Add(facility);
+            }
+            return facilitylist;
+
         }
 
         public async Task<Facility> GetByIdAsync(int id)

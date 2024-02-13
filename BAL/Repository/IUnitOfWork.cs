@@ -18,6 +18,7 @@ namespace BAL.Repository
         IUsersRepository Users { get; }
         IBusinessConfigurationRepository BusinessConfiguration { get; }
         IContactsRepository Contacts { get; }
+        IProductRepository Products { get; }
         IAddressesRepository Addresss { get; }
         ILOVTypeMasterRepository lOVTypeMaster { get; }
         ISiteRepository Sites { get; }

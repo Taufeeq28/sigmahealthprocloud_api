@@ -173,24 +173,22 @@ namespace BAL.Implementation
             string orderitemdesc = search.order_item_desc.IsNullOrEmpty() ? string.Empty : search.order_item_desc.ToLower();
 
             var orderlist = await context.Orders.
-                            Join(context.OrderItems, ord => ord.Id.ToString(), oi => oi.OrderId.ToString(), (ord, oi) => new { orders = ord, items = oi }).
-                            Join(context.Users, o => o.orders.UserId, us => us.Id, (o, us) => new { orders = o.orders, o.items, user = us }).
-                            Join(context.Facilities, u => u.orders.FacilityId, f => f.Id, (u, f) => new { orders = u.orders, u.items, facility = f }).
-                            Join(context.Products, fa => fa.items.ProductId, p => p.Id, (fa, p) => new { orders = fa.orders, fa.items,fa.facility, product = p }).
-                            Join(context.Ndcs, pr=>pr.product.CvxCodeId,n=>n.CvxId,( pr,n) => new {orders=pr.orders,pr.items,ndc=n,product=pr.product,pr.facility}).
-                            Join(context.Cvxes, nd=>nd.ndc.CvxId,c=>c.Id,(nd,c)=>new {orders=nd.orders,product=nd.product,nd.items,nd.ndc,nd.facility,cvx=c}).
+                            Join(context.OrderItems, ord => ord.Id.ToString(), oi => oi.OrderId.ToString(), (ord, oi) => new { orders = ord, items = oi }).                            
+                            Join(context.Facilities, o => o.orders.FacilityId, f => f.Id, (o, f) => new { orders = o.orders, o.items, facility = f }).
+                            Join(context.Products, fa => fa.items.ProductId, p => p.Id, (fa, p) => new { orders = fa.orders, fa.items,fa.facility, product = p }).                            
+                            Join(context.Cvxes, pr=>pr.product.CvxCodeId,c=>c.Id,(pr,c)=>new { orders = pr.orders, pr.items, product = pr.product, pr.facility,cvx = c}).
                             Where(i =>(i.items.OrderItemDesc.ToLower().Contains(keyword) || i.facility.FacilityName.ToLower().Contains(keyword)||i.product.ProductName.ToLower().Contains(keyword)
-                            ) && i.items.Isdelete == false).
+                            ) && i.orders.Isdelete == false).
                             Select(i => new
                             {
                                 i.orders.Id,
                                 i.orders.OrderId,
                                 i.product.ProductName,
-                                i.items.OrderItemDesc,
-                                i.ndc.SaleNdc11,
+                                i.items.OrderItemDesc,                                
                                 i.cvx.CvxDescription,
                                 i.items.OrderItemStatus,
                                 i.items.Quantity,
+                                i.product,
                                 i.items.UnitPrice,
                                 i.facility.FacilityName,
                                 i.facility,
@@ -198,30 +196,34 @@ namespace BAL.Implementation
                                 i.orders.Incoterms,
                                 i.orders                              
 
-                            }).ToPagedListAsync(search.pagenumber, search.pagesize);
+                            }).ToListAsync();//ToPagedListAsync(search.pagenumber, search.pagesize);
 
             Parallel.ForEach(orderlist, async i =>
             {
                 var model = new OrderModel()
                 {
-                   FacilityId=i.facility.Id,
+                    Id = i.orders.Id,
+                    OrderId = i.OrderId,
+                    FacilityId =i.facility.Id,
+                   Facility=i.FacilityName,
                    DiscountAmount=i.DiscountAmount,
                    Incoterms=i.Incoterms,
                    OrderDate = i.orders.OrderDate,
                    OrderItemDesc = i.OrderItemDesc,
-                   OrderItemStatus = i.OrderItemStatus,
-                   Id=i.orders.Id,
+                   OrderItemStatus = i.OrderItemStatus,                   
                    OrderTotal=i.orders.OrderTotal,
                    UnitPrice= i.UnitPrice,
                    Quantity=i.Quantity,
                    TaxAmount = i.orders.TaxAmount,
                    OrderStatus=i.orders.OrderStatus,
                    TermsConditionsId = i.orders.TermsConditionsId,
-                   UserId=i.orders.UserId,
-                   NDC=i.SaleNdc11,
-                   ProductName=i.ProductName,
-                   CVXDesc=i.CvxDescription
-                   
+                   UserId=i.orders.UserId,                   
+                   Product=i.ProductName,
+                   CVXDesc=i.CvxDescription,
+                   CreatedBy=i.orders.CreatedBy,
+                   CreatedDate=i.orders.CreatedDate,
+                   UpdatedBy=i.orders.UpdatedBy,                    
+                   ProductId = i.product.Id
                 };
                 orderModelList.Add(model);
 
@@ -240,17 +242,18 @@ namespace BAL.Implementation
             var orderlist = await context.Orders.
                             Join(context.OrderItems, ord => ord.Id.ToString(), oi => oi.OrderId.ToString(), (ord, oi) => new { orders = ord, items = oi }).
                             Join(context.Facilities, o => o.orders.FacilityId, f => f.Id, (o, f) => new { orders = o.orders, o.items, facility = f }).
-                            Join(context.Products, fa => fa.items.ProductId, p => p.Id, (fa, p) => new { orders = fa.orders, fa.items, fa.facility, product = p }).
-                            Join(context.Ndcs, pr => pr.product.CvxCodeId, n => n.CvxId, (pr, n) => new { orders = pr.orders, pr.items, ndc = n, product = pr.product, pr.facility }).
-                            Join(context.Cvxes, nd => nd.ndc.CvxId, c => c.Id, (nd, c) => new { orders = nd.orders, product = nd.product, nd.items, nd.ndc, nd.facility, cvx = c }).
+                            Join(context.Products, fa => fa.items.ProductId, p => p.Id, (fa, p) => new { orders = fa.orders, fa.items, fa.facility, product = p }).                            
+                            Join(context.Cvxes, pr => pr.product.CvxCodeId, c => c.Id, (pr, c) => new { orders = pr.orders, product = pr.product, pr.items,  pr.facility, cvx = c }).
                             Where(i=>i.orders.Isdelete==false).Select
                             (i => new
                             {
                                 i.orders.Id,
                                 i.orders.OrderId,
                                 i.product.ProductName,
-                                i.items.OrderItemDesc,
-                                i.ndc.SaleNdc11,
+                                i.product.ProductId,
+                                i.product.CvxCodeId,
+                                i.product,
+                                i.items.OrderItemDesc,                                
                                 i.cvx.CvxDescription,
                                 i.items.OrderItemStatus,
                                 i.items.Quantity,
@@ -268,7 +271,7 @@ namespace BAL.Implementation
                 var model = new OrderModel()
                 {
                     FacilityId = i.facility.Id,  
-                    FacilityName=i.FacilityName,
+                    Facility=i.FacilityName,
                     DiscountAmount = i.DiscountAmount,
                     Incoterms = i.Incoterms,
                     OrderDate = i.orders.OrderDate,
@@ -282,9 +285,14 @@ namespace BAL.Implementation
                     OrderStatus = i.orders.OrderStatus,
                     TermsConditionsId = i.orders.TermsConditionsId,
                     UserId = i.orders.UserId,
-                    NDC = i.SaleNdc11,
-                    ProductName = i.ProductName,
-                    CVXDesc = i.CvxDescription
+                    Product = i.ProductName,
+                    CVXDesc = i.CvxDescription,
+                    CreatedBy = i.orders.CreatedBy,
+                    CreatedDate = i.orders.CreatedDate,
+                    UpdatedBy = i.orders.UpdatedBy,
+                    OrderId=i.OrderId,
+                    ProductId=i.product.Id
+
 
                 };
                 orderModelList.Add(model);

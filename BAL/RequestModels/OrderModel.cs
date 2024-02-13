@@ -14,7 +14,7 @@ namespace BAL.RequestModels
       
         public Guid? FacilityId { get; set; }
        
-        public string? FacilityName { get; set; }
+        public string? Facility { get; set; }
        
         public DateTime? OrderDate { get; set; }
      
@@ -30,17 +30,15 @@ namespace BAL.RequestModels
       
         public string? OrderStatus { get; set; }
      
-        public string? OrderItemDesc { get; set; }
-      
-        public string? NDC { get; set; }
+        public string? OrderItemDesc { get; set; }         
         
-        public string? ProductName { get; set; }
+        public string? Product { get; set; }
         
         public string? CVXDesc { get; set; }
         
         public Guid? ProductId { get; set; }
         
-        public Guid? OrderId { get; set; }
+        public int OrderId { get; set; }
        
         public Guid? OrderItemId { get; set; }
       

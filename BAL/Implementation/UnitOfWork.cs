@@ -30,6 +30,7 @@ namespace BAL.Implementation
         public IBusinessConfigurationRepository BusinessConfiguration { get; private set; }
         public ISiteRepository Sites { get; private set; }
         public IPatientRepository Patients { get; private set; }
+        public IProductRepository Products { get; private set; }
 
 
         public UnitOfWork(SigmaproIisContext context, ILogger<UnitOfWork> logger)
@@ -51,6 +52,7 @@ namespace BAL.Implementation
             Orders = new OrdersRepository(_context, _logger);
             Sites = new SiteRepository(_context, _logger);
             Patients = new PatientRepository(_context, _logger);
+            Products = new ProductRepository(_context, _logger);
         }
 
 
