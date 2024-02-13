@@ -204,6 +204,18 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.Password)
                 .HasColumnType("character varying")
                 .HasColumnName("password");
+            entity.Property(e => e.ProviderIdStart)
+                .HasColumnType("character varying")
+                .HasColumnName("provider_id_start");
+            entity.Property(e => e.ProviderIdSuffix)
+                .HasColumnType("character varying")
+                .HasColumnName("provider_id_suffix");
+            entity.Property(e => e.SiteIdStart)
+                .HasColumnType("character varying")
+                .HasColumnName("site_id_start");
+            entity.Property(e => e.SiteIdSuffix)
+                .HasColumnType("character varying")
+                .HasColumnName("site_id_suffix");
         });
 
         modelBuilder.Entity<CitiesMaster>(entity =>
@@ -298,6 +310,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("entity_type");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.Isprimary).HasColumnName("isprimary");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");

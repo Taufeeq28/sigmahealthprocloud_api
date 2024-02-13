@@ -26,4 +26,6 @@ public partial class Contact
     public Guid? EntityId { get; set; }
 
     public string? EntityType { get; set; }
+
+    public bool Isprimary { get; set; }
 }

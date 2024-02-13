@@ -9,6 +9,9 @@ namespace BAL.RequestModels
 {
     public class SiteModel : BaseModel
     {
+     
+        public Guid? Id { get; set; }
+
         [Required]
         public string? SiteId { get; set; }
         [Required]

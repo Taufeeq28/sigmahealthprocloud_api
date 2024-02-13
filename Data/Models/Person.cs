@@ -5,7 +5,7 @@ namespace Data.Models;
 
 public partial class Person
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     public int PersonId { get; set; }
 
