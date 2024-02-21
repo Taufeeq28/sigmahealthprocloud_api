@@ -77,6 +77,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<Patient> Patients { get; set; }
 
+    public virtual DbSet<PatientStage> PatientStages { get; set; }
+
     public virtual DbSet<Person> People { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
@@ -96,6 +98,10 @@ public partial class SigmaproIisContext : DbContext
     public virtual DbSet<TestAble> TestAbles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<VaccinePrice> VaccinePrices { get; set; }
+
+    public virtual DbSet<VaccinePrice1> VaccinePrices1 { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -1301,6 +1307,27 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("patient_state_id");
         });
 
+        modelBuilder.Entity<PatientStage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("patient_stage_pkey");
+
+            entity.ToTable("patient_stage");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.PatientId)
+                .HasColumnType("character varying")
+                .HasColumnName("patient_id");
+            entity.Property(e => e.PatientName)
+                .HasColumnType("character varying")
+                .HasColumnName("patient_name");
+        });
+
         modelBuilder.Entity<Person>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Person_pkey");
@@ -1711,6 +1738,80 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.Person).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PersonId)
                 .HasConstraintName("fk_user_person_id");
+        });
+
+        modelBuilder.Entity<VaccinePrice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Vaccine_price_pkey");
+
+            entity.ToTable("vaccine_price");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.Brandname)
+                .HasColumnType("character varying")
+                .HasColumnName("brandname");
+            entity.Property(e => e.ContractEndDate)
+                .HasColumnType("character varying")
+                .HasColumnName("contract_end_date");
+            entity.Property(e => e.ContractNumber)
+                .HasColumnType("character varying")
+                .HasColumnName("contract_number");
+            entity.Property(e => e.CostPerDose)
+                .HasColumnType("character varying")
+                .HasColumnName("cost_per_dose");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.Manufacturer)
+                .HasColumnType("character varying")
+                .HasColumnName("manufacturer");
+            entity.Property(e => e.NdcId).HasColumnName("ndc_id");
+            entity.Property(e => e.Packaging)
+                .HasColumnType("character varying")
+                .HasColumnName("packaging");
+            entity.Property(e => e.PriceId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("price_id");
+            entity.Property(e => e.PrivateSectorCostPerDose)
+                .HasColumnType("character varying")
+                .HasColumnName("private_sector_cost_per_dose");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
+        modelBuilder.Entity<VaccinePrice1>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Vaccine-price");
+
+            entity.Property(e => e.Brandname).HasColumnType("character varying");
+            entity.Property(e => e.CdccostDose)
+                .HasColumnType("character varying")
+                .HasColumnName("CDCCost-Dose");
+            entity.Property(e => e.ContractEndDate)
+                .HasColumnType("character varying")
+                .HasColumnName("Contract End Date");
+            entity.Property(e => e.ContractNumber)
+                .HasColumnType("character varying")
+                .HasColumnName("Contract Number");
+            entity.Property(e => e.Manufacturer).HasColumnType("character varying");
+            entity.Property(e => e.Ndc)
+                .HasColumnType("character varying")
+                .HasColumnName("NDC");
+            entity.Property(e => e.Packaging).HasColumnType("character varying");
+            entity.Property(e => e.PrivateSectorCostDose)
+                .HasColumnType("character varying")
+                .HasColumnName("Private Sector Cost- Dose");
+            entity.Property(e => e.Vaccine)
+                .HasColumnType("character varying")
+                .HasColumnName("vaccine");
         });
 
         OnModelCreatingPartial(modelBuilder);

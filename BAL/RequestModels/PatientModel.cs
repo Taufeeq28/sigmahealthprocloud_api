@@ -67,7 +67,7 @@ namespace BAL.RequestModels
         public string? ZipCode { get; set; }
 
         [Required]
-        public Guid? PersonId { get; set; }
+        public Guid PersonId { get; set; }
 
         [JsonIgnore]
         public long? TotalRows { get; set; }
