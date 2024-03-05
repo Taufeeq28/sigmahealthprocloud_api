@@ -53,6 +53,8 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<EntityAddress> EntityAddresses { get; set; }
 
+    public virtual DbSet<Event> Events { get; set; }
+
     public virtual DbSet<Facility> Facilities { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
@@ -724,6 +726,59 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
+        modelBuilder.Entity<Event>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("event_pkey");
+
+            entity.ToTable("event");
+
+            entity.HasIndex(e => e.ProviderId, "fki_provider_fk");
+
+            entity.HasIndex(e => e.ProviderId, "fki_provider_id");
+
+            entity.HasIndex(e => e.SiteId, "fki_site_fk");
+
+            entity.HasIndex(e => e.CvxCodeId, "fki_vaccine_fk");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CvxCodeId).HasColumnName("cvx_code_id");
+            entity.Property(e => e.EventDate).HasColumnName("event_date");
+            entity.Property(e => e.EventId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("event_id");
+            entity.Property(e => e.EventLocation)
+                .HasColumnType("character varying")
+                .HasColumnName("event_location");
+            entity.Property(e => e.EventName)
+                .HasColumnType("character varying")
+                .HasColumnName("event_name");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.ProviderId).HasColumnName("provider_id");
+            entity.Property(e => e.SiteId).HasColumnName("site_id");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.CvxCode).WithMany(p => p.Events)
+                .HasForeignKey(d => d.CvxCodeId)
+                .HasConstraintName("vaccine_fk");
+
+            entity.HasOne(d => d.Provider).WithMany(p => p.Events)
+                .HasForeignKey(d => d.ProviderId)
+                .HasConstraintName("provider_fk");
+
+            entity.HasOne(d => d.Site).WithMany(p => p.Events)
+                .HasForeignKey(d => d.SiteId)
+                .HasConstraintName("site_fk");
         });
 
         modelBuilder.Entity<Facility>(entity =>

@@ -32,4 +32,6 @@ public partial class Cvx
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 }
