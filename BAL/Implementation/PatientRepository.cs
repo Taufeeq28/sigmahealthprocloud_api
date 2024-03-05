@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using BAL.Responses;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 using BAL.Interfaces;
+using System.Reflection;
 
 namespace BAL.Implementation
 {
@@ -54,21 +55,25 @@ namespace BAL.Implementation
 
                 Join(context.States, pt => pt.patients.StateId, st => st.Id, (ct, st) => new { ct.person, ct.patients, states = st, ct.cities }).
 
-                 Join(context.Countries, pt => pt.patients.CountryId, ct => ct.Id, (cr, ct) => new { cr.person, cr.patients, cr.states, countries = ct, cr.cities }).
-                 Where(i => i.person.FirstName.ToLower().Contains(keyword)&& i.patients.Isdelete==false).
+                 Join(context.Countries, pt => pt.patients.CountryId, ct => ct.Id, (cr, ct) => new { cr.person, cr.patients, cr.states, countries = ct, cr.cities })
+                               
+                .Where(i => i.person.FirstName.ToLower().Contains(keyword) && i.patients.Isdelete==false).
                 Select(i => new
                 {
                     i.patients.Id,
                     i.person.FirstName,
                     i.person.MiddleName,
                     i.person.LastName,
-                    i.person.Gender,
+                     i.person.Gender,
+                    
+
                     i.person.MotherFirstName,
                     i.person.MotherLastName,
                     i.person.MotherMaidenLastName,
                     i.patients.PersonId,
                     i.person.PersonType,
                     i.patients.DateOfHistoryVaccine,
+                 //   i.patients.DateOfBirth,
                     i.patients.PatientStatus,
                     i.countries.CountryName,
                     countryid = i.countries.Id,
@@ -76,38 +81,65 @@ namespace BAL.Implementation
                     cityid = i.cities.Id,
                     i.states.StateName,
                     stateid = i.states.Id
+
                 }).ToListAsync();
-
-            Parallel.ForEach(patientList, async i =>
+            foreach (var i in patientList)
             {
-                var model = new PatientModel()
-                {   
-                    Id = i.Id,
-                    FirstName = i.FirstName,
-                    LastName = i.LastName,
-                    MiddleName=i.MiddleName,
-                    Gender=i.Gender,
-                    MotherFirstName=i.MotherFirstName,
-                    MotherLastName=i.MotherLastName,
-                    MotherMaidenLastName=i.MotherMaidenLastName,
-                    PersonType=i.PersonType,
-                    PersonId = (Guid)i.PersonId,
-                    DateOfHistoryVaccine1 = i.DateOfHistoryVaccine,
-                    PatientStatus = i.PatientStatus,
-                    Country = i.CountryName,
-                    CountryId = i.countryid,
-                    State = i.StateName,
-                    StateId = i.stateid,
-                    City = i.CityName,
-                    CityId = i.cityid
+                var model = new PatientModel();
+                var entityContact = context.Contacts.FirstOrDefault(x => x.EntityId == i.Id);
+                var contactNumber = string.Empty;
+                var email = string.Empty;
+                var entityAddress = context.EntityAddresses.FirstOrDefault(x => x.EntityId == i.Id);
 
-                };
-                patientModelList.Add(model);
-            });
+                var gendervalue = string.Empty;
+                Guid pid = new Guid(i.Gender);
+                var gender = context.LovMasters.FirstOrDefault(x => x.Id == pid);
+
+                if (entityAddress != null)
+                {
+                    var aid = entityAddress.Addressid;
+                    var addressData = context.Addresses.FirstOrDefault(x => x.Id == aid);
+                    var CountryName = context.Countries.FirstOrDefault(x => x.Id == addressData.CountryId).CountryName;
+                    var StateName = context.States.FirstOrDefault(x => x.Id == addressData.StateId).StateName;
+                    var CityName = context.Cities.FirstOrDefault(x => x.Id == addressData.CityId).CityName;
+
+                    model = new PatientModel()
+                    {
+                        Id = i.Id,
+                        FirstName = i.FirstName,
+                        LastName = i.LastName,
+                        MiddleName = i.MiddleName,
+                        GenderId=i.Gender,
+                        Gender = gender.Value,
+                        
+                        MotherFirstName = i.MotherFirstName,
+                        MotherLastName = i.MotherLastName,
+                        MotherMaidenLastName = i.MotherMaidenLastName,
+                        PersonType = i.PersonType,
+                        PersonId = (Guid)i.PersonId,
+                        DateOfHistoryVaccine1 = i.DateOfHistoryVaccine,
+                      //  DateOfBirth=i.DateOfBirth,
+                        PatientStatus = i.PatientStatus,
+                        Country = i.CountryName,
+                        CountryId = i.countryid,
+                        State = i.StateName,
+                        StateId = i.stateid,
+                        City = i.CityName,
+                        CityId = i.cityid,
+                        Address = addressData.Line1 + " " + addressData.Line2 + " " + addressData.Suite + " " + CountryName + " " + StateName + " " + CityName + " " + addressData.ZipCode,
+                        ContactValue = (entityContact == null) ? "" : entityContact.ContactValue,
+                        ContactType = (entityContact == null) ? "" : entityContact.ContactType
+                    };
+                    patientModelList.Add(model);
+                }
+
+            }
+
+
             Task.WhenAll();
 
             long? totalRows = patientModelList.Count();
-            var response = patientModelList.Skip(search.pagesize * (search.pagenumber-1)).Take(search.pagesize).ToList();
+            var response = patientModelList.Skip(search.pagesize * (search.pagenumber - 1)).Take(search.pagesize).ToList();
             return PaginationHelper.Paginate(response, search.pagenumber, search.pagesize, Convert.ToInt32(totalRows));
         }
 
@@ -143,20 +175,20 @@ namespace BAL.Implementation
                     FirstName = model.FirstName,
                     MiddleName = model.MiddleName,
                     LastName = model.LastName,
-                    Gender = model.Gender,                  
-                    MotherFirstName=model.MotherFirstName,
-                    MotherMaidenLastName=model.MotherMaidenLastName,
-                    MotherLastName=model.MotherLastName,
-                    PersonType=model.PersonType,
-                    DateOfBirth=model.DateOfBirth.ToString(),                  
-                    
+                    Gender = model.Gender,
+                    MotherFirstName = model.MotherFirstName,
+                    MotherMaidenLastName = model.MotherMaidenLastName,
+                    MotherLastName = model.MotherLastName,
+                    PersonType = model.PersonType,
+                    DateOfBirth = model.DateOfBirth.ToString(),
+
                     CreatedBy = model.CreatedBy,
                     CreatedDate = model.CreatedDate,
                     UpdatedBy = model.UpdatedBy,
                     UpdatedDate = model.UpdatedDate,
                     Isdelete = model.Isdelete,
                 };
-                if (model.Id.ToString() == "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                if (!model.IsEdit)
                 {
                     context.People.Add(newperson);
                 }
@@ -172,7 +204,7 @@ namespace BAL.Implementation
                 var newpatient = new Patient()
                 {
                     DateOfHistoryVaccine = TimeZoneInfo.ConvertTimeToUtc(model.DateOfHistoryVaccine, tzi),
-                    
+
                     PatientStatus = model.PatientStatus,
                     CreatedBy = model.CreatedBy,
                     CreatedDate = model.CreatedDate,
@@ -185,7 +217,7 @@ namespace BAL.Implementation
                     CountryId = new Guid(model.Country)
 
                 };
-                if (model.Id.ToString() == "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                if (!model.IsEdit)
                 {
                     context.Patients.Add(newpatient);
                 }
@@ -194,8 +226,39 @@ namespace BAL.Implementation
                     newpatient.Id = model.Id;
                     context.Patients.Update(newpatient);
                 }
-
                 await context.SaveChangesAsync();
+
+                var entityAddress = new EntityAddress()
+                {
+                    EntityType = model.EntityType,
+                    AddressType = model.AddressType,
+                    Addressid = new Guid(model.Address),
+                    CreatedBy = model.CreatedBy,
+                    CreatedDate = model.CreatedDate,
+                    UpdatedBy = model.UpdatedBy,
+                    UpdatedDate = model.UpdatedDate,
+                    EntityId = newpatient.Id
+                };
+
+                context.EntityAddresses.Add(entityAddress);
+                context.SaveChanges();
+                Random on = new Random();
+                var contact = new Contact()
+                {
+                    ContactsId = on.Next(2).ToString(),
+                    EntityType = model.EntityType,
+                    ContactValue = model.ContactValue,
+                    ContactType = model.ContactType,
+                    Isdelete = false,
+                    CreatedBy = model.CreatedBy,
+                    CreatedDate = model.CreatedDate,
+                    UpdatedBy = model.UpdatedBy,
+                    UpdatedDate = model.UpdatedDate,
+                    EntityId = newpatient.Id
+                };
+                context.Contacts.Add(contact);
+                context.SaveChanges();
+
                 return ApiResponse<string>.Success(newpatient.Id.ToString(), "Patient created successfully.");
             }
             catch (Exception exp)

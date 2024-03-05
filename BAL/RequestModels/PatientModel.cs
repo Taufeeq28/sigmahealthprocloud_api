@@ -20,6 +20,8 @@ namespace BAL.RequestModels
 
         [Required]
         public string? Gender { get; set; }
+        [Required]
+        public string? GenderId { get; set; }
 
         [Required]
         public DateTime? DateOfBirth { get; set; }
@@ -71,5 +73,21 @@ namespace BAL.RequestModels
 
         [JsonIgnore]
         public long? TotalRows { get; set; }
+        [Required]
+        public Guid? AddressId { get; set; }
+
+        [Required]
+        public string? Address { get; set; }
+        [Required]
+        public string? AddressType { get; set; }
+        [Required]
+        public string? EntityType { get; set; }
+        [Required]
+        public string? ContactValue { get; set; }
+
+        [Required]
+        public string? ContactType { get; set; }
+        [Required]
+        public bool IsEdit { get; set; }
     }
 }
