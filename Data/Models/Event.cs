@@ -13,8 +13,6 @@ public partial class Event
 
     public Guid? CvxCodeId { get; set; }
 
-    public string? EventLocation { get; set; }
-
     public DateTime? EventDate { get; set; }
 
     public Guid? ProviderId { get; set; }

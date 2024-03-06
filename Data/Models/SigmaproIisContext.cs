@@ -754,9 +754,6 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.EventId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("event_id");
-            entity.Property(e => e.EventLocation)
-                .HasColumnType("character varying")
-                .HasColumnName("event_location");
             entity.Property(e => e.EventName)
                 .HasColumnType("character varying")
                 .HasColumnName("event_name");
