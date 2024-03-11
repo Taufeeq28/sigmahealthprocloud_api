@@ -34,4 +34,6 @@ public partial class Cvx
     public bool? Isdelete { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
+    public virtual ICollection<VaccinePrice> VaccinePrices { get; set; } = new List<VaccinePrice>();
 }

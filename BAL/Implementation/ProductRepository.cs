@@ -116,13 +116,15 @@ namespace BAL.Implementation
                             Join(context.Facilities, i => i.inventory.FacilityId.Value.ToString(), f => f.Id.ToString(), (i, f) => new {product=i.products,inventory=i.inventory,facility=f}).
                             Join(context.Cvxes, pr=>pr.product.CvxCodeId.Value.ToString(), cv => cv.Id.ToString(), (pr, cv) => new {product=pr.product,inventory=pr.inventory,facility=pr.facility,cvx=cv}).
                             Join(context.Mvxes, c=>c.product.MvxCodeId.Value.ToString(), mv=>mv.Id.ToString(),(c,mv)=> new {product=c.product,inventory=c.inventory,facility=c.facility,cvx=c.cvx,mvx=mv}).
+                            Join(context.VaccinePrices, va=>va.cvx.Id.ToString(), vp=>vp.CvxId.Value.ToString(),(va,vp)=>new {product=va.product,inventory=va.inventory,facility=va.facility,cvx=va.cvx,mvx=va.mvx,vp=vp}).
                             Where(j=>j.facility.Id==facilityid && j.inventory.Isdelete == false).Select(k => new
                             {
                                 k.inventory,
                                 k.product,
                                 k.facility,
                                 k.cvx,
-                                k.mvx
+                                k.mvx,
+                                k.vp
                             }).ToListAsync();
             Parallel.ForEach(vaccines, async i =>
             {
@@ -134,7 +136,8 @@ namespace BAL.Implementation
                     Productid = i.product.Id,
                     Vaccineid = i.cvx.Id,
                     manufacturerid=i.mvx.Id,
-                    inventoryid=i.inventory.Id
+                    inventoryid=i.inventory.Id,
+                    price=i.vp.CostPerDose
 
                 };
                 vaccinelist.Add(model);

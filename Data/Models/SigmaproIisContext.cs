@@ -1798,6 +1798,8 @@ public partial class SigmaproIisContext : DbContext
 
             entity.ToTable("vaccine_price");
 
+            entity.HasIndex(e => e.CvxId, "fki_cvx_fk_id");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -1817,6 +1819,7 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.CvxId).HasColumnName("cvx_id");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
             entity.Property(e => e.Manufacturer)
                 .HasColumnType("character varying")
@@ -1835,6 +1838,10 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.Cvx).WithMany(p => p.VaccinePrices)
+                .HasForeignKey(d => d.CvxId)
+                .HasConstraintName("cvx_fk_id");
         });
 
         modelBuilder.Entity<VaccinePrice1>(entity =>

@@ -18,5 +18,7 @@ namespace BAL.RequestModels
         public Guid manufacturerid { get; set; }
 
         public Guid inventoryid { get; set; }
+
+        public string? price { get; set;}
     }
 }

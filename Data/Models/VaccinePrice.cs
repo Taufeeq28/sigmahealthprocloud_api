@@ -34,4 +34,8 @@ public partial class VaccinePrice
     public string? UpdatedBy { get; set; }
 
     public bool? Isdelete { get; set; }
+
+    public Guid? CvxId { get; set; }
+
+    public virtual Cvx? Cvx { get; set; }
 }
