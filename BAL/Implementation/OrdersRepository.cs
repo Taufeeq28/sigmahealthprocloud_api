@@ -69,49 +69,16 @@ namespace BAL.Implementation
         {
             try
             {
-                var neworders = new Order()
-                {
-                   FacilityId=entity.FacilityId,
-                   UserId=entity.UserId,
-                   DiscountAmount=entity.DiscountAmount,
-                   Incoterms=entity.Incoterms,
-                   OrderDate=entity.OrderDate,
-                   OrderStatus=entity.OrderStatus,
-                   OrderTotal=entity.OrderTotal,
-                   TaxAmount=entity.TaxAmount,
-                   TermsConditionsId=entity.TermsConditionsId,
-                   CreatedBy=entity.CreatedBy,
-                   CreatedDate=entity.CreatedDate,
-                   UpdatedBy=entity.UpdatedBy,
-                   UpdatedDate=entity.UpdatedDate,
-                   Isdelete=entity.Isdelete
-                };
-                context.Orders.Add(neworders);
+                await context.Set<OrderModel>().AddAsync(entity);
                 await context.SaveChangesAsync();
-                var neworditem = new OrderItem()
-                {
-                    OrderItemDesc = entity.OrderItemDesc,
-                    OrderId = neworders.Id,
-                    OrderItemStatus = entity.OrderItemStatus,
-                    ProductId = entity.ProductId,
-                    Isdelete = false,
-                    Quantity = entity.Quantity,
-                    UnitPrice = entity.UnitPrice,
-                    CreatedBy = entity.CreatedBy,
-                    CreatedDate = entity.CreatedDate,
-                    UpdatedBy = entity.UpdatedBy,
-                    UpdatedDate = entity.UpdatedDate,
-                };
-                context.OrderItems.Add(neworditem);
-                await context.SaveChangesAsync();
-                return ApiResponse<string>.Success(neworders.Id.ToString(), "Order created successfully.");
+                return ApiResponse<string>.Success(null, "Order inserted successfully.");
             }
             catch (Exception exp)
             {
                 _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
-                return ApiResponse<string>.Fail("An error occurred while creating the Order.");
+                return ApiResponse<string>.Fail("An error occurred while Inserting the Order.");
             }
-        
+
         }
 
         public async Task<ApiResponse<string>> UpdateAsync(OrderModel entity)
@@ -139,10 +106,10 @@ namespace BAL.Implementation
                     updateOrders.TermsConditionsId = entity.TermsConditionsId;                   
                     context.Orders.Update(updateOrders);
                     await context.SaveChangesAsync();
-                    if(updateorderitems!=null)
+                    if (updateorderitems != null)
                     {
-                        updateorderitems.OrderItemDesc=entity.OrderItemDesc;
-                        updateorderitems.UpdatedDate=entity.UpdatedDate;
+                        updateorderitems.OrderItemDesc = entity.OrderItemDesc;
+                        updateorderitems.UpdatedDate = entity.UpdatedDate;
                         updateorderitems.OrderItemStatus = entity.OrderItemStatus;
                         updateorderitems.Quantity = entity.Quantity;
                         updateorderitems.ProductId = entity.ProductId;
@@ -151,7 +118,7 @@ namespace BAL.Implementation
                         context.OrderItems.Update(updateorderitems);
                         await context.SaveChangesAsync();
                     }
-                    
+
 
                     return ApiResponse<string>.Success(entity.Id.ToString(), "Order record updated successfully.");
                 }
@@ -209,21 +176,21 @@ namespace BAL.Implementation
                    DiscountAmount=i.DiscountAmount,
                    Incoterms=i.Incoterms,
                    OrderDate = i.orders.OrderDate,
-                   OrderItemDesc = i.OrderItemDesc,
-                   OrderItemStatus = i.OrderItemStatus,                   
-                   OrderTotal=i.orders.OrderTotal,
-                   UnitPrice= i.UnitPrice,
-                   Quantity=i.Quantity,
-                   TaxAmount = i.orders.TaxAmount,
+                    OrderItemDesc = i.OrderItemDesc,
+                    OrderItemStatus = i.OrderItemStatus,
+                    OrderTotal =i.orders.OrderTotal,
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity,
+                    TaxAmount = i.orders.TaxAmount,
                    OrderStatus=i.orders.OrderStatus,
                    TermsConditionsId = i.orders.TermsConditionsId,
-                   UserId=i.orders.UserId,                   
-                   Product=i.ProductName,
-                   CVXDesc=i.CvxDescription,
+                   UserId=i.orders.UserId,
+                    Product = i.ProductName,
+                    CVXDesc =i.CvxDescription,
                    CreatedBy=i.orders.CreatedBy,
                    CreatedDate=i.orders.CreatedDate,
-                   UpdatedBy=i.orders.UpdatedBy,                    
-                   ProductId = i.product.Id
+                    UpdatedBy = i.orders.UpdatedBy,
+                    ProductId = i.product.Id
                 };
                 orderModelList.Add(model);
 
@@ -290,10 +257,8 @@ namespace BAL.Implementation
                     CreatedBy = i.orders.CreatedBy,
                     CreatedDate = i.orders.CreatedDate,
                     UpdatedBy = i.orders.UpdatedBy,
-                    OrderId=i.OrderId,
-                    ProductId=i.product.Id
-
-
+                    OrderId = i.OrderId,
+                    ProductId = i.product.Id
                 };
                 orderModelList.Add(model);
 
@@ -304,6 +269,104 @@ namespace BAL.Implementation
             var response = orderModelList.Skip(pagesize * (pagenumber - 1)).Take(pagesize).ToList();
             return PaginationHelper.Paginate(response, pagenumber, pagesize, Convert.ToInt32(totalRows));
            
+        }
+
+        public async Task<ApiResponse<string>> InsertOrdersAsync(RespOrderModel entity)
+        {
+            try
+            {
+                var neworders = new Order()
+                {
+                    FacilityId = entity.FacilityId,
+                    UserId = entity.UserId,
+                    DiscountAmount = entity.DiscountAmount,
+                    Incoterms = entity.Incoterms,
+                    OrderDate = entity.OrderDate,
+                    OrderStatus = entity.OrderStatus,
+                    OrderTotal = entity.OrderTotal,
+                    TaxAmount = entity.TaxAmount,
+                    TermsConditionsId = entity.TermsConditionsId,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    UpdatedBy = entity.UpdatedBy,
+                    UpdatedDate = entity.UpdatedDate,
+                    Isdelete = entity.Isdelete
+                };
+                context.Orders.Add(neworders);
+                await context.SaveChangesAsync();
+                for (int i = 0; i < entity.OrderofItems.Count; i++)
+                {
+                    var neworditem = new OrderItem()
+                    {
+                        OrderItemDesc = entity.OrderofItems[i].OrderItemDesc,
+                        OrderId = neworders.Id,
+                        OrderItemStatus = entity.OrderofItems[i].OrderItemStatus,
+                        ProductId = entity.OrderofItems[i].ProductId,
+                        Isdelete = false,
+                        Quantity = entity.OrderofItems[i].Quantity,
+                        UnitPrice = entity.OrderofItems[i].UnitPrice,
+                        CreatedBy = entity.CreatedBy,
+                        CreatedDate = entity.CreatedDate,
+                        UpdatedBy = entity.UpdatedBy,
+                        UpdatedDate = entity.UpdatedDate,
+                    };
+                    context.OrderItems.Add(neworditem);
+                    await context.SaveChangesAsync();
+                }
+
+                var neworderaddress = new Address()
+                {
+                    Line1 = entity.Address.Line1,
+                    Line2 = entity.Address.Line2,
+                    Suite = entity.Address.Suite,
+                    CountryId = entity.Address.CountryId,
+                    CountyId = entity.Address.CountryId,
+                    StateId = entity.Address.CountryId,
+                    CityId = entity.Address.CountryId,
+                    ZipCode = entity.Address.ZipCode,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    UpdatedBy = entity.UpdatedBy,
+                    UpdatedDate = entity.UpdatedDate
+                };
+                context.Addresses.Add(neworderaddress);
+                await context.SaveChangesAsync();
+                var newshippment = new Shipment()
+                {
+                    ShipmentDate = entity.Shiping.ShipmentDate,
+                    ExpectedDeliveryDate = entity.Shiping.Expecteddeliverydate,
+                    PackageSize = entity.Shiping.PackageSize,
+                    PakegeLength = entity.Shiping.PackageLength,
+                    PakegeWidth = entity.Shiping.PackageWidth,
+                    PakegeHeight = entity.Shiping.PackageHeight,
+                    SizeUnitOfMesure = entity.Shiping.SizeUnitofMesure,
+                    WeightUnitOfMeasure = entity.Shiping.WeightUnitofMeasure,
+                    TypeOfPackagingMaterial = entity.Shiping.TypeofPackagingMaterial,
+                    TypeOfPackage = entity.Shiping.TypeofPackage,
+                    StoringTemparture = entity.Shiping.Storingtemparature,
+                    TemperatureUnitOfMeasure = entity.Shiping.TemperatureUnitofmeasure,
+                    NoOfPackages = entity.Shiping.NoofPackages,
+                    TrackingNumber = entity.Shiping.TrackingNumber,
+                    ReceiverId = entity.Shiping.RecieverId,
+                    ReceivingHours = entity.Shiping.RecievingHours,
+                    IsSignatureNeeded = entity.Shiping.IsSignatureneeded,
+                    Isdelete = entity.Isdelete,
+                    CreatedBy = entity.CreatedBy,
+                    CreatedDate = entity.CreatedDate,
+                    UpdatedBy = entity.UpdatedBy,
+                    UpdatedDate = entity.UpdatedDate,
+                    ShipmentAddressId = neworderaddress.Id
+                };
+                context.Shipments.Add(newshippment);
+                await context.SaveChangesAsync();
+                return ApiResponse<string>.Success(neworders.Id.ToString(), "Order created successfully.");
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"CorelationId: {_corelationId} - Exception occurred in Method: {nameof(InsertAsync)} Error: {exp?.Message}, Stack trace: {exp?.StackTrace}");
+                return ApiResponse<string>.Fail("An error occurred while creating the Order.");
+            }
+
         }
     }
 }

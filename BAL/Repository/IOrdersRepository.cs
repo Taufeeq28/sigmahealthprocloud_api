@@ -13,6 +13,7 @@ namespace BAL.Repository
     {
         public Task<PaginationModel<OrderModel>> GetAllAsync(SearchOrderParams search);
         public Task<PaginationModel<OrderModel>> GetAllOrders(int pagenumber,int pagesize);
+        public Task<ApiResponse<string>> InsertOrdersAsync(RespOrderModel entity);
 
     }
 }

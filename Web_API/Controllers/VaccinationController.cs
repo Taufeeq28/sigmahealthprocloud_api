@@ -38,8 +38,8 @@ namespace Web_API.Controllers
 
         [HttpPost]
         [Route("createorder")]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderModel obj)
-         => Ok(await _unitOfWork.Orders.InsertAsync(obj).ConfigureAwait(true));
+        public async Task<IActionResult> CreateOrder([FromBody] RespOrderModel obj)
+         => Ok(await _unitOfWork.Orders.InsertOrdersAsync(obj).ConfigureAwait(true));
 
         [HttpPost]
         [Route("editorder")]
