@@ -60,4 +60,6 @@ public partial class Shipment
     public bool? Isdelete { get; set; }
 
     public virtual Order? Order { get; set; }
+
+    public virtual Address? ShipmentAddress { get; set; }
 }
