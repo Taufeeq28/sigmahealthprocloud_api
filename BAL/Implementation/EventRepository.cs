@@ -180,11 +180,12 @@ namespace BAL.Implementation
                 {
 
                     EventName = eventModel.EventName,
-                    EventDate = eventModel.EventDate,
+                    EventDate = eventModel.EventDate.HasValue ? DateTime.SpecifyKind(eventModel.EventDate.Value, DateTimeKind.Utc) : DateTime.UtcNow,
+                    // Convert to UTC
                     ProviderId = eventModel.ProviderId,
                     SiteId = eventModel.SiteId,
-                    CreatedDate = DateTime.UtcNow, // or providerModel.CreatedDate if you want to set it from the model
-                    UpdatedDate = DateTime.UtcNow, // or providerModel.UpdatedDate if you want to set it from the model
+                    CreatedDate = eventModel.CreatedDate, // or providerModel.CreatedDate if you want to set it from the model
+                    UpdatedDate = eventModel.UpdatedDate, // or providerModel.UpdatedDate if you want to set it from the model
                     CreatedBy = eventModel.CreatedBy, // Ensure this is provided in the modelv
                     UpdatedBy = eventModel.UpdatedBy  // Ensure this is provided in the model
                 };
