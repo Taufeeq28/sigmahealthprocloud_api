@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Data.Models;
+namespace Web_API.Models;
 
 public partial class Shipment
 {

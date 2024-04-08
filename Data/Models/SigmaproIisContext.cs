@@ -19,7 +19,7 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<BusinessConfiguration> BusinessConfigurations { get; set; }
 
-    public virtual DbSet<CitiesMaster> CitiesMasters { get; set; }
+    public virtual DbSet<CitiesMasterDoNotUse> CitiesMasterDoNotUses { get; set; }
 
     public virtual DbSet<City> Cities { get; set; }
 
@@ -35,27 +35,29 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<Cpt> Cpts { get; set; }
 
-    public virtual DbSet<CptCvxMaster> CptCvxMasters { get; set; }
+    public virtual DbSet<CptCvxMasterDoNotUse> CptCvxMasterDoNotUses { get; set; }
 
     public virtual DbSet<Cvx> Cvxes { get; set; }
 
-    public virtual DbSet<CvxMaster> CvxMasters { get; set; }
+    public virtual DbSet<CvxMasterDoNotUse> CvxMasterDoNotUses { get; set; }
 
-    public virtual DbSet<CvxMvxProductMapping> CvxMvxProductMappings { get; set; }
+    public virtual DbSet<CvxMvxProductMappingDoNotUse> CvxMvxProductMappingDoNotUses { get; set; }
 
     public virtual DbSet<CvxVaccineGroup> CvxVaccineGroups { get; set; }
 
-    public virtual DbSet<CvxVaccineGroupMaster> CvxVaccineGroupMasters { get; set; }
+    public virtual DbSet<CvxVaccineGroupMasterDoNotUse> CvxVaccineGroupMasterDoNotUses { get; set; }
 
     public virtual DbSet<CvxVi> CvxVis { get; set; }
 
-    public virtual DbSet<CvxVisMaster> CvxVisMasters { get; set; }
+    public virtual DbSet<CvxVisMasterDoNotUse> CvxVisMasterDoNotUses { get; set; }
 
     public virtual DbSet<EntityAddress> EntityAddresses { get; set; }
 
     public virtual DbSet<Event> Events { get; set; }
 
     public virtual DbSet<Facility> Facilities { get; set; }
+
+    public virtual DbSet<Filter> Filters { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
@@ -65,11 +67,11 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<Mvx> Mvxes { get; set; }
 
-    public virtual DbSet<MvxMaster> MvxMasters { get; set; }
+    public virtual DbSet<MvxMasterDoNotUse> MvxMasterDoNotUses { get; set; }
 
     public virtual DbSet<Ndc> Ndcs { get; set; }
 
-    public virtual DbSet<Ndclookup> Ndclookups { get; set; }
+    public virtual DbSet<NdclookupDoNotUse> NdclookupDoNotUses { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -78,6 +80,10 @@ public partial class SigmaproIisContext : DbContext
     public virtual DbSet<Organization> Organizations { get; set; }
 
     public virtual DbSet<Patient> Patients { get; set; }
+
+    public virtual DbSet<PatientDuplicateRecord> PatientDuplicateRecords { get; set; }
+
+    public virtual DbSet<PatientNewRecord> PatientNewRecords { get; set; }
 
     public virtual DbSet<PatientStage> PatientStages { get; set; }
 
@@ -103,10 +109,10 @@ public partial class SigmaproIisContext : DbContext
 
     public virtual DbSet<VaccinePrice> VaccinePrices { get; set; }
 
-    public virtual DbSet<VaccinePrice1> VaccinePrices1 { get; set; }
+    public virtual DbSet<VaccinePriceDoNotUse> VaccinePriceDoNotUses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=sigmaprodb.postgres.database.azure.com,5432;Database=sigmapro_iis;Username=sigmaprodb_user;Password=Rules@23$$11;TrustServerCertificate=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -226,11 +232,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("site_id_suffix");
         });
 
-        modelBuilder.Entity<CitiesMaster>(entity =>
+        modelBuilder.Entity<CitiesMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("cities_master");
+                .ToTable("cities_master_do_not_use");
 
             entity.Property(e => e.CityName)
                 .HasColumnType("character varying")
@@ -318,7 +324,9 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("entity_type");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
-            entity.Property(e => e.Isprimary).HasColumnName("isprimary");
+            entity.Property(e => e.Isprimary)
+                .HasDefaultValue(false)
+                .HasColumnName("isprimary");
             entity.Property(e => e.UpdatedBy)
                 .HasColumnType("character varying")
                 .HasColumnName("updated_by");
@@ -456,11 +464,11 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
-        modelBuilder.Entity<CptCvxMaster>(entity =>
+        modelBuilder.Entity<CptCvxMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("CPT_CVX_master");
+                .ToTable("CPT_CVX_master_do_not_use");
 
             entity.Property(e => e.Comment)
                 .HasColumnType("character varying")
@@ -525,11 +533,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("vaccine_status");
         });
 
-        modelBuilder.Entity<CvxMaster>(entity =>
+        modelBuilder.Entity<CvxMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("CVX_master");
+                .ToTable("CVX_master_do_not_use");
 
             entity.Property(e => e.CvxCode).HasColumnName("CVX_code");
             entity.Property(e => e.CvxDescription)
@@ -550,11 +558,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("vaccine_status");
         });
 
-        modelBuilder.Entity<CvxMvxProductMapping>(entity =>
+        modelBuilder.Entity<CvxMvxProductMappingDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("CVX_MVX_product_mapping");
+                .ToTable("CVX_MVX_product_mapping_do_not_use");
 
             entity.Property(e => e.CvxCode)
                 .HasColumnType("character varying")
@@ -613,11 +621,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("vaccine_status");
         });
 
-        modelBuilder.Entity<CvxVaccineGroupMaster>(entity =>
+        modelBuilder.Entity<CvxVaccineGroupMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("CVX_VaccineGroup_master");
+                .ToTable("CVX_VaccineGroup_master_do_not_use");
 
             entity.Property(e => e.CvxCode)
                 .HasColumnType("character varying")
@@ -670,11 +678,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("vis_fully_encoded_text");
         });
 
-        modelBuilder.Entity<CvxVisMaster>(entity =>
+        modelBuilder.Entity<CvxVisMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("CVX_VIS_master");
+                .ToTable("CVX_VIS_master_do_not_use");
 
             entity.Property(e => e.CvxCode)
                 .HasColumnType("character varying")
@@ -825,6 +833,29 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Facilities)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("fk_facility_user_id");
+        });
+
+        modelBuilder.Entity<Filter>(entity =>
+        {
+            entity.HasKey(e => e.FilterId).HasName("filters_pkey");
+
+            entity.ToTable("filters");
+
+            entity.Property(e => e.FilterId)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("filter_id");
+            entity.Property(e => e.FilterCondition)
+                .HasMaxLength(255)
+                .HasColumnName("filter_condition");
+            entity.Property(e => e.FilterType)
+                .HasMaxLength(50)
+                .HasColumnName("filter_type");
+            entity.Property(e => e.LogicalOperator)
+                .HasMaxLength(5)
+                .HasColumnName("logical_operator");
+            entity.Property(e => e.PageName)
+                .HasMaxLength(50)
+                .HasColumnName("page_name");
         });
 
         modelBuilder.Entity<Inventory>(entity =>
@@ -1003,11 +1034,11 @@ public partial class SigmaproIisContext : DbContext
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
-        modelBuilder.Entity<MvxMaster>(entity =>
+        modelBuilder.Entity<MvxMasterDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("MVX_master");
+                .ToTable("MVX_master_do_not_use");
 
             entity.Property(e => e.Lastupdateddate).HasColumnName("lastupdateddate");
             entity.Property(e => e.ManufacturerId)
@@ -1083,11 +1114,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasColumnName("use_ndc11");
         });
 
-        modelBuilder.Entity<Ndclookup>(entity =>
+        modelBuilder.Entity<NdclookupDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("NDCLookup");
+                .ToTable("NDCLookup_do_not_use");
 
             entity.Property(e => e.CvxCode)
                 .HasColumnType("character varying")
@@ -1359,6 +1390,108 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("patient_state_id");
         });
 
+        modelBuilder.Entity<PatientDuplicateRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("patient_duplicate_record_pkey");
+
+            entity.ToTable("patient_duplicate_record");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.BirthOrder)
+                .HasColumnType("character varying")
+                .HasColumnName("birth_order");
+            entity.Property(e => e.BirthStateId).HasColumnName("birth_state_id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.DateOfBirth)
+                .HasColumnType("character varying")
+                .HasColumnName("date_of_birth");
+            entity.Property(e => e.DuplicatePersonId).HasColumnName("duplicate_person_id");
+            entity.Property(e => e.FirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("first_name");
+            entity.Property(e => e.Gender)
+                .HasColumnType("character varying")
+                .HasColumnName("gender");
+            entity.Property(e => e.LastName)
+                .HasColumnType("character varying")
+                .HasColumnName("last_name");
+            entity.Property(e => e.MiddleName)
+                .HasColumnType("character varying")
+                .HasColumnName("middle_name");
+            entity.Property(e => e.MotherFirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_first_name");
+            entity.Property(e => e.MotherLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_last_name");
+            entity.Property(e => e.MotherMaidenLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_maiden_last_name");
+            entity.Property(e => e.PersonType)
+                .HasColumnType("character varying")
+                .HasColumnName("person_type");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
+        modelBuilder.Entity<PatientNewRecord>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("patient_new_record");
+
+            entity.Property(e => e.BirthOrder)
+                .HasColumnType("character varying")
+                .HasColumnName("birth_order");
+            entity.Property(e => e.BirthStateId).HasColumnName("birth_state_id");
+            entity.Property(e => e.CreatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.DateOfBirth)
+                .HasColumnType("character varying")
+                .HasColumnName("date_of_birth");
+            entity.Property(e => e.FirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("first_name");
+            entity.Property(e => e.Gender)
+                .HasColumnType("character varying")
+                .HasColumnName("gender");
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.LastName)
+                .HasColumnType("character varying")
+                .HasColumnName("last_name");
+            entity.Property(e => e.MiddleName)
+                .HasColumnType("character varying")
+                .HasColumnName("middle_name");
+            entity.Property(e => e.MotherFirstName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_first_name");
+            entity.Property(e => e.MotherLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_last_name");
+            entity.Property(e => e.MotherMaidenLastName)
+                .HasColumnType("character varying")
+                .HasColumnName("mother_maiden_last_name");
+            entity.Property(e => e.PersonType)
+                .HasColumnType("character varying")
+                .HasColumnName("person_type");
+            entity.Property(e => e.UpdatedBy)
+                .HasColumnType("character varying")
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
         modelBuilder.Entity<PatientStage>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("patient_stage_pkey");
@@ -1524,6 +1657,8 @@ public partial class SigmaproIisContext : DbContext
 
             entity.HasIndex(e => e.OrderId, "fki_fk_shipment_order_id");
 
+            entity.HasIndex(e => e.ShipmentAddressId, "fki_shipmentaddress_fk_id");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -1595,6 +1730,10 @@ public partial class SigmaproIisContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.Shipments)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("fk_shipment_order_id");
+
+            entity.HasOne(d => d.ShipmentAddress).WithMany(p => p.Shipments)
+                .HasForeignKey(d => d.ShipmentAddressId)
+                .HasConstraintName("shipmentaddress_fk_id");
         });
 
         modelBuilder.Entity<Site>(entity =>
@@ -1844,11 +1983,11 @@ public partial class SigmaproIisContext : DbContext
                 .HasConstraintName("cvx_fk_id");
         });
 
-        modelBuilder.Entity<VaccinePrice1>(entity =>
+        modelBuilder.Entity<VaccinePriceDoNotUse>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("Vaccine-price");
+                .ToTable("Vaccine-price_do_not_use");
 
             entity.Property(e => e.Brandname).HasColumnType("character varying");
             entity.Property(e => e.CdccostDose)
