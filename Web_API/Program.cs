@@ -90,7 +90,7 @@ builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IStatesRepository, StatesRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-
+builder.Services.AddScoped<IFilterRepository, FilterRepository>();
 builder.Services.AddSerilog();
 
 var app = builder.Build();

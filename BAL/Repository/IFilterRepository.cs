@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace BAL.Repository
 {
-    public interface IFilterRepository : IGenericRepository<FilterModel>
+    public interface IFilterRepository 
     {
+        Task<IEnumerable<FilterModel>> FindFiltersAsync(string pageName);
+        Task<IEnumerable<dynamic>> ApplyFiltersAsync(string pageName, string filterType, string filterCondition);
     }
 }
